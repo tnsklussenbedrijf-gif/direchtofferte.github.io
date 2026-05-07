@@ -778,7 +778,7 @@ const SB_URL='https://esrnpreydarwfrwawcug.supabase.co', SB_KEY='eyJhbGciOiJIUzI
 const LOGO='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiNmZmYiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8IS0tIERvY3VtZW50IGljb29uIC0tPgogIDxyZWN0IHg9IjIwIiB5PSIyNSIgd2lkdGg9IjY1IiBoZWlnaHQ9Ijk1IiByeD0iNyIgZmlsbD0iIzFhM2M1ZSIvPgogIDxyZWN0IHg9IjM0IiB5PSI0NCIgd2lkdGg9IjM4IiBoZWlnaHQ9IjYiIHJ4PSIzIiBmaWxsPSIjZTY3ZTIyIi8+CiAgPHJlY3QgeD0iMzQiIHk9IjU2IiB3aWR0aD0iNDQiIGhlaWdodD0iNCIgcng9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC40KSIvPgogIDxyZWN0IHg9IjM0IiB5PSI2NiIgd2lkdGg9IjM4IiBoZWlnaHQ9IjQiIHJ4PSIyIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzQiIHk9Ijc2IiB3aWR0aD0iNDIiIGhlaWdodD0iNCIgcng9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8cmVjdCB4PSIzNCIgeT0iODYiIHdpZHRoPSIzNCIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxjaXJjbGUgY3g9IjcyIiBjeT0iMTEwIiByPSIxNSIgZmlsbD0iI2U2N2UyMiIvPgogIDxwb2x5bGluZSBwb2ludHM9IjY0LDExMCA3MCwxMTcgODEsMTAyIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPCEtLSBMaWpuIC0tPgogIDxyZWN0IHg9IjEwNCIgeT0iMjIiIHdpZHRoPSIzIiBoZWlnaHQ9IjEyMCIgcng9IjEiIGZpbGw9IiNlNjdlMjIiIG9wYWNpdHk9IjAuNSIvPgogIDwhLS0gVGVrc3QgLS0+CiAgPHRleHQgeD0iMTIwIiB5PSI5MCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxYTNjNWUiPkRpcmVjaHQ8L3RleHQ+CiAgPHRleHQgeD0iMTIwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjUyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTY3ZTIyIj5PZmZlcnRlPC90ZXh0Pgo8L3N2Zz4=';
 let sb=null, user=null, profiel=null;
 let prijzen={}, scherm=0, alleProj=[], project=np();
-let bedrijf={naam:'Direcht Offerte',straat:'Romeinenweg 47G',stad:'5349AL Oss',tel:'0613033010',email:'info@direchtofferte.nl',kvk:'72144912',btwnr:'NL859003978B01',iban:'',website:'www.direchtofferte.nl',geldigheid:30,bet1:30,bet2:40,bet3:30};
+let bedrijf={naam:'Direcht Offerte',straat:'Romeinenweg 47G',stad:'5349AL Oss',tel:'0613033010',email:'info@direchtofferte.nl',kvk:'72144912',btwnr:'NL859003978B01',iban:'',website:'www.direchtofferte.nl',geldigheid:30,bet1:30,bet2:40,bet3:30,betaaltermijn:30};
 
 function volgendNr(){
   const jaar=new Date().getFullYear();
@@ -1097,6 +1097,7 @@ ${project.notities?`<div style="margin-top:12px;padding:10px 13px;border:1px sol
 <div style="padding:14px 16px">
 <ul style="font-size:11px;color:#555;line-height:2;padding-left:16px;margin-bottom:16px">
 <li>Betaling: ${bet1}% bij opdracht, ${bet2}% bij uitvoering, ${bet3}% bij oplevering.</li>
+<li>Betaaltermijn: ${bedrijf.betaaltermijn||30} dagen na factuurdatum.</li>
 <li>Offerte geldig ${bedrijf.geldigheid||30} dagen na dagtekening (t/m ${geldigTm}).</li>
 <li>Exclusief vergunningskosten tenzij anders vermeld.</li>
 <li>Meer- en minderwerk schriftelijk overeengekomen.</li>
@@ -1124,6 +1125,7 @@ ${project.notities?`<div style="margin-top:12px;padding:10px 13px;border:1px sol
 <div><div style="font-size:12px;color:var(--t2)">${es(project.opdrachtgever)||'—'}</div><div style="font-size:10px;color:var(--t3)">Nr: ${es(project.offNr)} · ${nr-1} regels</div></div>
 <div style="display:flex;gap:6px;flex-wrap:wrap">
 <button class="btn2 bg2 bsm" onclick="slaOp()">☁</button>
+<button class="btn2 bout bsm" onclick="emailOfferte()">✉ E-mail</button>
 <button class="btn2 bp bsm" onclick="window.print()">🖨 PDF</button>
 </div></div></div>
 <div class="card"><div class="cbdy" style="padding:0;overflow-x:auto">
@@ -1137,8 +1139,51 @@ ${project.notities?`<div style="margin-top:12px;padding:10px 13px;border:1px sol
 ${voorwaarden}
 <div style="display:flex;justify-content:space-between;gap:8px;margin-top:14px" class="no-print">
 <button class="btn2 bout" onclick="nav(-1)">← Bewerken</button>
+<div style="display:flex;gap:8px">
+<button class="btn2 bout blg" onclick="emailOfferte()">✉ Verstuur per e-mail</button>
 <button class="btn2 bp blg" onclick="window.print()">🖨 PDF opslaan</button>
+</div>
 </div>`;}
+
+// ══════ EMAIL OFFERTE ══════
+function emailOfferte(){
+  const aan=project.email||'';
+  const onderwerp=encodeURIComponent('Offerte '+project.offNr+' — '+project.naam);
+  const {ex,bt,inc}=ber();
+  const body=encodeURIComponent(
+    'Geachte '+(project.opdrachtgever||'heer/mevrouw')+',\n\n'+
+    'Hierbij ontvangt u onze offerte voor '+project.naam+'.\n\n'+
+    'Offertenummer: '+project.offNr+'\n'+
+    'Datum: '+project.datum+'\n'+
+    'Totaal incl. BTW: '+eu(inc)+'\n\n'+
+    'U kunt de offerte bekijken en opslaan via de bijgevoegde PDF.\n\n'+
+    'Voor vragen kunt u contact opnemen via '+bedrijf.email+' of '+bedrijf.tel+'.\n\n'+
+    'Met vriendelijke groet,\n'+
+    bedrijf.naam+'\n'+
+    bedrijf.tel+'\n'+
+    bedrijf.email
+  );
+  window.location.href='mailto:'+aan+'?subject='+onderwerp+'&body='+body;
+}
+
+function emailFactuur(factNr, inc){
+  const aan=project.email||'';
+  const onderwerp=encodeURIComponent('Factuur '+factNr+' — '+project.naam);
+  const body=encodeURIComponent(
+    'Geachte '+(project.opdrachtgever||'heer/mevrouw')+',\n\n'+
+    'Hierbij ontvangt u onze factuur voor '+project.naam+'.\n\n'+
+    'Factuurnummer: '+factNr+'\n'+
+    'Datum: '+new Date().toLocaleDateString('nl-NL')+'\n'+
+    'Totaal incl. BTW: '+inc+'\n'+
+    'Betaaltermijn: '+(bedrijf.betaaltermijn||30)+' dagen\n\n'+
+    'Graag ontvangen wij betaling binnen '+(bedrijf.betaaltermijn||30)+' dagen op rekening '+bedrijf.iban+'.\n\n'+
+    'Met vriendelijke groet,\n'+
+    bedrijf.naam+'\n'+
+    bedrijf.tel+'\n'+
+    bedrijf.email
+  );
+  window.location.href='mailto:'+aan+'?subject='+onderwerp+'&body='+body;
+}
 
 // ══════ PROJECT BEHEER ══════
 async function laadProj(id){
@@ -1181,6 +1226,7 @@ function toonBedrijf(){
 <div style="font-size:11px;font-weight:700;color:var(--b);margin-bottom:10px">⚙ Betalingsvoorwaarden</div>
 <div class="g2">
 <div class="fg"><label>Offerte geldig (dagen)</label><input type="number" id="b9" value="${bedrijf.geldigheid||30}" min="1" max="365"></div>
+<div class="fg"><label>Betaaltermijn (dagen)</label><input type="number" id="b13" value="${bedrijf.betaaltermijn||30}" min="1" max="365"></div>
 <div class="fg"><label>% bij opdracht</label><input type="number" id="b10" value="${bedrijf.bet1||30}" min="0" max="100"></div>
 <div class="fg"><label>% bij uitvoering</label><input type="number" id="b11" value="${bedrijf.bet2||40}" min="0" max="100"></div>
 <div class="fg"><label>% bij oplevering</label><input type="number" id="b12" value="${bedrijf.bet3||30}" min="0" max="100"></div>
@@ -1206,7 +1252,8 @@ async function saveBedrijf(){
     geldigheid:parseInt(v('b9'))||30,
     bet1:parseInt(v('b10'))||30,
     bet2:parseInt(v('b11'))||40,
-    bet3:parseInt(v('b12'))||30
+    bet3:parseInt(v('b12'))||30,
+    betaaltermijn:parseInt(v('b13'))||30
   };
   await slaanBedrijf();sluitM();tN('Bedrijfsgegevens opgeslagen ✓');
 }
@@ -1325,7 +1372,7 @@ td{padding:6px 10px;border-bottom:1px solid #eee}tr:nth-child(even) td{backgroun
   </div>
   <div class="box"><div class="label">Project</div>
   <strong>${es(project.naam)}</strong><br>${es(project.type)}<br>
-  <span style="font-size:10px;color:#666">Betalingstermijn: 30 dagen</span>
+  <span style="font-size:10px;color:#666">Betalingstermijn: ${bedrijf.betaaltermijn||30} dagen</span>
   </div>
 </div>
 <table>
@@ -1341,7 +1388,7 @@ td{padding:6px 10px;border-bottom:1px solid #eee}tr:nth-child(even) td{backgroun
 ${bedrijf.iban?`Rekeningnummer: <strong>${es(bedrijf.iban)}</strong><br>`:''}
 T.n.v.: ${es(bedrijf.naam)}<br>
 Onder vermelding van factuurnummer: <strong>${factNr}</strong><br>
-Betaling binnen 30 dagen na factuurdatum.
+Betaling binnen ${bedrijf.betaaltermijn||30} dagen na factuurdatum.
 </div>
 <script>window.print();window.onafterprint=()=>window.close();<\/script>
 </body></html>`;
@@ -1350,6 +1397,13 @@ Betaling binnen 30 dagen na factuurdatum.
   w.document.write(factuurHTML);
   w.document.close();
   tN('Factuur geopend voor afdrukken 🧾');
+  
+  // Vraag of email verstuurd moet worden
+  setTimeout(()=>{
+    if(project.email && confirm('Wil je de factuur ook per e-mail versturen naar '+project.email+'?')){
+      emailFactuur(factNr, eu(inc));
+    }
+  }, 1000);
 }
 
 // ══════ ADMIN ══════
