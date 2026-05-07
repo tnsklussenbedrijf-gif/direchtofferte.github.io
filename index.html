@@ -790,7 +790,7 @@ function volgendNr(){
   const volgend=(nrs.length>0?Math.max(...nrs):0)+1;
   return'OFF-'+jaar+'-'+String(volgend).padStart(3,'0');
 }
-function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:volgendNr(),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept'};}
+function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',voornaam:'',achternaam:'',adres:'',stad:'',tel:'',email:'',offNr:volgendNr(),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept'};}
 
 // ══════ AUTH ══════
 function ltab(t){
@@ -885,7 +885,7 @@ async function slaOp(){
   if(!sb||!user){tN('Niet verbonden');return;}
   syncSt('b','Opslaan...');
   try{
-    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,gewijzigd:new Date().toISOString()};
+    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,voornaam:project.voornaam||'',achternaam:project.achternaam||'',adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,gewijzigd:new Date().toISOString()};
     if(project.id){await sb.from('projecten').update(p).eq('id',project.id);}
     else{const {data}=await sb.from('projecten').insert(p).select().single();if(data)project.id=data.id;}
     await laadAlleProj(); syncSt('ok','Opgeslagen ✓'); tN('Opgeslagen ☁'); updateNav();
@@ -980,7 +980,9 @@ function sProjGegevens(){return`
   <div class="fg"><label>Offertenummer</label><input value="${es(project.offNr)}" oninput="project.offNr=this.value"></div>
   <div class="fg"><label>Status</label><select oninput="project.status=this.value">${['concept','verstuurd','akkoord','afgewezen'].map(s=>`<option ${project.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
   <div class="fg"><label>Datum</label><input type="date" value="${project.datum}" oninput="project.datum=this.value"></div>
-  <div class="fg"><label>Opdrachtgever</label><input value="${es(project.opdrachtgever)}" oninput="project.opdrachtgever=this.value"></div>
+  <div class="fg"><label>Voornaam klant</label><input value="${es(project.voornaam||'')}" oninput="project.voornaam=this.value;project.opdrachtgever=(this.value+' '+project.achternaam).trim();"></div>
+  <div class="fg"><label>Achternaam klant</label><input value="${es(project.achternaam||'')}" oninput="project.achternaam=this.value;project.opdrachtgever=(project.voornaam+' '+this.value).trim();"></div>
+  <div class="fg"><label>Bedrijfsnaam (optioneel)</label><input value="${es(project.opdrachtgever)}" oninput="project.opdrachtgever=this.value" placeholder="Leeglaten = naam klant wordt gebruikt"></div>
   <div class="fg"><label>Straat + nr</label><input value="${es(project.adres)}" oninput="project.adres=this.value"></div>
   <div class="fg"><label>Postcode + Stad</label><input value="${es(project.stad)}" oninput="project.stad=this.value"></div>
   <div class="fg"><label>Telefoon</label><input value="${es(project.tel)}" oninput="project.tel=this.value"></div>
@@ -1074,7 +1076,8 @@ ${bedrijf.kvk?`<span style="color:rgba(255,255,255,.75);font-size:10px">KvK: ${e
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
 <div style="border:1px solid #ddd;border-radius:6px;padding:10px 13px">
 <div style="font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Opdrachtgever</div>
-<div style="font-weight:700">${es(project.opdrachtgever)||'—'}</div>
+<div style="font-weight:700">${es(project.opdrachtgever)||((project.voornaam||project.achternaam)?es((project.voornaam+' '+project.achternaam).trim()):'—')}</div>
+${(project.voornaam||project.achternaam)&&project.opdrachtgever?`<div style="font-size:11px;color:#777">${es(project.voornaam)} ${es(project.achternaam)}</div>`:''}
 ${project.adres?`<div style="font-size:11px">${es(project.adres)}</div>`:''}
 ${project.stad?`<div style="font-size:11px">${es(project.stad)}</div>`:''}
 ${project.email?`<div style="font-size:11px">✉ ${es(project.email)}</div>`:''}
@@ -1151,7 +1154,7 @@ function emailOfferte(){
   const onderwerp=encodeURIComponent('Offerte '+project.offNr+' — '+project.naam);
   const {ex,bt,inc}=ber();
   const body=encodeURIComponent(
-    'Geachte '+(project.opdrachtgever||'heer/mevrouw')+',\n\n'+
+    'Geachte '+(project.voornaam||project.opdrachtgever||'heer/mevrouw')+',\n\n'+
     'Hierbij ontvangt u onze offerte voor '+project.naam+'.\n\n'+
     'Offertenummer: '+project.offNr+'\n'+
     'Datum: '+project.datum+'\n'+
@@ -1170,7 +1173,7 @@ function emailFactuur(factNr, inc){
   const aan=project.email||'';
   const onderwerp=encodeURIComponent('Factuur '+factNr+' — '+project.naam);
   const body=encodeURIComponent(
-    'Geachte '+(project.opdrachtgever||'heer/mevrouw')+',\n\n'+
+    'Geachte '+(project.voornaam||project.opdrachtgever||'heer/mevrouw')+',\n\n'+
     'Hierbij ontvangt u onze factuur voor '+project.naam+'.\n\n'+
     'Factuurnummer: '+factNr+'\n'+
     'Datum: '+new Date().toLocaleDateString('nl-NL')+'\n'+
@@ -1188,7 +1191,7 @@ function emailFactuur(factNr, inc){
 // ══════ PROJECT BEHEER ══════
 async function laadProj(id){
   const p=alleProj.find(x=>x.id===id);if(!p)return;
-  project={id:p.id,naam:p.naam,type:p.type||'Renovatie',opdrachtgever:p.opdrachtgever,adres:p.adres,stad:p.stad,tel:p.tel,email:p.email,offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],notities:p.notities,marge:p.marge||15,btw:p.btw||21,items:p.items||{},status:p.status||'concept'};
+  project={id:p.id,naam:p.naam,type:p.type||'Renovatie',opdrachtgever:p.opdrachtgever,voornaam:p.voornaam||'',achternaam:p.achternaam||'',adres:p.adres,stad:p.stad,tel:p.tel,email:p.email,offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],notities:p.notities,marge:p.marge||15,btw:p.btw||21,items:p.items||{},status:p.status||'concept'};
   scherm=1;render();sluitM();tN('Project geladen ✓');
 }
 async function delProj(id){if(!confirm('Project verwijderen?'))return;await sb.from('projecten').delete().eq('id',id);await laadAlleProj();if(project.id===id)project=np();render();tN('Verwijderd');}
@@ -1317,7 +1320,7 @@ async function maakFactuur(projId){
   const p=alleProj.find(x=>x.id===projId);
   if(!p)return;
   // Laad het project
-  project={id:p.id,naam:p.naam,type:p.type||'Renovatie',opdrachtgever:p.opdrachtgever,adres:p.adres,stad:p.stad,tel:p.tel,email:p.email,offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],notities:p.notities,marge:p.marge||15,btw:p.btw||21,items:p.items||{},status:p.status||'concept'};
+  project={id:p.id,naam:p.naam,type:p.type||'Renovatie',opdrachtgever:p.opdrachtgever,voornaam:p.voornaam||'',achternaam:p.achternaam||'',adres:p.adres,stad:p.stad,tel:p.tel,email:p.email,offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],notities:p.notities,marge:p.marge||15,btw:p.btw||21,items:p.items||{},status:p.status||'concept'};
   
   // Maak factuurnummer
   const jaar=new Date().getFullYear();
