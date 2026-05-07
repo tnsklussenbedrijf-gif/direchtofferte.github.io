@@ -778,7 +778,7 @@ const SB_URL='https://esrnpreydarwfrwawcug.supabase.co', SB_KEY='eyJhbGciOiJIUzI
 const LOGO='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiNmZmYiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8IS0tIERvY3VtZW50IGljb29uIC0tPgogIDxyZWN0IHg9IjIwIiB5PSIyNSIgd2lkdGg9IjY1IiBoZWlnaHQ9Ijk1IiByeD0iNyIgZmlsbD0iIzFhM2M1ZSIvPgogIDxyZWN0IHg9IjM0IiB5PSI0NCIgd2lkdGg9IjM4IiBoZWlnaHQ9IjYiIHJ4PSIzIiBmaWxsPSIjZTY3ZTIyIi8+CiAgPHJlY3QgeD0iMzQiIHk9IjU2IiB3aWR0aD0iNDQiIGhlaWdodD0iNCIgcng9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC40KSIvPgogIDxyZWN0IHg9IjM0IiB5PSI2NiIgd2lkdGg9IjM4IiBoZWlnaHQ9IjQiIHJ4PSIyIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzQiIHk9Ijc2IiB3aWR0aD0iNDIiIGhlaWdodD0iNCIgcng9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8cmVjdCB4PSIzNCIgeT0iODYiIHdpZHRoPSIzNCIgaGVpZ2h0PSI0IiByeD0iMiIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxjaXJjbGUgY3g9IjcyIiBjeT0iMTEwIiByPSIxNSIgZmlsbD0iI2U2N2UyMiIvPgogIDxwb2x5bGluZSBwb2ludHM9IjY0LDExMCA3MCwxMTcgODEsMTAyIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPCEtLSBMaWpuIC0tPgogIDxyZWN0IHg9IjEwNCIgeT0iMjIiIHdpZHRoPSIzIiBoZWlnaHQ9IjEyMCIgcng9IjEiIGZpbGw9IiNlNjdlMjIiIG9wYWNpdHk9IjAuNSIvPgogIDwhLS0gVGVrc3QgLS0+CiAgPHRleHQgeD0iMTIwIiB5PSI5MCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTIiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMxYTNjNWUiPkRpcmVjaHQ8L3RleHQ+CiAgPHRleHQgeD0iMTIwIiB5PSIxNDAiIGZvbnQtZmFtaWx5PSJTZWdvZSBVSSxBcmlhbCxzYW5zLXNlcmlmIiBmb250LXNpemU9IjUyIiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjZTY3ZTIyIj5PZmZlcnRlPC90ZXh0Pgo8L3N2Zz4=';
 let sb=null, user=null, profiel=null;
 let prijzen={}, scherm=0, alleProj=[], project=np();
-let bedrijf={naam:'Direcht Offerte',straat:'Romeinenweg 47G',stad:'5349AL Oss',tel:'0613033010',email:'info@direchtofferte.nl',kvk:'72144912',btwnr:'NL859003978B01',iban:'',website:'www.direchtofferte.nl'};
+let bedrijf={naam:'Direcht Offerte',straat:'Romeinenweg 47G',stad:'5349AL Oss',tel:'0613033010',email:'info@direchtofferte.nl',kvk:'72144912',btwnr:'NL859003978B01',iban:'',website:'www.direchtofferte.nl',geldigheid:30,bet1:30,bet2:40,bet3:30};
 
 function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept'};}
 
@@ -1029,8 +1029,9 @@ function sOfferte(){
   const tbl=cats.map(cat=>{const cl=zb.filter(r=>r.cat===cat);const ct=cl.reduce((s,r)=>s+r.tot,0);
   return`<tr class="cr"><td colspan="5">${cat}</td><td class="r" style="font-weight:700">${eu(ct)}</td></tr>`+
   cl.map(r=>`<tr><td style="color:var(--t3);font-size:10px">${nr++}</td><td>${r.naam}</td><td class="r">${r.q%1===0?r.q:r.q.toFixed(1)}</td><td class="r" style="font-size:10px">${r.eh}</td><td class="r">${eu(r.ep)}</td><td class="r" style="font-weight:600">${eu(r.tot)}</td></tr>`).join('');}).join('');
-  const geldigTm=new Date(new Date(project.datum).getTime()+30*864e5).toLocaleDateString('nl-NL');
+  const geldigTm=new Date(new Date(project.datum).getTime()+(bedrijf.geldigheid||30)*864e5).toLocaleDateString('nl-NL');
   const bdrijfNaam=bedrijf.naam||'Direcht Offerte';
+  const bet1=bedrijf.bet1||30, bet2=bedrijf.bet2||40, bet3=bedrijf.bet3||30;
   const hdr=`<div class="ph" style="margin-bottom:16px">
 <div style="background:#1a3c5e;border-radius:8px 8px 0 0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center">
 <img src="${bedrijf.logo||LOGO}" style="height:68px;mix-blend-mode:${bedrijf.logo?'normal':'screen'}">
@@ -1070,8 +1071,8 @@ ${project.notities?`<div style="margin-top:12px;padding:10px 13px;border:1px sol
 <div style="background:#2874a6;padding:8px 16px;border-radius:8px 8px 0 0;color:#fff;font-weight:700;font-size:12px">Voorwaarden & Akkoord</div>
 <div style="padding:14px 16px">
 <ul style="font-size:11px;color:#555;line-height:2;padding-left:16px;margin-bottom:16px">
-<li>Betaling: 30% bij opdracht, 40% bij uitvoering, 30% bij oplevering.</li>
-<li>Offerte geldig 30 dagen na dagtekening.</li>
+<li>Betaling: ${bet1}% bij opdracht, ${bet2}% bij uitvoering, ${bet3}% bij oplevering.</li>
+<li>Offerte geldig ${bedrijf.geldigheid||30} dagen na dagtekening (t/m ${geldigTm}).</li>
 <li>Exclusief vergunningskosten tenzij anders vermeld.</li>
 <li>Meer- en minderwerk schriftelijk overeengekomen.</li>
 <li>Op al onze werkzaamheden zijn de Algemene Voorwaarden van toepassing.</li>
@@ -1151,6 +1152,16 @@ function toonBedrijf(){
 </div>
 <div class="fg"><label>IBAN rekeningnummer</label><input id="b7" value="${es(bedrijf.iban)}"></div>
 <div class="fg"><label>Website</label><input id="b8" value="${es(bedrijf.website||'')}"></div>
+<div style="margin-top:12px;padding:12px;background:var(--bll);border-radius:6px;border:1px solid var(--bl)">
+<div style="font-size:11px;font-weight:700;color:var(--b);margin-bottom:10px">⚙ Betalingsvoorwaarden</div>
+<div class="g2">
+<div class="fg"><label>Offerte geldig (dagen)</label><input type="number" id="b9" value="${bedrijf.geldigheid||30}" min="1" max="365"></div>
+<div class="fg"><label>% bij opdracht</label><input type="number" id="b10" value="${bedrijf.bet1||30}" min="0" max="100"></div>
+<div class="fg"><label>% bij uitvoering</label><input type="number" id="b11" value="${bedrijf.bet2||40}" min="0" max="100"></div>
+<div class="fg"><label>% bij oplevering</label><input type="number" id="b12" value="${bedrijf.bet3||30}" min="0" max="100"></div>
+</div>
+<div style="font-size:10px;color:var(--t2);margin-top:4px">Totaal moet 100% zijn. Wordt getoond op de offerte.</div>
+</div>
 `,`<button class="btn2 bp" onclick="saveBedrijf()">☁ Opslaan</button>`);
 }
 
@@ -1166,7 +1177,11 @@ async function saveBedrijf(){
   bedrijf={
     naam:v('b0'),slogan:v('b1s'),straat:v('b1'),stad:v('b2'),
     tel:v('b3'),email:v('b4'),kvk:v('b5'),btwnr:v('b6'),
-    iban:v('b7'),website:v('b8'),logo:bedrijf.logo||''
+    iban:v('b7'),website:v('b8'),logo:bedrijf.logo||'',
+    geldigheid:parseInt(v('b9'))||30,
+    bet1:parseInt(v('b10'))||30,
+    bet2:parseInt(v('b11'))||40,
+    bet3:parseInt(v('b12'))||30
   };
   await slaanBedrijf();sluitM();tN('Bedrijfsgegevens opgeslagen ✓');
 }
