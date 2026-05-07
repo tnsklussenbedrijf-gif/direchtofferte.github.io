@@ -1029,11 +1029,16 @@ function sOfferte(){
   const tbl=cats.map(cat=>{const cl=zb.filter(r=>r.cat===cat);const ct=cl.reduce((s,r)=>s+r.tot,0);
   return`<tr class="cr"><td colspan="5">${cat}</td><td class="r" style="font-weight:700">${eu(ct)}</td></tr>`+
   cl.map(r=>`<tr><td style="color:var(--t3);font-size:10px">${nr++}</td><td>${r.naam}</td><td class="r">${r.q%1===0?r.q:r.q.toFixed(1)}</td><td class="r" style="font-size:10px">${r.eh}</td><td class="r">${eu(r.ep)}</td><td class="r" style="font-weight:600">${eu(r.tot)}</td></tr>`).join('');}).join('');
+  const geldigTm=new Date(new Date(project.datum).getTime()+30*864e5).toLocaleDateString('nl-NL');
+  const bdrijfNaam=bedrijf.naam||'Direcht Offerte';
   const hdr=`<div class="ph" style="margin-bottom:16px">
 <div style="background:#1a3c5e;border-radius:8px 8px 0 0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center">
 <img src="${bedrijf.logo||LOGO}" style="height:68px;mix-blend-mode:${bedrijf.logo?'normal':'screen'}">
-<div style="text-align:right;color:#fff"><div style="font-size:26px;font-weight:700;letter-spacing:3px">OFFERTE</div>
-<div style="font-size:11px;opacity:.85">Nr: <strong>${es(project.offNr)}</strong> | ${project.datum}</div></div></div>
+<div style="text-align:right;color:#fff">
+<div style="font-size:26px;font-weight:700;letter-spacing:3px">OFFERTE</div>
+<div style="font-size:11px;opacity:.85">Nr: <strong>${es(project.offNr)}</strong> | ${project.datum}</div>
+<div style="font-size:11px;opacity:.7">Geldig t/m: ${geldigTm}</div>
+</div></div>
 <div style="background:#2874a6;padding:7px 20px;display:flex;gap:18px;flex-wrap:wrap">
 ${bedrijf.straat?`<span style="color:#fff;font-size:11px">📍 ${es(bedrijf.straat)}, ${es(bedrijf.stad)}</span>`:''}
 ${bedrijf.tel?`<span style="color:#fff;font-size:11px">📞 ${es(bedrijf.tel)}</span>`:''}
@@ -1041,10 +1046,52 @@ ${bedrijf.email?`<span style="color:#fff;font-size:11px">✉ ${es(bedrijf.email)
 ${bedrijf.kvk?`<span style="color:rgba(255,255,255,.75);font-size:10px">KvK: ${es(bedrijf.kvk)} | BTW: ${es(bedrijf.btwnr)}</span>`:''}
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-<div style="border:1px solid #ddd;border-radius:6px;padding:10px 13px"><div style="font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Opdrachtgever</div>
-<div style="font-weight:700">${es(project.opdrachtgever)||'—'}</div>${project.adres?`<div style="font-size:11px">${es(project.adres)}</div>`:''}</div>
-<div style="border:1px solid #ddd;border-radius:6px;padding:10px 13px"><div style="font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Project</div>
-<div style="font-weight:700">${es(project.naam)}</div><div style="font-size:11px;color:#555">${es(project.type)}</div></div>
+<div style="border:1px solid #ddd;border-radius:6px;padding:10px 13px">
+<div style="font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Opdrachtgever</div>
+<div style="font-weight:700">${es(project.opdrachtgever)||'—'}</div>
+${project.adres?`<div style="font-size:11px">${es(project.adres)}</div>`:''}
+${project.stad?`<div style="font-size:11px">${es(project.stad)}</div>`:''}
+${project.tel?`<div style="font-size:11px">📞 ${es(project.tel)}</div>`:''}
+${project.email?`<div style="font-size:11px">✉ ${es(project.email)}</div>`:''}
+</div>
+<div style="border:1px solid #ddd;border-radius:6px;padding:10px 13px">
+<div style="font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Project</div>
+<div style="font-weight:700">${es(project.naam)}</div>
+<div style="font-size:11px;color:#555">${es(project.type)}</div>
+${project.notities?`<div style="font-size:11px;color:#888;font-style:italic;margin-top:4px">${es(project.notities)}</div>`:''}
+</div>
+</div>
+${project.notities?`<div style="margin-top:12px;padding:10px 13px;border:1px solid #ddd;border-radius:6px;background:#f9f9f9">
+<div style="font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Omschrijving werkzaamheden</div>
+<div style="font-size:12px;color:#333;line-height:1.6">${es(project.notities)}</div>
+</div>`:''}
+</div>`;
+  const voorwaarden=`<div class="card" style="margin-top:14px">
+<div style="background:#2874a6;padding:8px 16px;border-radius:8px 8px 0 0;color:#fff;font-weight:700;font-size:12px">Voorwaarden & Akkoord</div>
+<div style="padding:14px 16px">
+<ul style="font-size:11px;color:#555;line-height:2;padding-left:16px;margin-bottom:16px">
+<li>Betaling: 30% bij opdracht, 40% bij uitvoering, 30% bij oplevering.</li>
+<li>Offerte geldig 30 dagen na dagtekening.</li>
+<li>Exclusief vergunningskosten tenzij anders vermeld.</li>
+<li>Meer- en minderwerk schriftelijk overeengekomen.</li>
+<li>Op al onze werkzaamheden zijn de Algemene Voorwaarden van toepassing.</li>
+</ul>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px">
+<div>
+<div style="font-size:11px;font-weight:700;color:#333;margin-bottom:6px">Akkoord opdrachtgever</div>
+<div style="font-size:10px;color:#888;margin-bottom:50px">Naam: ________________________</div>
+<div style="border-top:1.5px solid #333;padding-top:6px">
+<div style="font-size:10px;color:#888">Handtekening & datum</div>
+</div>
+</div>
+<div>
+<div style="font-size:11px;font-weight:700;color:#333;margin-bottom:6px">Voor ${es(bdrijfNaam)}</div>
+<div style="font-size:10px;color:#888;margin-bottom:50px">Naam: ________________________</div>
+<div style="border-top:1.5px solid #333;padding-top:6px">
+<div style="font-size:10px;color:#888">Handtekening & datum</div>
+</div>
+</div>
+</div>
 </div></div>`;
   return`${hdr}<div class="card no-print"><div class="chdr">📄 Offerte — ${es(project.naam)}</div>
 <div class="cbdy" style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
@@ -1061,7 +1108,8 @@ ${bedrijf.kvk?`<span style="color:rgba(255,255,255,.75);font-size:10px">KvK: ${e
 <tr style="background:var(--gr)"><td colspan="5" style="text-align:right;font-size:11px;color:var(--t2)">BTW ${project.btw}%</td><td class="r" style="font-size:11px;color:var(--t2)">${eu(bt)}</td></tr>
 <tr class="tr"><td colspan="5" style="text-align:right;font-size:13px">TOTAAL INCL. BTW</td><td class="r" style="font-size:14px">${eu(inc)}</td></tr>
 </tfoot></table></div></div>
-<div style="display:flex;justify-content:space-between;gap:8px" class="no-print">
+${voorwaarden}
+<div style="display:flex;justify-content:space-between;gap:8px;margin-top:14px" class="no-print">
 <button class="btn2 bout" onclick="nav(-1)">← Bewerken</button>
 <button class="btn2 bp blg" onclick="window.print()">🖨 PDF opslaan</button>
 </div>`;}
