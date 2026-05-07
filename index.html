@@ -780,7 +780,17 @@ let sb=null, user=null, profiel=null;
 let prijzen={}, scherm=0, alleProj=[], project=np();
 let bedrijf={naam:'Direcht Offerte',straat:'Romeinenweg 47G',stad:'5349AL Oss',tel:'0613033010',email:'info@direchtofferte.nl',kvk:'72144912',btwnr:'NL859003978B01',iban:'',website:'www.direchtofferte.nl',geldigheid:30,bet1:30,bet2:40,bet3:30};
 
-function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept'};}
+function volgendNr(){
+  const jaar=new Date().getFullYear();
+  // Zoek hoogste nummer van dit jaar
+  const nrs=alleProj.map(p=>{
+    const m=p.off_nr?.match(/OFF-\d{4}-(\d+)/);
+    return m?parseInt(m[1]):0;
+  });
+  const volgend=(nrs.length>0?Math.max(...nrs):0)+1;
+  return'OFF-'+jaar+'-'+String(volgend).padStart(3,'0');
+}
+function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:volgendNr(),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept'};}
 
 // ══════ AUTH ══════
 function ltab(t){
@@ -830,10 +840,24 @@ async function doForgot(){
 }
 
 async function doLogout(){
+  syncSt('b','Opslaan...');
+  try{await slaOp();await slaanBedrijf();}catch(_){}
+  if(_autoSaveTimer){clearInterval(_autoSaveTimer);_autoSaveTimer=null;}
   await sb.auth.signOut();
+  user=null;profiel=null;
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app-screen').style.display='none';
   document.body.style.cssText='';
+}
+
+// AUTO-SAVE
+let _autoSaveTimer=null;
+function startAutoSave(){
+  if(_autoSaveTimer)clearInterval(_autoSaveTimer);
+  _autoSaveTimer=setInterval(async()=>{
+    if(!sb||!user)return;
+    try{await slaOp();await slaanBedrijf();syncSt('ok','Auto-opgeslagen ✓');}catch(_){}
+  },30000);
 }
 
 // ══════ APP INIT ══════
@@ -846,6 +870,7 @@ async function onLogin(u){
   prijzen={...defaultPrijzen(),...prijzen};
   scherm=0; render();
   syncSt('ok','Verbonden');
+  startAutoSave();
 }
 
 async function laadProfiel(){
@@ -1248,7 +1273,9 @@ async function maakFactuur(projId){
   project={id:p.id,naam:p.naam,type:p.type||'Renovatie',opdrachtgever:p.opdrachtgever,adres:p.adres,stad:p.stad,tel:p.tel,email:p.email,offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],notities:p.notities,marge:p.marge||15,btw:p.btw||21,items:p.items||{},status:p.status||'concept'};
   
   // Maak factuurnummer
-  const factNr = 'FACT-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0');
+  const jaar=new Date().getFullYear();
+  const factNrs=alleProj.map(p=>{const m=p.off_nr?.match(/OFF-\d{4}-(\d+)/);return m?parseInt(m[1]):0;});
+  const factNr='FACT-'+jaar+'-'+String((factNrs.length>0?Math.max(...factNrs):0)+1).padStart(3,'0');
   const vandaag = new Date().toISOString().split('T')[0];
   const vervaldatum = new Date(Date.now()+30*864e5).toISOString().split('T')[0];
   
