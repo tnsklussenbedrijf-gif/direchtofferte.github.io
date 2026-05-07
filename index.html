@@ -900,7 +900,6 @@ async function doRegister(){
   se('reg-err','');sok('reg-ok','');
   const kvk=document.getElementById('reg-kvk').value.trim();
   const btwNr=document.getElementById('reg-btw').value.trim();
-  const tel=document.getElementById('reg-tel').value.trim();
   if(!fn||!bn||!tel||!kvk||!btwNr||!email||!pw){se('reg-err','Vul alle verplichte velden in (*)');return;}
   if(!/^\d{8}$/.test(kvk)){se('reg-err','KvK-nummer moet 8 cijfers zijn');return;}
   if(!/^NL\d{9}B\d{2}$/i.test(btwNr)){se('reg-err','BTW-nummer ongeldig (bijv. NL123456789B01)');return;}
