@@ -134,8 +134,79 @@ body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-h
 .bnb.on,.bnb:hover{opacity:1}
 @media print{.topbar,.sidebar,.no-print,.mbg,.notif,.bnav,.ov{display:none!important}.main{margin:0;padding:7mm}.card{box-shadow:none;border:.5px solid #ddd;page-break-inside:avoid}.oft th,.oft .tr td,.oft .cr td{-webkit-print-color-adjust:exact;print-color-adjust:exact}.ph{display:block!important}@page{margin:10mm;size:A4}}
 .ph{display:none}
-@media(max-width:768px){.hbg{display:block!important}.tright .tbtn:not(.acc){display:none}.sidebar{transform:translateX(-100%);z-index:200;width:250px}.sidebar.on{transform:translateX(0)}.main{margin-left:0;padding:12px;padding-bottom:68px}.stats{grid-template-columns:1fr 1fr}.g2{grid-template-columns:1fr}.bnav{display:block}.notif{bottom:68px}.blg{width:100%;justify-content:center}}
-@media(max-width:400px){.stats{grid-template-columns:1fr}}
+
+/* ── TABLET (768-1024px) ── */
+@media(max-width:1024px) and (min-width:769px){
+  .sidebar{width:200px}
+  .main{margin-left:200px;padding:16px}
+  .stats{grid-template-columns:1fr 1fr 1fr}
+  .g2{grid-template-columns:1fr 1fr}
+}
+
+/* ── MOBIEL & TABLET (<768px) ── */
+@media(max-width:768px){
+  /* Navigatie */
+  .hbg{display:block!important}
+  .tright .tbtn:not(.acc){display:none}
+  .tname{font-size:11px}
+  .sidebar{transform:translateX(-100%);z-index:200;width:260px}
+  .sidebar.on{transform:translateX(0)}
+  .main{margin-left:0;padding:10px;padding-bottom:72px}
+  .bnav{display:block}
+  .notif{bottom:72px;right:10px;left:10px;text-align:center}
+
+  /* Layout */
+  .stats{grid-template-columns:1fr 1fr}
+  .g2{grid-template-columns:1fr}
+  .g3{grid-template-columns:1fr}
+  .blg{width:100%;justify-content:center}
+  .card{border-radius:8px}
+  .cbdy{padding:12px}
+
+  /* Offerte koptekst op mobiel */
+  .ph div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  .ph div[style*="display:grid"]{grid-template-columns:1fr!important}
+
+  /* Tabellen scrollen op mobiel */
+  .oft{font-size:11px}
+  .oft th, .oft td{padding:5px 6px}
+  .pt{font-size:11px}
+  .pt th, .pt td{padding:4px 6px}
+
+  /* Werkzaamheden items */
+  .wi{flex-wrap:wrap;gap:6px}
+  .wi-naam{min-width:100%;font-size:11px}
+  .wi-ep,.wi-eh,.wi-tot{font-size:10px}
+  .qin{width:44px;font-size:11px}
+  .qb{width:26px;height:26px;font-size:13px}
+
+  /* Login pagina */
+  #login-screen{padding:12px;flex-direction:column;justify-content:flex-start;padding-top:20px}
+  .lbox{max-width:100%}
+
+  /* Abonnement kaarten op mobiel */
+  #login-screen > div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important}
+  #login-screen > div[style*="max-width:500px"]{max-width:100%!important}
+
+  /* Knoppen onderaan offerte */
+  .no-print div[style*="display:flex"]{flex-direction:column;gap:6px}
+  .no-print div[style*="justify-content:space-between"]{flex-direction:column!important}
+  .no-print .btn2{width:100%;justify-content:center}
+
+  /* Modal */
+  .modal{width:100%!important;max-width:100%!important;border-radius:10px 10px 0 0;position:fixed;bottom:0;top:auto;max-height:85vh}
+}
+
+/* ── KLEINE TELEFOON (<400px) ── */
+@media(max-width:400px){
+  .stats{grid-template-columns:1fr}
+  .main{padding:8px;padding-bottom:72px}
+  .topbar img{height:32px}
+  .tname{font-size:10px}
+  .fg input,.fg select,.fg textarea{font-size:13px;padding:8px 10px}
+  .btn,.btn2{font-size:13px}
+  .cbdy{padding:10px}
+}
 </style>
 </head>
 <body>
@@ -184,9 +255,9 @@ body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-h
   </div>
 
   <!-- Abonnement sectie -->
-  <div style="width:100%;max-width:500px;margin-top:24px">
+  <div style="width:100%;max-width:500px;margin-top:24px" id="abo-sectie">
     <div style="text-align:center;color:rgba(255,255,255,.8);font-size:13px;font-weight:600;margin-bottom:14px;letter-spacing:1px;text-transform:uppercase">Kies jouw abonnement</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px" id="abo-grid">
       <!-- Maandelijks -->
       <div style="background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:12px;padding:18px;text-align:center;position:relative">
         <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#1e8449;color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:10px;white-space:nowrap">1E MAAND GRATIS</div>
@@ -296,6 +367,16 @@ body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-h
 <div class="notif" id="notif"></div>
 
 <script>
+// ══════ RESPONSIVE ══════
+function fixMobileGrid(){
+  const grid=document.getElementById('abo-grid');
+  if(grid){
+    grid.style.gridTemplateColumns=window.innerWidth<500?'1fr':'1fr 1fr';
+  }
+}
+window.addEventListener('resize',fixMobileGrid);
+window.addEventListener('load',fixMobileGrid);
+
 // ══════ DATA ══════
 const WERKZAAMHEDEN = {
 
