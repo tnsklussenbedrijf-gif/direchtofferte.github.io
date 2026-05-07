@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Direcht Offerte — Bouw Software</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --b:#1a3c5e;--b2:#2874a6;--bl:#d6e4f0;--bll:#eef5fb;
+  --o:#e67e22;--ol:#fdebd0;--g:#1e8449;--gl:#d5f5e3;
+  --r:#c0392b;--rl:#fadbd8;--gr:#f4f6f7;--gr2:#e5e8ea;
+  --t:#2c3e50;--t2:#566573;--t3:#95a5a6;
+  --sh:0 2px 12px rgba(0,0,0,.10);--sh2:0 8px 32px rgba(0,0,0,.18);
+  --rad:10px;--r2:6px;
+}
+body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-height:100vh}
+
+/* ── LOGIN ── */
+#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a3c5e 0%,#2874a6 60%,#1a3c5e 100%);padding:16px}
+.lbox{background:#fff;border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:var(--sh2)}
+.ltop{background:#1a3c5e;padding:22px;text-align:center}
+.ltop img{height:72px}
+.lbody{padding:22px}
+.tabs{display:flex;border-bottom:2px solid var(--gr2);margin-bottom:18px}
+.tab{flex:1;padding:10px;text-align:center;cursor:pointer;font-size:13px;font-weight:600;color:var(--t3);border-bottom:3px solid transparent;margin-bottom:-2px;transition:.15s}
+.tab.on{color:var(--b);border-bottom-color:var(--b)}
+.view{display:none}.view.on{display:block}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
+.fg input,.fg select,.fg textarea{width:100%;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:10px 12px;font-size:13px;font-family:inherit;color:var(--t);transition:.15s}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--b);box-shadow:0 0 0 3px var(--bll)}
+.fg textarea{resize:vertical;min-height:60px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.lbtn{width:100%;padding:12px;background:var(--b);color:#fff;border:none;border-radius:var(--r2);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;margin-top:4px}
+.lbtn:hover{background:#152f4a}
+.lbtn.o{background:var(--o)}.lbtn.o:hover{background:#ca6f1e}
+.err{background:var(--rl);border-left:4px solid var(--r);color:var(--r);padding:9px 12px;border-radius:var(--r2);font-size:13px;margin-bottom:10px;display:none}
+.ok{background:var(--gl);border-left:4px solid var(--g);color:var(--g);padding:9px 12px;border-radius:var(--r2);font-size:13px;margin-bottom:10px;display:none}
+.lnk{text-align:center;font-size:13px;color:var(--t2);margin-top:10px}
+.lnk a{color:var(--b);cursor:pointer;font-weight:600}
+.lcontact{margin-top:20px;text-align:center;color:rgba(255,255,255,.6);font-size:12px;line-height:1.8}
+.lcontact a{color:rgba(255,255,255,.85);text-decoration:none;font-weight:600}
+.lcontact a:hover{color:#fff}
+
+/* ── APP ── */
+#app-screen{display:none;background:var(--gr);min-height:100vh}
+.topbar{background:var(--b);display:flex;align-items:center;padding:0 16px;height:54px;position:fixed;top:0;left:0;right:0;z-index:1000;box-shadow:var(--sh2)}
+.topbar img{height:38px;margin-right:8px}
+.tname{font-size:13px;font-weight:700;color:#fff;line-height:1.2}
+.tsub{font-size:9px;color:rgba(255,255,255,.6);letter-spacing:.5px}
+.tright{margin-left:auto;display:flex;align-items:center;gap:8px}
+.tbtn{background:rgba(255,255,255,.12);border:none;color:#fff;padding:7px 12px;border-radius:var(--r2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
+.tbtn:hover{background:rgba(255,255,255,.22)}
+.tbtn.acc{background:var(--o)}.tbtn.acc:hover{background:#ca6f1e}
+.hbg{display:none;background:none;border:none;cursor:pointer;padding:6px}
+.hbg span{display:block;width:22px;height:2px;background:#fff;margin:5px 0;border-radius:2px}
+.sidebar{position:fixed;left:0;top:54px;bottom:0;width:226px;background:#fff;border-right:1px solid var(--gr2);overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:transform .25s}
+.sp{padding:10px 14px;background:var(--bll);border-bottom:1px solid var(--gr2)}
+.sp-naam{font-weight:700;font-size:12px;color:var(--b);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-sub{font-size:10px;color:var(--t2);margin-top:1px}
+.ns{padding:7px 14px 2px;font-size:9px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
+.ni{display:flex;align-items:center;gap:8px;padding:9px 14px;cursor:pointer;font-size:12px;color:var(--t2);border-left:3px solid transparent;transition:.15s;user-select:none}
+.ni:hover{background:var(--gr);color:var(--t)}
+.ni.on{background:var(--bll);color:var(--b);border-left-color:var(--b);font-weight:600}
+.ni .ico{font-size:14px;min-width:20px}
+.sbot{padding:10px 12px;border-top:1px solid var(--gr2);display:flex;flex-direction:column;gap:6px}
+.sync{font-size:10px;color:var(--t3);text-align:center;display:flex;align-items:center;justify-content:center;gap:4px}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--g)}
+.sdot.b{background:var(--o);animation:pulse 1s infinite}
+.sdot.e{background:var(--r)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.main{margin-left:226px;margin-top:54px;padding:20px;min-height:calc(100vh - 54px)}
+.card{background:#fff;border-radius:var(--rad);box-shadow:var(--sh);margin-bottom:14px}
+.chdr{padding:11px 18px;background:var(--b);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px;border-radius:var(--rad) var(--rad) 0 0}
+.chdr.o{background:var(--o)}.chdr.g{background:var(--g)}.chdr.gr{background:var(--t2)}.chdr.p{background:#7d3c98}
+.cbdy{padding:18px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.stat{background:#fff;border-radius:var(--rad);padding:12px 14px;box-shadow:var(--sh);border-left:4px solid var(--b)}
+.sl{font-size:10px;color:var(--t2);font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.sv{font-size:18px;font-weight:700;color:var(--b);margin-top:2px}
+.pli{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid var(--gr2);border-radius:var(--r2);margin-bottom:6px;cursor:pointer;transition:.15s;background:#fff}
+.pli:hover{border-color:var(--b);background:var(--bll)}
+.pli-ico{width:34px;height:34px;background:var(--b);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.pli-info{flex:1}
+.pli-naam{font-weight:700;font-size:12px}
+.pli-sub{font-size:10px;color:var(--t2)}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;text-transform:uppercase}
+.bg{background:var(--gl);color:var(--g)}.bo{background:var(--ol);color:var(--o)}.bb{background:var(--bll);color:var(--b)}.br2{background:var(--rl);color:var(--r)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:var(--r2);font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:.15s}
+.bp{background:var(--b);color:#fff}.bp:hover{background:#152f4a}
+.bo2{background:var(--o);color:#fff}.bo2:hover{background:#ca6f1e}
+.bg2{background:var(--g);color:#fff}.bg2:hover{background:#145a32}
+.bout{background:#fff;color:var(--b);border:1.5px solid var(--b)}.bout:hover{background:var(--bll)}
+.br{background:var(--r);color:#fff}.br:hover{background:#a93226}
+.bsm{padding:5px 10px;font-size:11px}
+.blg{padding:11px 22px;font-size:14px}
+.al{padding:9px 13px;border-radius:var(--r2);font-size:12px;margin-bottom:10px}
+.ali{background:var(--bll);border-left:4px solid var(--b);color:var(--b)}
+.alo{background:var(--ol);border-left:4px solid var(--o);color:#a04000}
+.alg{background:var(--gl);border-left:4px solid var(--g);color:var(--g)}
+.wi{display:flex;align-items:center;gap:8px;padding:8px 11px;border:1px solid var(--gr2);border-radius:var(--r2);margin-bottom:5px;background:#fff;flex-wrap:wrap}
+.wi-naam{flex:1;font-size:12px;font-weight:600;min-width:120px}
+.wi-ep{font-size:10px;color:var(--t3);white-space:nowrap}
+.wi-eh{font-size:10px;color:var(--t3);min-width:30px;text-align:center}
+.qb{width:28px;height:28px;border:1.5px solid var(--gr2);border-radius:50%;background:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
+.qb:hover{background:var(--b);color:#fff;border-color:var(--b)}
+.qin{width:52px;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:4px 6px;font-size:12px;text-align:center;font-family:inherit}
+.qin:focus{outline:none;border-color:var(--b)}
+.wi-tot{min-width:72px;text-align:right;font-weight:700;font-size:12px;color:var(--b)}
+.wsec{font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin:10px 0 5px;padding:5px 11px;background:var(--gr);border-radius:var(--r2)}
+.rr{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rr input[type=range]{flex:1;accent-color:var(--b)}
+.rv{font-size:16px;font-weight:700;color:var(--b);min-width:48px;text-align:right}
+.oft{width:100%;border-collapse:collapse;font-size:12px}
+.oft th{background:var(--b);color:#fff;padding:8px 10px;text-align:left;font-weight:600;font-size:11px}
+.oft th.r{text-align:right}.oft td{padding:7px 10px;border-bottom:1px solid var(--gr2)}
+.oft tr:nth-child(even) td{background:var(--gr)}
+.oft .cr td{background:var(--bll);color:var(--b);font-weight:700;font-size:10px;text-transform:uppercase}
+.oft .sr td{background:var(--gr2);font-weight:700}
+.oft .tr td{background:var(--b);color:#fff;font-weight:700;font-size:14px}
+.oft td.r{text-align:right}
+.pt{width:100%;border-collapse:collapse;font-size:12px}
+.pt th{background:var(--b);color:#fff;padding:7px 10px;font-size:11px;font-weight:600}
+.pt th.r{text-align:right}.pt td{padding:5px 10px;border-bottom:1px solid var(--gr2);vertical-align:middle}
+.pt tr:nth-child(even) td{background:var(--gr)}
+.pt .cr td{background:var(--bll);color:var(--b);font-weight:700;font-size:10px;text-transform:uppercase}
+.pin{width:76px;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:4px 7px;font-size:12px;text-align:right;font-family:inherit}
+.pin:focus{outline:none;border-color:var(--o)}
+.mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center}
+.mbg.on{display:flex}
+.modal{background:#fff;border-radius:var(--rad);box-shadow:var(--sh2);width:540px;max-width:96vw;max-height:90vh;overflow:hidden;display:flex;flex-direction:column}
+.mhdr{background:var(--b);color:#fff;padding:13px 18px;font-weight:700;flex-shrink:0}
+.mbdy{padding:18px;overflow-y:auto;flex:1}
+.mftr{padding:11px 18px;border-top:1px solid var(--gr2);display:flex;justify-content:flex-end;gap:7px;flex-shrink:0}
+.notif{position:fixed;bottom:22px;right:22px;background:var(--g);color:#fff;padding:11px 18px;border-radius:var(--rad);box-shadow:var(--sh2);font-size:13px;font-weight:600;z-index:3000;transform:translateX(130%);transition:.3s}
+.notif.on{transform:translateX(0)}
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:99}
+.ov.on{display:block}
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--b);z-index:500;border-top:2px solid var(--b2)}
+.bnb{background:none;border:none;color:#fff;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;font-weight:600;cursor:pointer;padding:5px 8px;opacity:.65;transition:.15s;font-family:inherit}
+.bnb.on,.bnb:hover{opacity:1}
+.adm-row{display:flex;align-items:center;gap:10px;padding:10px 13px;border:1px solid var(--gr2);border-radius:var(--r2);margin-bottom:6px;background:#fff;flex-wrap:wrap}
+.adm-av{width:34px;height:34px;background:var(--b);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0}
+@media print{
+  .topbar,.sidebar,.no-print,.mbg,.notif,.bnav,.ov{display:none!important}
+  .main{margin:0;padding:7mm}
+  .card{box-shadow:none;border:.5px solid #ddd;page-break-inside:avoid}
+  .oft th,.oft .tr td,.oft .cr td{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .ph{display:block!important}
+  @page{margin:10mm;size:A4}
+}
+.ph{display:none}
+@media(max-width:768px){
+  .hbg{display:block!important}
+  .tright .tbtn:not(.acc){display:none}
+  .sidebar{transform:translateX(-100%);z-index:200;width:252px}
+  .sidebar.on{transform:translateX(0)}
+  .main{margin-left:0;padding:12px;padding-bottom:68px}
+  .stats{grid-template-columns:1fr 1fr}
+  .g2,.g3{grid-template-columns:1fr}
+  .bnav{display:block}
+  .notif{bottom:68px}
+  .blg{width:100%;justify-content:center}
+}
+@media(max-width:400px){.stats{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ══════ LOGIN SCHERM ══════ -->
+<div id="login-screen">
+  <div class="lbox">
+    <div class="ltop">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiMxYTNjNWUiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI4NSIgcng9IjYiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xMikiLz4KICA8cmVjdCB4PSIzMiIgeT0iNDAiIHdpZHRoPSIzNiIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iI2U2N2UyMiIvPgogIDxyZWN0IHg9IjMyIiB5PSI1MSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiLz4KICA8cmVjdCB4PSIzMiIgeT0iNTkiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzIiByeD0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxyZWN0IHg9IjMyIiB5PSI2NyIgd2lkdGg9IjM4IiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzIiIHk9Ijc1IiB3aWR0aD0iMzAiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8Y2lyY2xlIGN4PSI2NiIgY3k9IjEwMCIgcj0iMTMiIGZpbGw9IiNlNjdlMjIiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI1OSwxMDAgNjQsMTA2IDc0LDkzIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHJlY3QgeD0iOTgiIHk9IjIwIiB3aWR0aD0iMiIgaGVpZ2h0PSIxMjAiIHJ4PSIxIiBmaWxsPSIjZTY3ZTIyIiBvcGFjaXR5PSIwLjUiLz4KICA8dGV4dCB4PSIxMTQiIHk9Ijg4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+RGlyZWNodDwvdGV4dD4KICA8dGV4dCB4PSIxMTQiIHk9IjEzOCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlNjdlMjIiPk9mZmVydGU8L3RleHQ+Cjwvc3ZnPg==" alt="Direcht Offerte">
+    </div>
+    <div class="lbody">
+      <div class="tabs">
+        <div class="tab on" onclick="ltab('in')">Inloggen</div>
+        <div class="tab" onclick="ltab('reg')">Registreren</div>
+      </div>
+
+      <!-- INLOGGEN -->
+      <div class="view on" id="v-in">
+        <div class="err" id="in-err"></div>
+        <div class="ok" id="in-ok"></div>
+        <div class="fg"><label>E-mailadres</label><input type="email" id="in-email" placeholder="jouw@email.nl" autocomplete="email"></div>
+        <div class="fg"><label>Wachtwoord</label><input type="password" id="in-pw" placeholder="Wachtwoord" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="lbtn" onclick="doLogin()">Inloggen →</button>
+        <div class="lnk"><a onclick="ltab('fp')">Wachtwoord vergeten?</a></div>
+      </div>
+
+      <!-- REGISTREREN -->
+      <div class="view" id="v-reg">
+        <div class="err" id="reg-err"></div>
+        <div class="ok" id="reg-ok"></div>
+        <div class="g2">
+          <div class="fg"><label>Voornaam *</label><input type="text" id="reg-fn" placeholder="Jan"></div>
+          <div class="fg"><label>Achternaam *</label><input type="text" id="reg-ln" placeholder="Jansen"></div>
+        </div>
+        <div class="fg"><label>Bedrijfsnaam *</label><input type="text" id="reg-bn" placeholder="Jouw Bouwbedrijf BV"></div>
+        <div class="fg"><label>Telefoon *</label><input type="tel" id="reg-tel" placeholder="06 12345678"></div>
+        <div class="g2">
+          <div class="fg">
+            <label>KvK-nummer *</label>
+            <input type="text" id="reg-kvk" placeholder="12345678" maxlength="8" oninput="checkKvK(this)">
+            <div id="kvk-status" style="font-size:10px;margin-top:3px"></div>
+          </div>
+          <div class="fg">
+            <label>BTW-nummer *</label>
+            <input type="text" id="reg-btw" placeholder="NL123456789B01" oninput="checkBTW(this)">
+            <div id="btw-status" style="font-size:10px;margin-top:3px"></div>
+          </div>
+        </div>
+        <div class="fg"><label>Straat + huisnummer</label><input type="text" id="reg-adres" placeholder="Hoofdstraat 1"></div>
+        <div class="fg"><label>Postcode + Stad</label><input type="text" id="reg-stad" placeholder="1234 AB Amsterdam"></div>
+        <div class="fg"><label>E-mailadres *</label><input type="email" id="reg-email" placeholder="jouw@email.nl"></div>
+        <div class="fg"><label>Wachtwoord (min. 6 tekens) *</label><input type="password" id="reg-pw" placeholder="Wachtwoord"></div>
+        <button class="lbtn o" onclick="doRegister()">Account aanmaken →</button>
+        <div class="lnk"><a onclick="ltab('in')">Al een account? Inloggen</a></div>
+      </div>
+
+      <!-- WACHTWOORD VERGETEN -->
+      <div class="view" id="v-fp">
+        <div class="err" id="fp-err"></div>
+        <div class="ok" id="fp-ok"></div>
+        <p style="font-size:13px;color:var(--t2);margin-bottom:12px">Vul je e-mailadres in. Je ontvangt een herstelmail.</p>
+        <div class="fg"><label>E-mailadres</label><input type="email" id="fp-email" placeholder="jouw@email.nl"></div>
+        <button class="lbtn" onclick="doForgot()">Herstelmail versturen</button>
+        <div class="lnk"><a onclick="ltab('in')">← Terug naar inloggen</a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Prijzen sectie -->
+  <div style="width:100%;max-width:500px;margin-top:24px">
+    <div style="text-align:center;color:rgba(255,255,255,.8);font-size:13px;font-weight:600;margin-bottom:14px;letter-spacing:1px;text-transform:uppercase">Kies jouw abonnement</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <!-- Maandelijks -->
+      <div style="background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:12px;padding:18px;text-align:center;transition:.15s" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">
+        <div style="font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Maandelijks</div>
+        <div style="font-size:32px;font-weight:700;color:#fff;line-height:1">€29,90</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">per maand</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">excl. BTW</div>
+        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ Onbeperkt offertes</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ Cloud opslag</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ PDF & Facturen</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7)">✓ Altijd opzegbaar</div>
+        </div>
+        <button onclick="window.location.href='mailto:info@direchtofferte.nl?subject=Aanvraag%20maandelijks%20abonnement%20Direcht%20Offerte&body=Goedendag%2C%0A%0AIk%20wil%20graag%20een%20maandelijks%20abonnement%20aanvragen%20voor%20Direcht%20Offerte%20(%E2%82%AC29%2C90%20per%20maand%20excl.%20BTW).%0A%0ANaam%3A%20%0ABedrijfsnaam%3A%20%0ATelefoon%3A%20%0AKVK-nummer%3A%20%0ABTW-nummer%3A%20%0AEmail%3A%20%0A%0AMet%20vriendelijke%20groet'" style="margin-top:14px;width:100%;padding:9px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s" onmouseover="this.style.background='rgba(255,255,255,.25)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">Abonnement aanvragen →</button>
+      </div>
+      <!-- Jaarlijks -->
+      <div style="background:rgba(230,126,34,.15);border:2px solid #e67e22;border-radius:12px;padding:18px;text-align:center;position:relative;transition:.15s" onmouseover="this.style.background='rgba(230,126,34,.25)'" onmouseout="this.style.background='rgba(230,126,34,.15)'">
+        <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#e67e22;color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:10px;white-space:nowrap">BESTE DEAL</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Jaarlijks</div>
+        <div style="font-size:32px;font-weight:700;color:#e67e22;line-height:1">€330</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">eenmalig per jaar</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">excl. BTW · bespaar €28,80</div>
+        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
+          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ Onbeperkt offertes</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ Cloud opslag</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ PDF & Facturen</div>
+          <div style="font-size:11px;color:rgba(255,255,255,.7)">✓ 2 maanden gratis</div>
+        </div>
+        <button onclick="window.location.href='mailto:info@direchtofferte.nl?subject=Aanvraag%20jaarlijks%20abonnement%20Direcht%20Offerte&body=Goedendag%2C%0A%0AIk%20wil%20graag%20een%20jaarlijks%20abonnement%20aanvragen%20voor%20Direcht%20Offerte%20(%E2%82%AC330%20per%20jaar%20excl.%20BTW).%0A%0ANaam%3A%20%0ABedrijfsnaam%3A%20%0ATelefoon%3A%20%0AKVK-nummer%3A%20%0ABTW-nummer%3A%20%0AEmail%3A%20%0A%0AMet%20vriendelijke%20groet'" style="margin-top:14px;width:100%;padding:9px;background:#e67e22;border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s" onmouseover="this.style.background='#ca6f1e'" onmouseout="this.style.background='#e67e22'">Abonnement aanvragen →</button>
+      </div>
+    </div>
+    <div style="text-align:center;color:rgba(255,255,255,.4);font-size:10px;margin-top:10px">Alle prijzen zijn excl. 21% BTW · Betaling via factuur na registratie</div>
+  </div>
+
+  <!-- Contact info onder login box -->
+  <div class="lcontact">
+    Vragen? Neem contact op:<br>
+    <a href="mailto:info@direchtofferte.nl">📧 info@direchtofferte.nl</a><br>
+    <span style="font-size:11px;opacity:.7;margin-top:4px;display:block">© 2026 Direcht Offerte — Bouw Software Platform</span>
+  </div>
+</div>
+
+<!-- ══════ APP SCHERM ══════ -->
+<div id="app-screen">
+  <div class="topbar">
+    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiMxYTNjNWUiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI4NSIgcng9IjYiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xMikiLz4KICA8cmVjdCB4PSIzMiIgeT0iNDAiIHdpZHRoPSIzNiIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iI2U2N2UyMiIvPgogIDxyZWN0IHg9IjMyIiB5PSI1MSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiLz4KICA8cmVjdCB4PSIzMiIgeT0iNTkiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzIiByeD0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxyZWN0IHg9IjMyIiB5PSI2NyIgd2lkdGg9IjM4IiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzIiIHk9Ijc1IiB3aWR0aD0iMzAiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8Y2lyY2xlIGN4PSI2NiIgY3k9IjEwMCIgcj0iMTMiIGZpbGw9IiNlNjdlMjIiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI1OSwxMDAgNjQsMTA2IDc0LDkzIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHJlY3QgeD0iOTgiIHk9IjIwIiB3aWR0aD0iMiIgaGVpZ2h0PSIxMjAiIHJ4PSIxIiBmaWxsPSIjZTY3ZTIyIiBvcGFjaXR5PSIwLjUiLz4KICA8dGV4dCB4PSIxMTQiIHk9Ijg4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+RGlyZWNodDwvdGV4dD4KICA8dGV4dCB4PSIxMTQiIHk9IjEzOCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlNjdlMjIiPk9mZmVydGU8L3RleHQ+Cjwvc3ZnPg==" alt="Direcht Offerte">
+    <div class="tname">Direcht Offerte<div class="tsub">Bouw Software</div></div>
+    <div class="tright">
+      <button class="hbg" onclick="toggleSB()"><span></span><span></span><span></span></button>
+      <div id="user-chip" style="background:rgba(255,255,255,.12);border-radius:20px;padding:4px 12px;font-size:11px;color:#fff;font-weight:600;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></div>
+      <button class="tbtn acc" onclick="doLogout()">Uitloggen</button>
+    </div>
+  </div>
+
+  <div class="ov" id="ov" onclick="toggleSB()"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sp">
+      <div class="sp-naam" id="sp-naam">Laden...</div>
+      <div class="sp-sub" id="sp-sub">—</div>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:6px 0">
+      <div class="ns">Dashboard</div>
+      <div class="ni" onclick="ga(0)" id="n0"><span class="ico">🏠</span>Dashboard</div>
+      <div class="ns">Project</div>
+      <div class="ni" onclick="ga(1)" id="n1"><span class="ico">📋</span>Projectgegevens</div>
+      <div class="ns">Werkzaamheden</div>
+      <div class="ni" onclick="ga(2)" id="n2"><span class="ico">🏗</span>Grond & Fundering</div>
+      <div class="ni" onclick="ga(3)" id="n3"><span class="ico">🧱</span>Metselwerk & Beton</div>
+      <div class="ni" onclick="ga(4)" id="n4"><span class="ico">🏠</span>Dak & Dakbedekking</div>
+      <div class="ni" onclick="ga(5)" id="n5"><span class="ico">🚪</span>Kozijnen & Deuren</div>
+      <div class="ni" onclick="ga(6)" id="n6"><span class="ico">🪚</span>Timmerwerk</div>
+      <div class="ni" onclick="ga(7)" id="n7"><span class="ico">🏛</span>Gevel & Isolatie</div>
+      <div class="ni" onclick="ga(8)" id="n8"><span class="ico">⚡</span>Elektra</div>
+      <div class="ni" onclick="ga(9)" id="n9"><span class="ico">🔧</span>Loodgieter & CV</div>
+      <div class="ni" onclick="ga(10)" id="n10"><span class="ico">🎨</span>Stukadoor & Schilder</div>
+      <div class="ni" onclick="ga(11)" id="n11"><span class="ico">🚿</span>Badkamer & Toilet</div>
+      <div class="ni" onclick="ga(12)" id="n12"><span class="ico">🍳</span>Keuken</div>
+      <div class="ni" onclick="ga(13)" id="n13"><span class="ico">🪟</span>Vloeren & Betegeling</div>
+      <div class="ni" onclick="ga(14)" id="n14"><span class="ico">🌿</span>Tuin & Buitenruimte</div>
+      <div class="ni" onclick="ga(15)" id="n15"><span class="ico">🔨</span>Sloopwerk & Overig</div>
+      <div class="ni" onclick="ga(16)" id="n16"><span class="ico">🗑</span>Afvalcontainer</div>
+      <div class="ns">Resultaat</div>
+      <div class="ni" onclick="ga(17)" id="n17"><span class="ico">💰</span>Prijsbeheer</div>
+      <div class="ni" onclick="ga(18)" id="n18"><span class="ico">📄</span>Offerte maken</div>
+      <div class="ni" onclick="ga(19)" id="n19"><span class="ico">📁</span>Offertes archief</div>
+      <div class="ns">Mijn account</div>
+      <div class="ni" onclick="ga(20)" id="n20"><span class="ico">🏢</span>Mijn bedrijf</div>
+      <div class="ni" onclick="ga(21)" id="n21"><span class="ico">👤</span>Mijn gegevens</div>
+      <div class="ns" id="admin-sec" style="display:none">Beheer</div>
+      <div class="ni" onclick="ga(22)" id="n22" style="display:none"><span class="ico">👥</span>Gebruikersbeheer</div>
+    </div>
+    <div class="sbot">
+      <div class="sync"><div class="sdot" id="sdot"></div><span id="stxt">Verbonden</span></div>
+      <button class="btn bg2" style="width:100%;justify-content:center;font-size:12px" onclick="slaOp()">☁ Opslaan</button>
+      <button class="btn bp" style="width:100%;justify-content:center;font-size:12px" onclick="nieuwProj()">+ Nieuw project</button>
+    </div>
+  </div>
+
+  <div class="main" id="main"><div style="text-align:center;padding:60px;color:var(--t2)">Laden...</div></div>
+
+  <div class="bnav">
+    <div style="display:flex;justify-content:space-around;align-items:center;height:54px">
+      <button onclick="ga(0)" class="bnb" id="b0"><span style="font-size:18px">🏠</span>Dashboard</button>
+      <button onclick="ga(1)" class="bnb" id="b1"><span style="font-size:18px">📋</span>Project</button>
+      <button onclick="ga(17)" class="bnb" id="b17"><span style="font-size:18px">💰</span>Prijzen</button>
+      <button onclick="ga(18)" class="bnb" id="b18"><span style="font-size:18px">📄</span>Offerte</button>
+      <button onclick="ga(19)" class="bnb" id="b19"><span style="font-size:18px">📁</span>Archief</button>
+    </div>
+  </div>
+</div>
+
+<div class="mbg" id="mbg" onclick="if(event.target===this)sluitM()">
+  <div class="modal">
+    <div class="mhdr" id="mhdr"></div>
+    <div class="mbdy" id="mbdy"></div>
+    <div class="mftr" id="mftr"><button class="btn bout" onclick="sluitM()">Sluiten</button></div>
+  </div>
+</div>
+<div class="notif" id="notif"></div>
+
+<script>
+// ══════ DATA ══════
+const WERKZAAMHEDEN = {
+
+  grond: {
+    titel: '🏗 Grond & Fundering',
+    secties: [
+      { naam: 'Grondwerk', items: [
+        {id:'gw01',naam:'Ontgraven en afvoeren',eenh:'m³',prijs:42},
+        {id:'gw02',naam:'Aanvullen en verdichten',eenh:'m³',prijs:28},
+        {id:'gw03',naam:'Grondwaterbemaling',eenh:'dag',prijs:380},
+        {id:'gw04',naam:'Damwand plaatsen (staal)',eenh:'m²',prijs:95},
+        {id:'gw05',naam:'Heistwerk (palen inkopen + heien)',eenh:'paal',prijs:220},
+        {id:'gw06',naam:'Zandbed / zandaanvulling',eenh:'m³',prijs:35},
+      ]},
+      { naam: 'Fundering', items: [
+        {id:'fu01',naam:'Strokenfundering gewapend beton',eenh:'m¹',prijs:55},
+        {id:'fu02',naam:'Vloeiplaat / raft fundering',eenh:'m²',prijs:58},
+        {id:'fu03',naam:'Paalfundering met poeren',eenh:'poer',prijs:110},
+        {id:'fu04',naam:'Betonvloer begane grond 150mm',eenh:'m²',prijs:68},
+        {id:'fu05',naam:'Kruipruimte + ventilatie',eenh:'m²',prijs:45},
+        {id:'fu06',naam:'Funderingsherstel / injectie',eenh:'m¹',prijs:185},
+      ]},
+    ]
+  },
+
+  metselwerk: {
+    titel: '🧱 Metselwerk & Beton',
+    secties: [
+      { naam: 'Metselwerk', items: [
+        {id:'ms01',naam:'Spouwmuur 2-steens + isolatie',eenh:'m²',prijs:185},
+        {id:'ms02',naam:'Enkelvoudig metselwerk 1 steen',eenh:'m²',prijs:88},
+        {id:'ms03',naam:'Halfsteens muur (scheidingswand)',eenh:'m²',prijs:62},
+        {id:'ms04',naam:'Schoorsteenkanaal metselen',eenh:'m¹',prijs:145},
+        {id:'ms05',naam:'Lateibalk plaatsen',eenh:'stuk',prijs:220},
+        {id:'ms06',naam:'Metselwerk gevel herstellen',eenh:'m²',prijs:95},
+        {id:'ms07',naam:'Voegen (buitenkant)',eenh:'m²',prijs:28},
+        {id:'ms08',naam:'Voegen (binnenkant)',eenh:'m²',prijs:22},
+      ]},
+      { naam: 'Betonwerk', items: [
+        {id:'bt01',naam:'Gewapend beton storten (wand)',eenh:'m³',prijs:380},
+        {id:'bt02',naam:'Gewapend beton storten (vloer)',eenh:'m³',prijs:320},
+        {id:'bt03',naam:'Betonnen kolom / pilaar',eenh:'stuk',prijs:450},
+        {id:'bt04',naam:'Ringbalk betonwerk',eenh:'m¹',prijs:95},
+        {id:'bt05',naam:'Cellenbetonblokken wand',eenh:'m²',prijs:72},
+      ]},
+    ]
+  },
+
+  dak: {
+    titel: '🏠 Dak & Dakbedekking',
+    secties: [
+      { naam: 'Dakconstructie', items: [
+        {id:'dk01',naam:'Dakspanten / kap constructie',eenh:'m²',prijs:78},
+        {id:'dk02',naam:'Dakbeschot OSB / rabatdelen',eenh:'m²',prijs:38},
+        {id:'dk03',naam:'Gordingen + balken',eenh:'m¹',prijs:28},
+        {id:'dk04',naam:'Prefab kapspanten plaatsen',eenh:'stuk',prijs:185},
+      ]},
+      { naam: 'Dakbedekking', items: [
+        {id:'dk05',naam:'Plat dak EPDM rubber',eenh:'m²',prijs:88},
+        {id:'dk06',naam:'Plat dak bitumen 2-laags',eenh:'m²',prijs:72},
+        {id:'dk07',naam:'Extensief groen dak (sedum)',eenh:'m²',prijs:128},
+        {id:'dk08',naam:'Keramische dakpannen',eenh:'m²',prijs:82},
+        {id:'dk09',naam:'Betonnen dakpannen',eenh:'m²',prijs:68},
+        {id:'dk10',naam:'Bitumineuze dakpannen',eenh:'m²',prijs:55},
+        {id:'dk11',naam:'Metalen dakplaten (staal/zink)',eenh:'m²',prijs:145},
+        {id:'dk12',naam:'Dakshingles',eenh:'m²',prijs:48},
+      ]},
+      { naam: 'Dakaccessoires', items: [
+        {id:'dk13',naam:'Dakraam Velux / FAKRO',eenh:'stuk',prijs:880},
+        {id:'dk14',naam:'Lichtstraat aluminium',eenh:'stuk',prijs:1650},
+        {id:'dk15',naam:'Dakgoot PVC (incl. beugels)',eenh:'m¹',prijs:32},
+        {id:'dk16',naam:'Dakgoot zink',eenh:'m¹',prijs:68},
+        {id:'dk17',naam:'Regenpijp PVC',eenh:'m¹',prijs:22},
+        {id:'dk18',naam:'Regenpijp zink',eenh:'m¹',prijs:48},
+        {id:'dk19',naam:'Dakisolatie (PIR / PUR)',eenh:'m²',prijs:38},
+        {id:'dk20',naam:'Dorpel / loodwerk dakdoorvoer',eenh:'stuk',prijs:145},
+      ]},
+    ]
+  },
+
+  kozijnen: {
+    titel: '🚪 Kozijnen, Deuren & Ramen',
+    secties: [
+      { naam: 'Kozijnen', items: [
+        {id:'kz01',naam:'Kunststof kozijn + HR++ glas',eenh:'stuk',prijs:465},
+        {id:'kz02',naam:'Aluminium kozijn + HR++ glas',eenh:'stuk',prijs:680},
+        {id:'kz03',naam:'Houten kozijn + HR++ glas',eenh:'stuk',prijs:595},
+        {id:'kz04',naam:'Stalen kozijn (Staal-look)',eenh:'stuk',prijs:1250},
+        {id:'kz05',naam:'Dakraamkozijn (opstand)',eenh:'stuk',prijs:320},
+      ]},
+      { naam: 'Deuren buiten', items: [
+        {id:'dr01',naam:'Voordeur + kozijn (PVC)',eenh:'stuk',prijs:1450},
+        {id:'dr02',naam:'Voordeur + kozijn (hout)',eenh:'stuk',prijs:2200},
+        {id:'dr03',naam:'Voordeur + kozijn (alu)',eenh:'stuk',prijs:1950},
+        {id:'dr04',naam:'Dubbele voordeur / pui',eenh:'stuk',prijs:3200},
+        {id:'dr05',naam:'Achterdeur enkele vleugel',eenh:'stuk',prijs:680},
+        {id:'dr06',naam:'Dubbele openslaande deuren',eenh:'stuk',prijs:1250},
+        {id:'dr07',naam:'Schuifpui aluminium',eenh:'stuk',prijs:2250},
+        {id:'dr08',naam:'Vouwwand / harmonikapui',eenh:'m²',prijs:680},
+        {id:'dr09',naam:'Garagedeur sectional',eenh:'stuk',prijs:1850},
+        {id:'dr10',naam:'Garagedeur kantelbaar',eenh:'stuk',prijs:1250},
+      ]},
+      { naam: 'Deuren binnen', items: [
+        {id:'dr11',naam:'Binnendeur compleet (incl. kozijn)',eenh:'stuk',prijs:380},
+        {id:'dr12',naam:'Schuifdeur binnen (incl. systeem)',eenh:'stuk',prijs:580},
+        {id:'dr13',naam:'Ensuite / roomdivider',eenh:'m²',prijs:420},
+        {id:'dr14',naam:'Deurkruk + slot plaatsen',eenh:'stuk',prijs:85},
+      ]},
+      { naam: 'Glas & beglazing', items: [
+        {id:'gl01',naam:'HR++ glas (vervangen)',eenh:'m²',prijs:120},
+        {id:'gl02',naam:'Triple glas (vervangen)',eenh:'m²',prijs:185},
+        {id:'gl03',naam:'Veiligheidsglas / gelaagd',eenh:'m²',prijs:195},
+        {id:'gl04',naam:'Spiegels plaatsen',eenh:'m²',prijs:145},
+      ]},
+    ]
+  },
+
+  timmerwerk: {
+    titel: '🪚 Timmerwerk & Houtconstructie',
+    secties: [
+      { naam: 'Vloerconstructie', items: [
+        {id:'tw01',naam:'Houten balkenvloer (balk + OSB)',eenh:'m²',prijs:78},
+        {id:'tw02',naam:'Staalframevloer (incl. plaatstaal)',eenh:'m²',prijs:95},
+        {id:'tw03',naam:'Verdiepingsvloer beton (prefab)',eenh:'m²',prijs:115},
+      ]},
+      { naam: 'Wanden & Plafonds (binnen)', items: [
+        {id:'tw04',naam:'Gipskartonwand (metalstud)',eenh:'m²',prijs:48},
+        {id:'tw05',naam:'Gipskarton plafond (metalstud)',eenh:'m²',prijs:52},
+        {id:'tw06',naam:'Systeemwand (demontabel)',eenh:'m²',prijs:145},
+        {id:'tw07',naam:'Scheidingswand isolatie toevoegen',eenh:'m²',prijs:25},
+        {id:'tw08',naam:'Balken-/zichtplafond hout',eenh:'m²',prijs:95},
+      ]},
+      { naam: 'Trap', items: [
+        {id:'tw09',naam:'Rechte trap (grenen)',eenh:'stuk',prijs:1450},
+        {id:'tw10',naam:'Kwartdraai trap (grenen)',eenh:'stuk',prijs:2200},
+        {id:'tw11',naam:'Steektrap zwevend (eiken)',eenh:'stuk',prijs:3800},
+        {id:'tw12',naam:'Spiltrap',eenh:'stuk',prijs:2800},
+        {id:'tw13',naam:'Trapleuning / balustrade',eenh:'m¹',prijs:180},
+      ]},
+      { naam: 'Overig timmerwerk', items: [
+        {id:'tw14',naam:'Dakkapel plaatsen',eenh:'stuk',prijs:8500},
+        {id:'tw15',naam:'Dakkapel vernieuwen',eenh:'stuk',prijs:4800},
+        {id:'tw16',naam:'Serre / veranda houtconstructie',eenh:'m²',prijs:320},
+        {id:'tw17',naam:'Schutting hout',eenh:'m¹',prijs:75},
+        {id:'tw18',naam:'Poort hout',eenh:'stuk',prijs:680},
+        {id:'tw19',naam:'Pergola / overkapping',eenh:'m²',prijs:185},
+        {id:'tw20',naam:'Dakgoot / windveer afwerking',eenh:'m¹',prijs:38},
+        {id:'tw21',naam:'Houtskeletbouw (HSB wand)',eenh:'m²',prijs:138},
+      ]},
+    ]
+  },
+
+  gevel: {
+    titel: '🏛 Gevel & Buitenwerk',
+    secties: [
+      { naam: 'Gevelbekleding', items: [
+        {id:'gv01',naam:'Gevelisolatie + stucwerk (ETICS)',eenh:'m²',prijs:165},
+        {id:'gv02',naam:'Gevelbekleding (hout)',eenh:'m²',prijs:88},
+        {id:'gv03',naam:'Gevelbekleding (composiet)',eenh:'m²',prijs:115},
+        {id:'gv04',naam:'Gevelbekleding (kunststof)',eenh:'m²',prijs:72},
+        {id:'gv05',naam:'Natuursteenstrips / klinkers',eenh:'m²',prijs:145},
+        {id:'gv06',naam:'Rabatdelen gevelbetimmering',eenh:'m²',prijs:68},
+        {id:'gv07',naam:'Metalen gevelpanelen',eenh:'m²',prijs:185},
+      ]},
+      { naam: 'Isolatie', items: [
+        {id:'is01',naam:'Spouwmuurisolatie (inblazen)',eenh:'m²',prijs:28},
+        {id:'is02',naam:'Geverisolatie buitenzijde (EPS)',eenh:'m²',prijs:72},
+        {id:'is03',naam:'Vloerisolatie (PIR)',eenh:'m²',prijs:38},
+        {id:'is04',naam:'Dakisolatie (PIR/PUR spray)',eenh:'m²',prijs:55},
+        {id:'is05',naam:'Vloer vloerverwaming systeem',eenh:'m²',prijs:68},
+        {id:'is06',naam:'Geluidsisolatie wand',eenh:'m²',prijs:48},
+      ]},
+      { naam: 'Buitenwerk', items: [
+        {id:'bw01',naam:'Oprit aanleggen (beton)',eenh:'m²',prijs:72},
+        {id:'bw02',naam:'Oprit aanleggen (klinkers)',eenh:'m²',prijs:68},
+        {id:'bw03',naam:'Stoep / trottoir betegelen',eenh:'m²',prijs:52},
+        {id:'bw04',naam:'Carport (staal/alu)',eenh:'stuk',prijs:3200},
+      ]},
+    ]
+  },
+
+  elektra: {
+    titel: '⚡ Elektra & Beveiliging',
+    secties: [
+      { naam: 'Elektrawerk', items: [
+        {id:'el01',naam:'Basis elektra (5 groepen)',eenh:'ls',prijs:1850},
+        {id:'el02',naam:'Volledig elektra nieuwbouw',eenh:'ls',prijs:4500},
+        {id:'el03',naam:'Groep bijplaatsen',eenh:'stuk',prijs:195},
+        {id:'el04',naam:'Stopcontact plaatsen',eenh:'stuk',prijs:95},
+        {id:'el05',naam:'Wandlamp aanluiten',eenh:'stuk',prijs:75},
+        {id:'el06',naam:'Inbouwspot plaatsen',eenh:'stuk',prijs:65},
+        {id:'el07',naam:'LED verlichting compleet',eenh:'m²',prijs:38},
+        {id:'el08',naam:'Meterkastuitbreiding',eenh:'ls',prijs:650},
+        {id:'el09',naam:'Kabelwerk leggen (per meter)',eenh:'m¹',prijs:12},
+        {id:'el10',naam:'Laadpaal EV (incl. aansluiting)',eenh:'stuk',prijs:1450},
+      ]},
+      { naam: 'Zonne-energie', items: [
+        {id:'zn01',naam:'Zonnepanelen 4 stuks (incl. omvormer)',eenh:'ls',prijs:3200},
+        {id:'zn02',naam:'Zonnepanelen 8 stuks (incl. omvormer)',eenh:'ls',prijs:5800},
+        {id:'zn03',naam:'Thuisbatterij (10 kWh)',eenh:'ls',prijs:6500},
+        {id:'zn04',naam:'Zonneboiler',eenh:'ls',prijs:2800},
+      ]},
+      { naam: 'Beveiliging & Domotica', items: [
+        {id:'bv01',naam:'Alarmsysteem (basis)',eenh:'ls',prijs:1250},
+        {id:'bv02',naam:'Camerabeveiliging (4 camera\'s)',eenh:'ls',prijs:1800},
+        {id:'bv03',naam:'Intercomsysteem',eenh:'stuk',prijs:480},
+        {id:'bv04',naam:'Domotica systeem (basis)',eenh:'ls',prijs:1650},
+        {id:'bv05',naam:'Domotica uitgebreid (KNX)',eenh:'ls',prijs:4500},
+        {id:'bv06',naam:'Rookmelders plaatsen',eenh:'stuk',prijs:65},
+        {id:'bv07',naam:'Bliksembeveiliging',eenh:'ls',prijs:1200},
+      ]},
+      { naam: 'Ventilatie', items: [
+        {id:'vn01',naam:'Mechanische ventilatie (basis)',eenh:'ls',prijs:1200},
+        {id:'vn02',naam:'WTW-installatie (warmteterugwinning)',eenh:'ls',prijs:2450},
+        {id:'vn03',naam:'Badkamerventilator',eenh:'stuk',prijs:185},
+        {id:'vn04',naam:'Dakdoorvoer / ventilatieroos',eenh:'stuk',prijs:145},
+      ]},
+    ]
+  },
+
+  loodgieter: {
+    titel: '🔧 Loodgieterswerk & CV',
+    secties: [
+      { naam: 'Verwarming (CV)', items: [
+        {id:'cv01',naam:'CV-ketel vervangen (compleet)',eenh:'ls',prijs:2200},
+        {id:'cv02',naam:'CV-ketel HR aansluiten',eenh:'ls',prijs:1800},
+        {id:'cv03',naam:'Warmtepomp (lucht-water)',eenh:'ls',prijs:8500},
+        {id:'cv04',naam:'Warmtepomp (hybride)',eenh:'ls',prijs:5800},
+        {id:'cv05',naam:'Radiator plaatsen',eenh:'stuk',prijs:285},
+        {id:'cv06',naam:'Radiator vervangen',eenh:'stuk',prijs:195},
+        {id:'cv07',naam:'Vloerverwarming (natte systeem)',eenh:'m²',prijs:78},
+        {id:'cv08',naam:'Vloerverwarming (droog systeem)',eenh:'m²',prijs:58},
+        {id:'cv09',naam:'Leidingen doortrekken / aanpassen',eenh:'m¹',prijs:38},
+        {id:'cv10',naam:'Airconditioning split-unit',eenh:'ls',prijs:1850},
+        {id:'cv11',naam:'Multi-split airco (3 units)',eenh:'ls',prijs:4800},
+      ]},
+      { naam: 'Sanitair & Leidingen', items: [
+        {id:'lg01',naam:'Waterleiding vernieuwen (per m)',eenh:'m¹',prijs:45},
+        {id:'lg02',naam:'Afvoerleiding (riool)',eenh:'m¹',prijs:55},
+        {id:'lg03',naam:'Warmwaterboiler plaatsen',eenh:'stuk',prijs:850},
+        {id:'lg04',naam:'Warmtapwater-installatie',eenh:'ls',prijs:1200},
+        {id:'lg05',naam:'Regenwaterput plaatsen',eenh:'stuk',prijs:2800},
+        {id:'lg06',naam:'Rioolaansluiting aanleggen',eenh:'ls',prijs:3500},
+        {id:'lg07',naam:'Buitenkraan plaatsen',eenh:'stuk',prijs:185},
+        {id:'lg08',naam:'Wasmachineaansluiting',eenh:'stuk',prijs:145},
+      ]},
+    ]
+  },
+
+  stukadoor: {
+    titel: '🎨 Stukadoor & Schilderwerk',
+    secties: [
+      { naam: 'Stucwerk', items: [
+        {id:'st01',naam:'Stucwerk wand (glad)',eenh:'m²',prijs:28},
+        {id:'st02',naam:'Stucwerk plafond (glad)',eenh:'m²',prijs:32},
+        {id:'st03',naam:'Sierpleister / structuurstuc',eenh:'m²',prijs:38},
+        {id:'st04',naam:'Cementdekvloer',eenh:'m²',prijs:45},
+        {id:'st05',naam:'Gietvloer (anhydriet)',eenh:'m²',prijs:52},
+        {id:'st06',naam:'Spachtelputz / tadelakt',eenh:'m²',prijs:88},
+        {id:'st07',naam:'Buitenstuc / pleisterwerk',eenh:'m²',prijs:42},
+        {id:'st08',naam:'Schimmelbehandeling + herstel',eenh:'m²',prijs:65},
+      ]},
+      { naam: 'Schilderwerk binnen', items: [
+        {id:'sc01',naam:'Schilderwerk wanden (2 lagen)',eenh:'m²',prijs:14},
+        {id:'sc02',naam:'Schilderwerk plafond (2 lagen)',eenh:'m²',prijs:16},
+        {id:'sc03',naam:'Schilderwerk kozijnen / deuren',eenh:'stuk',prijs:95},
+        {id:'sc04',naam:'Behangen (exclusief behang)',eenh:'m²',prijs:18},
+        {id:'sc05',naam:'Plinten schilderen',eenh:'m¹',prijs:8},
+        {id:'sc06',naam:'Radiator schilderen',eenh:'stuk',prijs:65},
+      ]},
+      { naam: 'Schilderwerk buiten', items: [
+        {id:'sc07',naam:'Gevel schilderen / verven',eenh:'m²',prijs:22},
+        {id:'sc08',naam:'Kozijnen buiten schilderen',eenh:'stuk',prijs:145},
+        {id:'sc09',naam:'Houtrot repareren + schilderen',eenh:'stuk',prijs:185},
+        {id:'sc10',naam:'Betonvloer coaten (epoxy)',eenh:'m²',prijs:32},
+        {id:'sc11',naam:'Dakkapel schilderen compleet',eenh:'stuk',prijs:650},
+      ]},
+    ]
+  },
+
+  badkamer: {
+    titel: '🚿 Badkamer & Toilet',
+    secties: [
+      { naam: 'Badkamer compleet', items: [
+        {id:'bk01',naam:'Badkamer renovatie compleet (basis)',eenh:'ls',prijs:8500},
+        {id:'bk02',naam:'Badkamer renovatie compleet (middel)',eenh:'ls',prijs:14500},
+        {id:'bk03',naam:'Badkamer renovatie compleet (luxe)',eenh:'ls',prijs:24000},
+        {id:'bk04',naam:'Inloopdouche plaatsen',eenh:'ls',prijs:3200},
+        {id:'bk05',naam:'Ligbad plaatsen',eenh:'ls',prijs:2800},
+        {id:'bk06',naam:'Douche + bad combinatie',eenh:'ls',prijs:4500},
+      ]},
+      { naam: 'Sanitair losse elementen', items: [
+        {id:'bk07',naam:'Wastafel + meubel plaatsen',eenh:'stuk',prijs:680},
+        {id:'bk08',naam:'Wastafel enkel (inbouw)',eenh:'stuk',prijs:380},
+        {id:'bk09',naam:'Douche-nis / -bakje',eenh:'stuk',prijs:480},
+        {id:'bk10',naam:'Radiatordeur / badkamerradiator',eenh:'stuk',prijs:380},
+        {id:'bk11',naam:'Handdoekradiator',eenh:'stuk',prijs:285},
+        {id:'bk12',naam:'Ventilatierooster / badkamer fan',eenh:'stuk',prijs:185},
+      ]},
+      { naam: 'Toilet', items: [
+        {id:'wc01',naam:'Toilet compleet vernieuwen',eenh:'ls',prijs:1850},
+        {id:'wc02',naam:'Toilet (staand) plaatsen',eenh:'stuk',prijs:680},
+        {id:'wc03',naam:'Hangtoilet plaatsen',eenh:'stuk',prijs:950},
+        {id:'wc04',naam:'Inbouwreservoir plaatsen',eenh:'stuk',prijs:650},
+        {id:'wc05',naam:'Tweede toilet bijplaatsen (ls)',eenh:'ls',prijs:3200},
+        {id:'wc06',naam:'Urinoir plaatsen',eenh:'stuk',prijs:580},
+      ]},
+    ]
+  },
+
+  keuken: {
+    titel: '🍳 Keuken',
+    secties: [
+      { naam: 'Keuken compleet', items: [
+        {id:'kk01',naam:'Keuken plaatsen (montage alleen)',eenh:'ls',prijs:1200},
+        {id:'kk02',naam:'Keuken basis (incl. montage)',eenh:'ls',prijs:6500},
+        {id:'kk03',naam:'Keuken middensegment (incl. montage)',eenh:'ls',prijs:12500},
+        {id:'kk04',naam:'Keuken luxe (incl. montage)',eenh:'ls',prijs:22000},
+        {id:'kk05',naam:'Keukeneiland bouwen',eenh:'ls',prijs:3500},
+      ]},
+      { naam: 'Keuken losse onderdelen', items: [
+        {id:'kk06',naam:'Aanrechtblad plaatsen (composiet)',eenh:'m¹',prijs:280},
+        {id:'kk07',naam:'Aanrechtblad (graniet / kwarts)',eenh:'m¹',prijs:580},
+        {id:'kk08',naam:'Spoelbak + kraan plaatsen',eenh:'stuk',prijs:285},
+        {id:'kk09',naam:'Keukenapparatuur aansluiten',eenh:'stuk',prijs:95},
+        {id:'kk10',naam:'Afzuigkap plaatsen + aansluiten',eenh:'stuk',prijs:195},
+        {id:'kk11',naam:'Keukenachterwand betegelen',eenh:'m²',prijs:88},
+        {id:'kk12',naam:'Inbouwkast / voorraadkast',eenh:'stuk',prijs:480},
+      ]},
+    ]
+  },
+
+  vloeren: {
+    titel: '🪟 Vloeren & Betegeling',
+    secties: [
+      { naam: 'Harde vloeren', items: [
+        {id:'vl01',naam:'Tegelvloer (incl. tegelwerk)',eenh:'m²',prijs:58},
+        {id:'vl02',naam:'Natuursteen vloer (incl. plaatsen)',eenh:'m²',prijs:145},
+        {id:'vl03',naam:'Porselein tegel groot formaat',eenh:'m²',prijs:88},
+        {id:'vl04',naam:'Betonlook vloer (gietvloer)',eenh:'m²',prijs:95},
+        {id:'vl05',naam:'Epoxy vloer (garagevloer)',eenh:'m²',prijs:45},
+      ]},
+      { naam: 'Zachte vloeren / hout', items: [
+        {id:'vl06',naam:'Laminaatvloer (incl. ondervloer)',eenh:'m²',prijs:32},
+        {id:'vl07',naam:'PVC klikvloer (incl. ondervloer)',eenh:'m²',prijs:38},
+        {id:'vl08',naam:'Massief parket (eiken)',eenh:'m²',prijs:82},
+        {id:'vl09',naam:'Engineered parket (incl. plaatsen)',eenh:'m²',prijs:65},
+        {id:'vl10',naam:'Tapijt (incl. plaatsen)',eenh:'m²',prijs:28},
+        {id:'vl11',naam:'Kurkvloer',eenh:'m²',prijs:48},
+        {id:'vl12',naam:'Bamboe vloer',eenh:'m²',prijs:55},
+      ]},
+      { naam: 'Betegeling (wanden)', items: [
+        {id:'tg01',naam:'Wandtegels badkamer (incl. plaatsen)',eenh:'m²',prijs:68},
+        {id:'tg02',naam:'Wandtegels keuken / kookeiland',eenh:'m²',prijs:72},
+        {id:'tg03',naam:'Mozaïektegels',eenh:'m²',prijs:115},
+        {id:'tg04',naam:'Voegwerk (per m²)',eenh:'m²',prijs:18},
+        {id:'tg05',naam:'Tegelverwijdering + afvoer',eenh:'m²',prijs:22},
+      ]},
+      { naam: 'Vloervoorbereiding', items: [
+        {id:'vp01',naam:'Egaliseren (anhydriet)',eenh:'m²',prijs:22},
+        {id:'vp02',naam:'Egaliseren (cementdekvloer)',eenh:'m²',prijs:28},
+        {id:'vp03',naam:'Vloer schuren / afschuren parket',eenh:'m²',prijs:18},
+        {id:'vp04',naam:'Plinten plaatsen',eenh:'m¹',prijs:14},
+      ]},
+    ]
+  },
+
+  tuin: {
+    titel: '🌿 Tuin & Buitenruimte',
+    secties: [
+      { naam: 'Bestrating & Terras', items: [
+        {id:'tn01',naam:'Tegels terras (incl. fundering)',eenh:'m²',prijs:72},
+        {id:'tn02',naam:'Klinkers oprit / pad',eenh:'m²',prijs:65},
+        {id:'tn03',naam:'Composiet/hout vlonder',eenh:'m²',prijs:115},
+        {id:'tn04',naam:'Betonnen oprit',eenh:'m²',prijs:78},
+        {id:'tn05',naam:'Grind aanleggen',eenh:'m²',prijs:28},
+        {id:'tn06',naam:'Kunstgras',eenh:'m²',prijs:48},
+      ]},
+      { naam: 'Tuinaanleg', items: [
+        {id:'tn07',naam:'Gazon aanleggen (rolgazon)',eenh:'m²',prijs:22},
+        {id:'tn08',naam:'Borders / beplanting',eenh:'m²',prijs:45},
+        {id:'tn09',naam:'Tuinsproeisysteem',eenh:'ls',prijs:2800},
+        {id:'tn10',naam:'Buitenverlichting aanleggen',eenh:'ls',prijs:850},
+        {id:'tn11',naam:'Vijver aanleggen',eenh:'ls',prijs:2200},
+      ]},
+      { naam: 'Erfafscheiding', items: [
+        {id:'tn12',naam:'Schutting hout (incl. palen)',eenh:'m¹',prijs:78},
+        {id:'tn13',naam:'Schutting composiet',eenh:'m¹',prijs:115},
+        {id:'tn14',naam:'Betonpalen + onderplaten',eenh:'m¹',prijs:55},
+        {id:'tn15',naam:'Tuinpoort plaatsen',eenh:'stuk',prijs:650},
+        {id:'tn16',naam:'Hekwerk aluminium / staal',eenh:'m¹',prijs:145},
+      ]},
+      { naam: 'Buitenruimte', items: [
+        {id:'tn17',naam:'Tuinhuis / berging',eenh:'ls',prijs:4500},
+        {id:'tn18',naam:'Overkapping / carport',eenh:'m²',prijs:195},
+        {id:'tn19',naam:'Pergola hout',eenh:'m²',prijs:165},
+        {id:'tn20',naam:'Buiten douche plaatsen',eenh:'ls',prijs:850},
+        {id:'tn21',naam:'Buitensauna plaatsen',eenh:'ls',prijs:6500},
+      ]},
+    ]
+  },
+
+  sloop: {
+    titel: '🔨 Sloopwerk & Overig',
+    secties: [
+      { naam: 'Sloopwerk', items: [
+        {id:'sl01',naam:'Sloopwerk algemeen (uur)',eenh:'uur',prijs:68},
+        {id:'sl02',naam:'Wand slopen (incl. afvoer)',eenh:'m²',prijs:45},
+        {id:'sl03',naam:'Dragende wand verwijderen',eenh:'ls',prijs:2800},
+        {id:'sl04',naam:'Vloer uitbreken',eenh:'m²',prijs:38},
+        {id:'sl05',naam:'Dak afbreken',eenh:'m²',prijs:52},
+        {id:'sl06',naam:'Kozijn + deur verwijderen',eenh:'stuk',prijs:145},
+        {id:'sl07',naam:'Asbest sanering (gecertificeerd)',eenh:'m²',prijs:185},
+        {id:'sl08',naam:'Container / afvoer puin',eenh:'ls',prijs:550},
+        {id:'sl09',naam:'Totale woningontmanteling',eenh:'ls',prijs:12000},
+      ]},
+      { naam: 'Reiniging & Afwerking', items: [
+        {id:'ov01',naam:'Bouwkundige einschoonmaak',eenh:'m²',prijs:8},
+        {id:'ov02',naam:'Bouwplaatsbeheer (week)',eenh:'week',prijs:380},
+        {id:'ov03',naam:'Steigers (huur per week)',eenh:'week',prijs:280},
+        {id:'ov04',naam:'Hijskraan dagdeel',eenh:'dagdeel',prijs:680},
+      ]},
+      { naam: 'Overige werkzaamheden', items: [
+        {id:'ov05',naam:'Uurloon vakman',eenh:'uur',prijs:58},
+        {id:'ov06',naam:'Uurloon leidinggevend',eenh:'uur',prijs:78},
+        {id:'ov07',naam:'Materiaalpost (forfait)',eenh:'ls',prijs:500},
+        {id:'ov08',naam:'Vergunningaanvraag (service)',eenh:'ls',prijs:650},
+        {id:'ov09',naam:'Bouwkundige tekeningen',eenh:'ls',prijs:1200},
+        {id:'ov10',naam:'Constructieberekening',eenh:'ls',prijs:850},
+        {id:'ov11',naam:'Brandveiligheidsinstallatie',eenh:'ls',prijs:2200},
+      ]},
+    ]
+  },
+};
+
+function defaultPrijzen(){
+  const p={bouwplaats_pct:5};
+  Object.values(WERKZAAMHEDEN).forEach(cat=>cat.secties.forEach(sec=>sec.items.forEach(item=>p[item.id]=item.prijs)));
+  return p;
+}
+
+// Afvalcontainer categorie toevoegen
+WERKZAAMHEDEN.afval = {
+  titel:'🗑 Afvalcontainer & Afvoer',
+  secties:[
+    {naam:'Container huur',items:[
+      {id:'af01',naam:'Afvalcontainer 3m³ (1 week)',eenh:'st',prijs:195},
+      {id:'af02',naam:'Afvalcontainer 6m³ (1 week)',eenh:'st',prijs:265},
+      {id:'af03',naam:'Afvalcontainer 10m³ (1 week)',eenh:'st',prijs:345},
+      {id:'af04',naam:'Afvalcontainer 20m³ (1 week)',eenh:'st',prijs:425},
+      {id:'af05',naam:'Afvalcontainer 40m³ (1 week)',eenh:'st',prijs:595},
+      {id:'af06',naam:'Extra week huur',eenh:'wk',prijs:65},
+    ]},
+    {naam:'Type afval toeslag',items:[
+      {id:'af07',naam:'Gemengd bouw- en sloopafval',eenh:'st',prijs:0},
+      {id:'af08',naam:'Toeslag schoon puin',eenh:'st',prijs:45},
+      {id:'af09',naam:'Toeslag houtafval',eenh:'st',prijs:55},
+      {id:'af10',naam:'Toeslag gipsafval',eenh:'st',prijs:85},
+      {id:'af11',naam:'Toeslag asbest (gecertificeerd)',eenh:'st',prijs:450},
+      {id:'af12',naam:'Toeslag grond schoon',eenh:'st',prijs:75},
+      {id:'af13',naam:'Toeslag grond vervuild',eenh:'st',prijs:185},
+    ]},
+    {naam:'Afvoer & Transport',items:[
+      {id:'af14',naam:'Afvoer puin per vracht',eenh:'vr',prijs:285},
+      {id:'af15',naam:'Afvoer grond per vracht',eenh:'vr',prijs:245},
+      {id:'af16',naam:'Afvoer hout per vracht',eenh:'vr',prijs:195},
+      {id:'af17',naam:'Kraanwagen voor laden',eenh:'u',prijs:95},
+      {id:'af18',naam:'Minigraver voor laden',eenh:'u',prijs:85},
+    ]},
+    {naam:'Reinigen & Opruimen',items:[
+      {id:'af19',naam:'Bouwplaats schoonmaken basis',eenh:'m²',prijs:4},
+      {id:'af20',naam:'Bouwplaats schoonmaken intensief',eenh:'m²',prijs:8},
+      {id:'af21',naam:'Eindreiniging woning',eenh:'m²',prijs:6},
+      {id:'af22',naam:'Afvoer klein chemisch afval',eenh:'ls',prijs:95},
+    ]},
+  ]
+};
+
+// ══════ CONFIG ══════
+const SB_URL='https://esrnpreydarwfrwawcug.supabase.co', SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzcm5wcmV5ZGFyd2Zyd2F3Y3VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDg4MzcsImV4cCI6MjA5MzU4NDgzN30.TSh_Ljc72aOX1tNSDvHBvAkk9QmP6NQ-jsAkrski0TU';
+const LOGO='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiMxYTNjNWUiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI4NSIgcng9IjYiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xMikiLz4KICA8cmVjdCB4PSIzMiIgeT0iNDAiIHdpZHRoPSIzNiIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iI2U2N2UyMiIvPgogIDxyZWN0IHg9IjMyIiB5PSI1MSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiLz4KICA8cmVjdCB4PSIzMiIgeT0iNTkiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzIiByeD0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxyZWN0IHg9IjMyIiB5PSI2NyIgd2lkdGg9IjM4IiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzIiIHk9Ijc1IiB3aWR0aD0iMzAiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8Y2lyY2xlIGN4PSI2NiIgY3k9IjEwMCIgcj0iMTMiIGZpbGw9IiNlNjdlMjIiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI1OSwxMDAgNjQsMTA2IDc0LDkzIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHJlY3QgeD0iOTgiIHk9IjIwIiB3aWR0aD0iMiIgaGVpZ2h0PSIxMjAiIHJ4PSIxIiBmaWxsPSIjZTY3ZTIyIiBvcGFjaXR5PSIwLjUiLz4KICA8dGV4dCB4PSIxMTQiIHk9Ijg4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+RGlyZWNodDwvdGV4dD4KICA8dGV4dCB4PSIxMTQiIHk9IjEzOCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlNjdlMjIiPk9mZmVydGU8L3RleHQ+Cjwvc3ZnPg==';
+const CONTACT_EMAIL='info@direchtofferte.nl';
+let sb=null, user=null, profiel=null;
+let prijzen={}, scherm=0, alleProj=[], project=np();
+let bedrijf={naam:'',slogan:'',straat:'',stad:'',tel:'',email:'',kvk:'',btwnr:'',iban:'',website:'',logo:''};
+
+function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept'};}
+
+// ══════ AUTH ══════
+function ltab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('on',['in','reg','fp'][i]===t));
+  ['in','reg','fp'].forEach(v=>{const el=document.getElementById('v-'+v);el&&el.classList.toggle('on',v===t);});
+}
+function se(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display=msg?'block':'none';}}
+function sok(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.style.display=msg?'block':'none';}}
+
+function checkKvK(input){
+  const v=input.value.replace(/\D/g,'');
+  input.value=v;
+  const el=document.getElementById('kvk-status');
+  if(v.length===0){el.textContent='';return;}
+  if(v.length===8){el.style.color='#1e8449';el.textContent='✓ KvK-nummer geldig formaat';}
+  else{el.style.color='#c0392b';el.textContent='KvK-nummer moet 8 cijfers zijn ('+v.length+'/8)';}
+}
+
+function checkBTW(input){
+  const v=input.value.toUpperCase();
+  input.value=v;
+  const el=document.getElementById('btw-status');
+  if(v.length===0){el.textContent='';return;}
+  if(/^NL\d{9}B\d{2}$/.test(v)){el.style.color='#1e8449';el.textContent='✓ BTW-nummer geldig formaat';}
+  else{el.style.color='#c0392b';el.textContent='Formaat: NL123456789B01';}
+}
+
+async function doLogin(){
+  const email=document.getElementById('in-email').value.trim();
+  const pw=document.getElementById('in-pw').value;
+  se('in-err','');sok('in-ok','');
+  if(!email||!pw){se('in-err','Vul e-mail en wachtwoord in');return;}
+  sok('in-ok','Inloggen...');
+  try{const {error}=await sb.auth.signInWithPassword({email,password:pw});
+  if(error){sok('in-ok','');se('in-err',error.message);}
+  }catch(e){sok('in-ok','');se('in-err',e.message);}
+}
+
+async function doRegister(){
+  const fn=document.getElementById('reg-fn').value.trim();
+  const ln=document.getElementById('reg-ln').value.trim();
+  const bn=document.getElementById('reg-bn').value.trim();
+  const tel=document.getElementById('reg-tel').value.trim();
+  const adres=document.getElementById('reg-adres').value.trim();
+  const stad=document.getElementById('reg-stad').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const pw=document.getElementById('reg-pw').value;
+  se('reg-err','');sok('reg-ok','');
+  const kvk=document.getElementById('reg-kvk').value.trim();
+  const btwNr=document.getElementById('reg-btw').value.trim();
+  const tel=document.getElementById('reg-tel').value.trim();
+  if(!fn||!bn||!tel||!kvk||!btwNr||!email||!pw){se('reg-err','Vul alle verplichte velden in (*)');return;}
+  if(!/^\d{8}$/.test(kvk)){se('reg-err','KvK-nummer moet 8 cijfers zijn');return;}
+  if(!/^NL\d{9}B\d{2}$/i.test(btwNr)){se('reg-err','BTW-nummer ongeldig (bijv. NL123456789B01)');return;}
+  if(pw.length<6){se('reg-err','Wachtwoord minimaal 6 tekens');return;}
+  sok('reg-ok','Account aanmaken...');
+  try{
+    const {data,error}=await sb.auth.signUp({email,password:pw,options:{data:{voornaam:fn,achternaam:ln,bedrijfsnaam:bn,plan:'starter'}}});
+    if(error){sok('reg-ok','');se('reg-err',error.message);return;}
+    if(data.user){
+      try{
+      const kvk=document.getElementById('reg-kvk').value.trim();
+      const btwnr=document.getElementById('reg-btw').value.trim().toUpperCase();
+      await sb.from('profiles').upsert({id:data.user.id,email,voornaam:fn,achternaam:ln,bedrijfsnaam:bn,tel,adres,stad,kvk,btwnr,plan:'starter'});
+    }catch(_){}
+    }
+    sok('reg-ok','✅ Account aangemaakt! Je kunt nu inloggen.');
+    setTimeout(()=>ltab('in'),2000);
+  }catch(e){sok('reg-ok','');se('reg-err',e.message);}
+}
+
+async function doForgot(){
+  const email=document.getElementById('fp-email').value.trim();
+  if(!email){se('fp-err','Vul je e-mail in');return;}
+  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.href});
+  if(error)se('fp-err',error.message);
+  else sok('fp-ok','Herstelmail verstuurd! Check je inbox.');
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app-screen').style.display='none';
+}
+
+// ══════ APP INIT ══════
+async function onLogin(u){
+  user=u;
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  await laadProfiel();
+  await laadPrijzenCloud();
+  await laadBedrijfCloud();
+  await laadAlleProj();
+  prijzen={...defaultPrijzen(),...prijzen};
+  scherm=0;render();
+  syncSt('ok','Verbonden');
+}
+
+async function laadProfiel(){
+  try{
+    const {data}=await sb.from('profiles').select('*').eq('id',user.id).single();
+    if(data){
+      profiel=data;
+      const chip=document.getElementById('user-chip');
+      if(chip)chip.textContent=(data.voornaam||data.bedrijfsnaam||data.email||'');
+      if(data.plan==='admin'){
+        document.getElementById('admin-sec').style.display='';
+        document.getElementById('n22').style.display='';
+      }
+    }
+  }catch(_){}
+}
+async function laadPrijzenCloud(){try{const {data}=await sb.from('prijzen').select('data').eq('user_id',user.id).single();if(data?.data)prijzen=data.data;}catch(_){}}
+async function laadBedrijfCloud(){try{const {data}=await sb.from('bedrijfsdata').select('data').eq('user_id',user.id).single();if(data?.data)bedrijf={...bedrijf,...data.data};}catch(_){}}
+async function laadAlleProj(){try{const {data}=await sb.from('projecten').select('*').eq('user_id',user.id).order('gewijzigd',{ascending:false});alleProj=data||[];}catch(_){alleProj=[];}}
+
+// ══════ CLOUD ══════
+async function slaOp(){
+  if(!sb||!user){tN('Niet verbonden');return;}
+  syncSt('b','Opslaan...');
+  try{
+    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,gewijzigd:new Date().toISOString()};
+    if(project.id){await sb.from('projecten').update(p).eq('id',project.id);}
+    else{const {data}=await sb.from('projecten').insert(p).select().single();if(data)project.id=data.id;}
+    await laadAlleProj();syncSt('ok','Opgeslagen ✓');tN('Opgeslagen ☁');updateNav();
+  }catch(e){syncSt('e','Fout');tN('Fout: '+e.message);}
+}
+async function slaanPrijzen(){
+  document.querySelectorAll('[id^="pr_"]').forEach(i=>{prijzen[i.id.replace('pr_','')]=parseFloat(i.value)||0;});
+  const bp=document.getElementById('bpl_pct');if(bp)prijzen.bouwplaats_pct=parseFloat(bp.value)||5;
+  await sb.from('prijzen').upsert({user_id:user.id,data:prijzen});tN('Tarieven opgeslagen ✓');
+}
+async function slaanBedrijf(){
+  await sb.from('bedrijfsdata').upsert({user_id:user.id,data:bedrijf});tN('Bedrijfsgegevens opgeslagen ✓');
+}
+function syncSt(s,t){
+  const d=document.getElementById('sdot'),tx=document.getElementById('stxt');
+  if(d)d.className='sdot'+(s==='b'?' b':s==='e'?' e':'');
+  if(tx)tx.textContent=t;
+}
+
+// ══════ BEREKENEN ══════
+function ber(){
+  let reg=[];
+  ['grond','metselwerk','dak','kozijnen','timmerwerk','gevel','elektra','loodgieter','stukadoor','badkamer','keuken','vloeren','tuin','sloop','afval'].forEach(ck=>{
+    const cat=WERKZAAMHEDEN[ck];if(!cat)return;
+    cat.secties.forEach(sec=>sec.items.forEach(item=>{
+      const q=project.items[item.id]||0;
+      if(q>0){const ep=prijzen[item.id]||item.prijs;reg.push({cat:cat.titel.replace(/^.\s/,''),naam:item.naam,q,eh:item.eenh,ep,tot:q*ep});}
+    }));
+  });
+  const s1=reg.reduce((s,r)=>s+r.tot,0);
+  const bpl=Math.round(s1*((prijzen.bouwplaats_pct||5)/100));
+  if(s1>0)reg.push({cat:'Algemeen',naam:'Bouwplaatskosten',q:1,eh:'ls',ep:bpl,tot:bpl,v:true});
+  const s2=reg.reduce((s,r)=>s+r.tot,0);
+  const ma=Math.round(s2*project.marge/100);
+  if(s2>0)reg.push({cat:'Algemeen',naam:'Aannemersmarge',q:1,eh:'ls',ep:ma,tot:ma,v:true});
+  const ex=reg.reduce((s,r)=>s+r.tot,0);
+  const bt=Math.round(ex*(project.btw/100));
+  return{reg,ex,bt,inc:ex+bt};
+}
+const eu=n=>n===0?'—':'€\u00A0'+Math.round(n).toLocaleString('nl-NL');
+const es=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function setQ(id,val){const v=parseFloat(val)||0;if(v<=0)delete project.items[id];else project.items[id]=v;updateNav();const el=document.getElementById('t_'+id);if(el){const ep=prijzen[id]||0;el.textContent=v>0?eu(v*ep):'—';}}
+
+// ══════ RENDER ══════
+function render(){document.getElementById('main').innerHTML=SCREENS[scherm]();updateNav();}
+function updateNav(){
+  for(let i=0;i<23;i++){const el=document.getElementById('n'+i);if(el)el.classList.toggle('on',i===scherm);}
+  [0,1,17,18,19].forEach(i=>{const el=document.getElementById('b'+i);if(el)el.classList.toggle('on',i===scherm);});
+  document.getElementById('sp-naam').textContent=project.naam||'Nieuw project';
+  try{const {inc}=ber();document.getElementById('sp-sub').textContent=eu(inc)+' incl. BTW';}catch(_){}
+  if(scherm===1)setTimeout(updBTW,0);
+}
+function ga(i){scherm=i;render();window.scrollTo(0,0);toggleSB(false);}
+function nav(d){scherm=Math.max(0,Math.min(21,scherm+d));render();window.scrollTo(0,0);}
+function toggleSB(f){const sb=document.getElementById('sidebar'),ov=document.getElementById('ov');const o=f!==undefined?f:!sb.classList.contains('on');sb.classList.toggle('on',o);ov.classList.toggle('on',o);}
+
+const SCREENS=[sDash,sProjGegevens,
+  ()=>sWerk('grond',1,'Metselwerk'),()=>sWerk('metselwerk',2,'Dak'),
+  ()=>sWerk('dak',3,'Kozijnen'),()=>sWerk('kozijnen',4,'Timmerwerk'),
+  ()=>sWerk('timmerwerk',5,'Gevel'),()=>sWerk('gevel',6,'Elektra'),
+  ()=>sWerk('elektra',7,'Loodgieter'),()=>sWerk('loodgieter',8,'Stukadoor'),
+  ()=>sWerk('stukadoor',9,'Badkamer'),()=>sWerk('badkamer',10,'Keuken'),
+  ()=>sWerk('keuken',11,'Vloeren'),()=>sWerk('vloeren',12,'Tuin'),
+  ()=>sWerk('tuin',13,'Sloopwerk'),()=>sWerk('sloop',14,'Afvalcontainer'),
+  ()=>sWerk('afval',15,'Prijsbeheer'),
+  sPrijzen,sOfferte,sArchief,sMijnBedrijf,sMijnGegevens,sAdmin];
+
+// ══════ DASHBOARD ══════
+function sDash(){
+  const {inc}=ber();
+  const naam=(profiel?.voornaam||profiel?.bedrijfsnaam||user?.email?.split('@')[0]||'');
+  const plan=profiel?.plan||'starter';
+  return`<div style="margin-bottom:16px">
+<div style="font-size:20px;font-weight:700;color:var(--b)">Goedendag, ${es(naam)} 👋</div>
+<div style="font-size:12px;color:var(--t2);margin-top:3px">Abonnement: <span class="badge ${plan==='pro'?'bg':plan==='admin'?'bo':'bb'}">${plan.toUpperCase()}</span></div>
+</div>
+<div class="stats">
+<div class="stat"><div class="sl">Huidig project</div><div class="sv" style="font-size:15px">${es(project.naam)}</div></div>
+<div class="stat" style="border-left-color:var(--o)"><div class="sl">Raming</div><div class="sv" style="color:var(--o)">${eu(inc)}</div><div style="font-size:10px;color:var(--t3)">incl. BTW</div></div>
+<div class="stat" style="border-left-color:var(--g)"><div class="sl">Opgeslagen</div><div class="sv" style="color:var(--g)">${alleProj.length}</div><div style="font-size:10px;color:var(--t3)">projecten</div></div>
+</div>
+<div class="card"><div class="chdr">📁 Recente projecten</div><div class="cbdy">
+${alleProj.length===0?'<div class="al ali">Nog geen projecten. Maak een nieuw project aan.</div>':
+alleProj.slice(0,5).map(p=>`<div class="pli" onclick="laadProj('${p.id}');ga(1)">
+<div class="pli-ico">📋</div>
+<div class="pli-info"><div class="pli-naam">${es(p.naam)}</div>
+<div class="pli-sub">Nr: ${es(p.off_nr)} · ${es(p.opdrachtgever||'—')} · ${new Date(p.gewijzigd).toLocaleDateString('nl-NL')}</div></div>
+<span class="badge ${p.status==='akkoord'?'bg':p.status==='verstuurd'?'bo':'bb'}">${(p.status||'concept').toUpperCase()}</span>
+<button class="btn br bsm" onclick="event.stopPropagation();delProj('${p.id}')">✕</button>
+</div>`).join('')}
+${alleProj.length>5?`<div style="text-align:center;margin-top:8px"><button class="btn bout bsm" onclick="ga(19)">Alle ${alleProj.length} projecten →</button></div>`:''}
+</div></div>
+<div class="card"><div class="chdr g">⚡ Snelstart</div><div class="cbdy">
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="btn bp" onclick="nieuwProj()">+ Nieuw project</button>
+<button class="btn bout" onclick="ga(17)">💰 Tarieven</button>
+<button class="btn bout" onclick="ga(20)">🏢 Mijn bedrijf</button>
+<button class="btn bout" onclick="window.print()">🖨 PDF</button>
+</div></div></div>`;
+}
+
+// ══════ PROJECT GEGEVENS ══════
+function sProjGegevens(){return`
+<div class="card"><div class="chdr">📋 Projectgegevens</div><div class="cbdy">
+<div class="g2">
+<div class="fg"><label>Projectnaam</label><input value="${es(project.naam)}" oninput="project.naam=this.value;updateNav()"></div>
+<div class="fg"><label>Type werk</label><select oninput="project.type=this.value">
+${['Renovatie','Nieuwbouw','Uitbouw / Aanbouw','Verbouwing','Onderhoud','Dakrenovatie','Badkamer','Keuken','Overig'].map(t=>`<option ${project.type===t?'selected':''}>${t}</option>`).join('')}
+</select></div>
+<div class="fg"><label>Offertenummer</label><input value="${es(project.offNr)}" oninput="project.offNr=this.value"></div>
+<div class="fg"><label>Status</label><select oninput="project.status=this.value">
+${['concept','verstuurd','akkoord','afgewezen'].map(s=>`<option ${project.status===s?'selected':''}>${s}</option>`).join('')}
+</select></div>
+<div class="fg"><label>Datum</label><input type="date" value="${project.datum}" oninput="project.datum=this.value"></div>
+<div class="fg"><label>Opdrachtgever</label><input value="${es(project.opdrachtgever)}" oninput="project.opdrachtgever=this.value"></div>
+<div class="fg"><label>Straat + huisnummer</label><input value="${es(project.adres)}" oninput="project.adres=this.value"></div>
+<div class="fg"><label>Postcode + Stad</label><input value="${es(project.stad)}" oninput="project.stad=this.value"></div>
+<div class="fg"><label>Telefoon</label><input value="${es(project.tel)}" oninput="project.tel=this.value"></div>
+<div class="fg"><label>E-mail</label><input type="email" value="${es(project.email)}" oninput="project.email=this.value"></div>
+</div>
+<div class="fg"><label>BTW tarief</label>
+<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+<button class="btn bsm" id="btw0" onclick="setBTW(0)">0%</button>
+<button class="btn bsm" id="btw9" onclick="setBTW(9)">9%</button>
+<button class="btn bsm" id="btw21" onclick="setBTW(21)">21%</button>
+<input type="number" min="0" max="100" step="1" value="${project.btw}" id="btw-i" oninput="project.btw=parseFloat(this.value)||21;updBTW();updateNav()" style="width:65px;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:6px 8px;font-size:13px;font-family:inherit">
+<span style="font-size:10px;color:var(--t3)">9% = renovatie &gt;2jr | 21% = nieuwbouw</span>
+</div></div>
+<div class="fg"><label>Aannemersmarge</label>
+<div class="rr"><input type="range" min="0" max="40" step="1" value="${project.marge}" oninput="project.marge=parseInt(this.value);document.getElementById('mrv').textContent=this.value+'%';updateNav()">
+<div class="rv" id="mrv">${project.marge}%</div></div></div>
+<div class="fg"><label>Notities</label><textarea oninput="project.notities=this.value">${es(project.notities)}</textarea></div>
+</div></div>
+<div style="display:flex;justify-content:space-between;gap:8px">
+<button class="btn bg2" onclick="slaOp()">☁ Opslaan</button>
+<button class="btn bp blg" onclick="nav(1)">Volgende →</button>
+</div>`;}
+
+function setBTW(p){project.btw=p;const i=document.getElementById('btw-i');if(i)i.value=p;updBTW();updateNav();}
+function updBTW(){[0,9,21].forEach(p=>{const el=document.getElementById('btw'+p);if(!el)return;el.className='btn bsm '+(project.btw===p?'bp':'bout');});}
+
+// ══════ WERKSCHERMEN ══════
+function sWerk(catKey,prevIdx,nextLabel){
+  const cat=WERKZAAMHEDEN[catKey];if(!cat)return'<div class="al alo">Categorie niet gevonden</div>';
+  const act=cat.secties.flatMap(s=>s.items).filter(i=>(project.items[i.id]||0)>0).length;
+  const tot=cat.secties.flatMap(s=>s.items).reduce((s,i)=>{const q=project.items[i.id]||0;return s+q*(prijzen[i.id]||i.prijs);},0);
+  return`<div class="card"><div class="chdr">${cat.titel}</div><div class="cbdy">
+${act>0?`<div class="al ali">${act} post${act>1?'en':''} actief — subtotaal: <strong>${eu(tot)}</strong></div>`:''}
+${cat.secties.map(sec=>`<div class="wsec">${sec.naam}</div>
+${sec.items.map(item=>{const q=project.items[item.id]||0;const ep=prijzen[item.id]||item.prijs;return`<div class="wi">
+<div class="wi-naam">${item.naam}</div>
+<span class="wi-ep">${eu(ep)}</span>
+<span class="wi-eh">${item.eenh}</span>
+<div style="display:flex;align-items:center;gap:5px">
+<button class="qb" onclick="setQ('${item.id}',Math.max(0,(project.items['${item.id}']||0)-1));document.getElementById('qi_${item.id}').value=project.items['${item.id}']||0">−</button>
+<input class="qin" id="qi_${item.id}" type="number" min="0" step="0.5" value="${q}" oninput="setQ('${item.id}',this.value)">
+<button class="qb" onclick="setQ('${item.id}',(parseFloat(document.getElementById('qi_${item.id}').value)||0)+1);document.getElementById('qi_${item.id}').value=project.items['${item.id}']||0">+</button>
+</div>
+<div class="wi-tot" id="t_${item.id}">${q>0?eu(q*ep):'—'}</div></div>`;}).join('')}`).join('')}
+</div></div>
+<div style="display:flex;justify-content:space-between;gap:8px">
+<button class="btn bout" onclick="nav(-1)">← Vorige</button>
+<button class="btn bp blg" onclick="nav(1)">${nextLabel} →</button>
+</div>`;}
+
+// ══════ PRIJSBEHEER ══════
+function sPrijzen(){
+  return`<div class="card"><div class="chdr o">💰 Prijsbeheer — jouw tarieven</div><div class="cbdy">
+<div class="al alo">Wijzig je tarieven. Ze worden per account opgeslagen in de cloud.</div>
+<div class="fg"><label>Bouwplaatskosten (%)</label>
+<input type="number" min="0" max="20" step="0.5" value="${prijzen.bouwplaats_pct||5}" id="bpl_pct" style="width:100px"></div>
+<table class="pt"><thead><tr><th>Omschrijving</th><th style="text-align:center">Eenh.</th><th class="r">Jouw prijs (€)</th><th class="r">Standaard</th></tr></thead><tbody>
+${Object.keys(WERKZAAMHEDEN).map(ck=>{const cat=WERKZAAMHEDEN[ck];return cat.secties.map((sec,si)=>
+(si===0?`<tr class="cr"><td colspan="4">${cat.titel.replace(/^.\s/,'')}</td></tr>`:'')+
+`<tr><td colspan="4" style="font-size:10px;font-weight:700;color:var(--t2);background:var(--gr);padding:4px 10px">${sec.naam}</td></tr>`+
+sec.items.map(item=>`<tr>
+<td style="font-size:12px">${item.naam}</td>
+<td style="color:var(--t3);font-size:10px;text-align:center">${item.eenh}</td>
+<td style="text-align:right"><input class="pin" type="number" min="0" step="1" value="${prijzen[item.id]||item.prijs}" id="pr_${item.id}"></td>
+<td style="text-align:right;color:var(--t3);font-size:11px">${item.prijs}</td></tr>`).join('')
+).join('');}).join('')}
+</tbody></table>
+<div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
+<button class="btn bo2 blg" onclick="slaanPrijzen()">☁ Opslaan</button>
+<button class="btn bout" onclick="if(confirm('Naar standaard?')){prijzen={...defaultPrijzen()};render();}">↺ Standaard</button>
+</div></div></div>`;}
+
+// ══════ OFFERTE ══════
+function sOfferte(){
+  const {reg,ex,bt,inc}=ber();
+  const zb=reg.filter(r=>!r.v);
+  if(zb.length===0)return`<div class="card"><div class="cbdy" style="text-align:center;padding:40px">
+<div style="font-size:36px;margin-bottom:12px">📋</div>
+<div style="font-size:17px;font-weight:700;color:var(--t2);margin-bottom:8px">Geen werkzaamheden geselecteerd</div>
+<button class="btn bp" onclick="ga(2)">→ Naar werkzaamheden</button>
+</div></div>`;
+  const cats=[...new Set(zb.map(r=>r.cat))];let nr=1;
+  const tbl=cats.map(cat=>{const cl=zb.filter(r=>r.cat===cat);const ct=cl.reduce((s,r)=>s+r.tot,0);
+  return`<tr class="cr"><td colspan="5">${cat}</td><td class="r" style="font-weight:700">${eu(ct)}</td></tr>`+
+  cl.map(r=>`<tr><td style="color:var(--t3);font-size:10px">${nr++}</td><td>${r.naam}</td><td class="r">${r.q%1===0?r.q:r.q.toFixed(1)}</td><td class="r" style="font-size:10px">${r.eh}</td><td class="r">${eu(r.ep)}</td><td class="r" style="font-weight:600">${eu(r.tot)}</td></tr>`).join('');}).join('');
+
+  const bdrijfNaam=bedrijf.naam||profiel?.bedrijfsnaam||'Direcht Offerte';
+  const bdrijfLogo=bedrijf.logo||LOGO;
+
+  const ph=`<div class="ph" style="margin-bottom:16px">
+<div style="background:#1a3c5e;border-radius:8px 8px 0 0;padding:12px 20px;display:flex;justify-content:space-between;align-items:center">
+<img src="${bdrijfLogo}" style="height:64px">
+<div style="text-align:right;color:#fff">
+<div style="font-size:26px;font-weight:700;letter-spacing:3px">OFFERTE</div>
+<div style="font-size:11px;opacity:.85">Nr: <strong>${es(project.offNr)}</strong> | ${project.datum}</div>
+<div style="font-size:11px;opacity:.75">Geldig t/m: ${new Date(new Date(project.datum).getTime()+30*864e5).toLocaleDateString('nl-NL')}</div>
+</div></div>
+<div style="background:#2874a6;padding:7px 20px;display:flex;gap:18px;flex-wrap:wrap">
+${bedrijf.straat?`<span style="color:#fff;font-size:11px">📍 ${es(bedrijf.straat)}, ${es(bedrijf.stad)}</span>`:''}
+${bedrijf.tel?`<span style="color:#fff;font-size:11px">📞 ${es(bedrijf.tel)}</span>`:''}
+${bedrijf.email?`<span style="color:#fff;font-size:11px">✉ ${es(bedrijf.email)}</span>`:''}
+${bedrijf.kvk?`<span style="color:rgba(255,255,255,.75);font-size:10px">KvK: ${es(bedrijf.kvk)} | BTW: ${es(bedrijf.btwnr)}</span>`:''}
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+<div style="border:1px solid #ddd;border-radius:6px;padding:10px 13px">
+<div style="font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Opdrachtgever</div>
+<div style="font-weight:700">${es(project.opdrachtgever)||'—'}</div>
+${project.adres?`<div style="font-size:11px">${es(project.adres)}</div>`:''}
+${project.stad?`<div style="font-size:11px">${es(project.stad)}</div>`:''}
+${project.tel?`<div style="font-size:11px">${es(project.tel)}</div>`:''}
+</div>
+<div style="border:1px solid #ddd;border-radius:6px;padding:10px 13px">
+<div style="font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Project</div>
+<div style="font-weight:700">${es(project.naam)}</div>
+<div style="font-size:11px;color:#555">${es(project.type)}</div>
+${project.notities?`<div style="font-size:10px;color:#888;font-style:italic;margin-top:3px">${es(project.notities)}</div>`:''}
+</div></div></div>`;
+
+  return`${ph}
+<div class="card no-print"><div class="chdr">📄 Offerte — ${es(project.naam)}</div>
+<div class="cbdy" style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+<div><div style="font-size:12px;color:var(--t2)">${es(project.opdrachtgever)||'—'} · ${es(project.adres)} ${es(project.stad)}</div>
+<div style="font-size:10px;color:var(--t3)">Nr: ${es(project.offNr)} · ${project.datum} · ${nr-1} regels</div></div>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="btn bg2 bsm" onclick="slaOp()">☁ Opslaan</button>
+<button class="btn bo2 bsm" onclick="maakFactuur()">🧾 Factuur</button>
+<button class="btn bp bsm" onclick="window.print()">🖨 PDF</button>
+</div></div></div>
+<div class="card"><div class="cbdy" style="padding:0;overflow-x:auto">
+<table class="oft">
+<thead><tr><th style="width:30px">Nr</th><th>Omschrijving</th><th class="r" style="width:60px">Aantal</th><th class="r" style="width:50px">Eenh.</th><th class="r" style="width:88px">Prijs/eenh.</th><th class="r" style="width:88px">Totaal</th></tr></thead>
+<tbody>${tbl}</tbody>
+<tfoot>
+<tr class="sr"><td colspan="5" style="text-align:right">Subtotaal excl. BTW</td><td class="r">${eu(ex)}</td></tr>
+<tr style="background:var(--gr)"><td colspan="5" style="text-align:right;font-size:11px;color:var(--t2)">BTW ${project.btw}%</td><td class="r" style="font-size:11px;color:var(--t2)">${eu(bt)}</td></tr>
+<tr class="tr"><td colspan="5" style="text-align:right;font-size:13px">TOTAAL INCL. BTW</td><td class="r" style="font-size:14px">${eu(inc)}</td></tr>
+</tfoot></table></div></div>
+<div class="card"><div class="chdr gr">Voorwaarden</div><div class="cbdy">
+<ul style="font-size:11px;color:var(--t2);line-height:2;padding-left:16px">
+<li>Betaling: 30% bij opdracht, 40% bij uitvoering, 30% bij oplevering.</li>
+<li>Offerte geldig 30 dagen na dagtekening.</li>
+<li>Exclusief vergunningskosten tenzij anders vermeld.</li>
+<li>Meer- en minderwerk schriftelijk overeengekomen.</li>
+</ul>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:22px">
+<div><div style="font-size:11px;font-weight:700;color:var(--t2);margin-bottom:40px">Handtekening opdrachtgever</div><div style="border-top:1px solid var(--gr2);padding-top:4px;font-size:10px;color:var(--t3)">Naam, datum en handtekening</div></div>
+<div><div style="font-size:11px;font-weight:700;color:var(--t2);margin-bottom:40px">Voor ${es(bdrijfNaam)}</div><div style="border-top:1px solid var(--gr2);padding-top:4px;font-size:10px;color:var(--t3)">${es(bdrijfNaam)}</div></div>
+</div></div></div>
+<div style="display:flex;justify-content:space-between;gap:8px" class="no-print">
+<button class="btn bout" onclick="nav(-1)">← Bewerken</button>
+<button class="btn bp blg" onclick="window.print()">🖨 PDF opslaan</button>
+</div>`;}
+
+// ══════ ARCHIEF ══════
+function sArchief(){
+  setTimeout(async function(){
+    if(!sb||!user)return;
+    try{
+      const {data:projs}=await sb.from('projecten').select('*').eq('user_id',user.id).order('gewijzigd',{ascending:false});
+      const el=document.getElementById('arch-content');if(!el)return;
+      const zoek=document.getElementById('arch-zoek')?.value?.toLowerCase()||'';
+      const gef=zoek?projs.filter(p=>(p.naam||'').toLowerCase().includes(zoek)||(p.opdrachtgever||'').toLowerCase().includes(zoek)||(p.off_nr||'').toLowerCase().includes(zoek)):projs;
+      el.innerHTML=!gef||gef.length===0?'<div class="al ali">Geen projecten gevonden.</div>':
+      gef.map(p=>`<div class="pli">
+<div class="pli-ico">📋</div>
+<div class="pli-info" onclick="laadProj('${p.id}');ga(1)" style="cursor:pointer">
+<div class="pli-naam">${es(p.naam)}</div>
+<div class="pli-sub">Nr: <strong>${es(p.off_nr)}</strong> · ${es(p.opdrachtgever||'—')} · ${new Date(p.gewijzigd).toLocaleDateString('nl-NL')}</div>
+<div class="pli-sub">${es(p.type||'')} · <span class="badge ${p.status==='akkoord'?'bg':p.status==='verstuurd'?'bo':'bb'}">${(p.status||'concept').toUpperCase()}</span></div>
+</div>
+<div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">
+<button class="btn bp bsm" onclick="laadProj('${p.id}');ga(18)">📄</button>
+<button class="btn bo2 bsm" onclick="laadEnFactuur('${p.id}')">🧾</button>
+<button class="btn br bsm" onclick="delProj('${p.id}')">✕</button>
+</div></div>`).join('');
+    }catch(e){const el=document.getElementById('arch-content');if(el)el.innerHTML='<div class="al alo">Fout: '+e.message+'</div>';}
+  },100);
+  return`<div class="card"><div class="chdr">📁 Offertes archief</div><div class="cbdy">
+<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+<input id="arch-zoek" placeholder="Zoek op naam, klant of offertenummer..." style="flex:1;min-width:200px;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:8px 12px;font-size:13px;font-family:inherit" oninput="render()">
+<button class="btn bp" onclick="nieuwProj();ga(1)">+ Nieuwe offerte</button>
+</div>
+<div id="arch-content"><div style="text-align:center;padding:20px;color:var(--t2)">Laden...</div></div>
+</div></div>`;}
+
+async function laadEnFactuur(id){await laadProj(id);maakFactuur();}
+
+// ══════ FACTUUR ══════
+function maakFactuur(){
+  const {reg,ex,bt,inc}=ber();
+  const zb=reg.filter(r=>!r.v);
+  if(zb.length===0){tN('Geen werkzaamheden in dit project');return;}
+  const factNr='FACT-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0');
+  const vandaag=new Date().toISOString().split('T')[0];
+  const vervaldatum=new Date(Date.now()+30*864e5).toISOString().split('T')[0];
+  const cats=[...new Set(zb.map(r=>r.cat))];let nr=1;
+  const tbl=cats.map(cat=>{const cl=zb.filter(r=>r.cat===cat);const ct=cl.reduce((s,r)=>s+r.tot,0);
+  return`<tr style="background:#eef5fb"><td colspan="5" style="color:#1a3c5e;font-weight:700;font-size:10px;text-transform:uppercase;padding:6px 10px">${cat}</td><td style="text-align:right;font-weight:700;color:#1a3c5e;padding:6px 10px">${eu(ct)}</td></tr>`+
+  cl.map(r=>`<tr><td style="color:#999;font-size:10px;padding:6px 10px">${nr++}</td><td style="padding:6px 10px">${r.naam}</td><td style="text-align:right;padding:6px 10px">${r.q%1===0?r.q:r.q.toFixed(1)}</td><td style="text-align:right;font-size:10px;padding:6px 10px">${r.eh}</td><td style="text-align:right;padding:6px 10px">${eu(r.ep)}</td><td style="text-align:right;font-weight:600;padding:6px 10px">${eu(r.tot)}</td></tr>`).join('');}).join('');
+  const bdrijfNaam=bedrijf.naam||profiel?.bedrijfsnaam||'Direcht Offerte';
+  const bdrijfLogo=bedrijf.logo||LOGO;
+  const w=window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"><title>Factuur ${factNr}</title>
+<style>body{font-family:'Segoe UI',Arial,sans-serif;font-size:12px;color:#2c3e50;margin:0;padding:10mm}
+table{width:100%;border-collapse:collapse}th{background:#1a3c5e;color:#fff;padding:7px 10px;text-align:left;font-size:11px}
+th.r{text-align:right}td{padding:6px 10px;border-bottom:1px solid #eee}tr:nth-child(even) td{background:#f8f8f8}
+.tot td{background:#1a3c5e;color:#fff;font-weight:700;font-size:14px}.tot td.r{text-align:right}
+.hdr{background:#1a3c5e;padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-radius:8px 8px 0 0}
+.sub-hdr{background:#2874a6;padding:6px 20px;display:flex;gap:15px;flex-wrap:wrap}
+.sub-hdr span{color:#fff;font-size:11px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.box{border:1px solid #ddd;border-radius:6px;padding:10px}
+.lbl{font-size:9px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+@page{margin:10mm;size:A4}
+</style></head><body>
+<div class="hdr">
+<img src="${bdrijfLogo}" style="height:55px">
+<div style="color:#fff;text-align:right">
+<div style="font-size:24px;font-weight:700;letter-spacing:3px">FACTUUR</div>
+<div style="font-size:11px;opacity:.85">Nr: <strong>${factNr}</strong></div>
+<div style="font-size:11px;opacity:.75">Datum: ${vandaag} | Vervaldatum: ${vervaldatum}</div>
+<div style="font-size:10px;opacity:.65">Offerte: ${es(project.offNr)}</div>
+</div></div>
+<div class="sub-hdr">
+${bedrijf.straat?`<span>📍 ${es(bedrijf.straat)}, ${es(bedrijf.stad)}</span>`:''}
+${bedrijf.tel?`<span>📞 ${es(bedrijf.tel)}</span>`:''}
+${bedrijf.email?`<span>✉ ${es(bedrijf.email)}</span>`:''}
+${bedrijf.iban?`<span>🏦 ${es(bedrijf.iban)}</span>`:''}
+${bedrijf.kvk?`<span>KvK: ${es(bedrijf.kvk)} | BTW: ${es(bedrijf.btwnr)}</span>`:''}
+</div>
+<div class="grid">
+<div class="box"><div class="lbl">Factuuradres</div>
+<strong>${es(project.opdrachtgever)||'—'}</strong><br>
+${project.adres?es(project.adres)+'<br>':''}${project.stad?es(project.stad)+'<br>':''}${project.email?es(project.email):''}
+</div>
+<div class="box"><div class="lbl">Project</div>
+<strong>${es(project.naam)}</strong><br>${es(project.type)}<br>
+<span style="font-size:10px;color:#666">Betalingstermijn: 30 dagen</span>
+</div></div>
+<table>
+<thead><tr><th style="width:30px">Nr</th><th>Omschrijving</th><th class="r" style="width:55px">Aantal</th><th class="r" style="width:45px">Eenh.</th><th class="r" style="width:85px">Prijs/eenh.</th><th class="r" style="width:85px">Totaal</th></tr></thead>
+<tbody>${tbl}</tbody>
+<tfoot>
+<tr><td colspan="5" style="text-align:right;padding:6px 10px">Subtotaal excl. BTW</td><td style="text-align:right;font-weight:700;padding:6px 10px">${eu(ex)}</td></tr>
+<tr><td colspan="5" style="text-align:right;color:#666;font-size:11px;padding:6px 10px">BTW ${project.btw}%</td><td style="text-align:right;color:#666;font-size:11px;padding:6px 10px">${eu(bt)}</td></tr>
+<tr class="tot"><td colspan="5" style="text-align:right;font-size:13px;padding:8px 10px">TOTAAL INCL. BTW</td><td class="r" style="font-size:14px;padding:8px 10px">${eu(inc)}</td></tr>
+</tfoot></table>
+<div style="margin-top:20px;padding:12px;background:#f8f8f8;border-radius:6px;font-size:11px">
+<strong>Betalingsgegevens:</strong><br>
+${bedrijf.iban?`Rekeningnummer: <strong>${es(bedrijf.iban)}</strong><br>`:''}
+T.n.v.: ${es(bdrijfNaam)}<br>
+Onder vermelding van: <strong>${factNr}</strong><br>
+Betaling binnen 30 dagen na factuurdatum.
+</div>
+<script>window.print();<\/script>
+
+<!-- WACHTWOORD RESET SCHERM -->
+<div id="reset-screen" style="display:none;position:fixed;inset:0;background:linear-gradient(135deg,#1a3c5e,#2874a6);z-index:9999;align-items:center;justify-content:center;padding:16px">
+  <div class="lbox">
+    <div class="ltop">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiMxYTNjNWUiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI4NSIgcng9IjYiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xMikiLz4KICA8cmVjdCB4PSIzMiIgeT0iNDAiIHdpZHRoPSIzNiIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iI2U2N2UyMiIvPgogIDxyZWN0IHg9IjMyIiB5PSI1MSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiLz4KICA8cmVjdCB4PSIzMiIgeT0iNTkiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzIiByeD0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxyZWN0IHg9IjMyIiB5PSI2NyIgd2lkdGg9IjM4IiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzIiIHk9Ijc1IiB3aWR0aD0iMzAiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8Y2lyY2xlIGN4PSI2NiIgY3k9IjEwMCIgcj0iMTMiIGZpbGw9IiNlNjdlMjIiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI1OSwxMDAgNjQsMTA2IDc0LDkzIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHJlY3QgeD0iOTgiIHk9IjIwIiB3aWR0aD0iMiIgaGVpZ2h0PSIxMjAiIHJ4PSIxIiBmaWxsPSIjZTY3ZTIyIiBvcGFjaXR5PSIwLjUiLz4KICA8dGV4dCB4PSIxMTQiIHk9Ijg4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+RGlyZWNodDwvdGV4dD4KICA8dGV4dCB4PSIxMTQiIHk9IjEzOCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlNjdlMjIiPk9mZmVydGU8L3RleHQ+Cjwvc3ZnPg==" alt="Direcht Offerte">
+    </div>
+    <div class="lbody">
+      <div style="font-size:18px;font-weight:700;color:var(--b);margin-bottom:4px">🔑 Nieuw wachtwoord</div>
+      <div style="font-size:13px;color:var(--t2);margin-bottom:16px">Kies een nieuw wachtwoord voor je account</div>
+      <div class="err" id="reset-err"></div>
+      <div class="ok" id="reset-ok"></div>
+      <div class="fg">
+        <label>Nieuw wachtwoord (min. 6 tekens)</label>
+        <input type="password" id="reset-pw" placeholder="Nieuw wachtwoord">
+      </div>
+      <div class="fg">
+        <label>Herhaal wachtwoord</label>
+        <input type="password" id="reset-pw2" placeholder="Herhaal wachtwoord" onkeydown="if(event.key==='Enter')doResetPw()">
+      </div>
+      <button class="lbtn" onclick="doResetPw()">Wachtwoord opslaan →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showWachtwoordReset(){
+  // Show reset screen
+  const rs=document.getElementById('reset-screen');
+  if(rs){
+    rs.style.display='flex';
+    // Set logo
+    const img=rs.querySelector('img');
+    if(img)img.src=LOGO;
+  }
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='none';
+}
+
+async function doResetPw(){
+  const pw=document.getElementById('reset-pw').value;
+  const pw2=document.getElementById('reset-pw2').value;
+  const errEl=document.getElementById('reset-err');
+  const okEl=document.getElementById('reset-ok');
+  errEl.style.display='none';okEl.style.display='none';
+  
+  if(!pw){errEl.textContent='Vul een wachtwoord in';errEl.style.display='block';return;}
+  if(pw.length<6){errEl.textContent='Wachtwoord minimaal 6 tekens';errEl.style.display='block';return;}
+  if(pw!==pw2){errEl.textContent='Wachtwoorden komen niet overeen';errEl.style.display='block';return;}
+  
+  okEl.textContent='Bezig...';okEl.style.display='block';
+  
+  try{
+    const {error}=await sb.auth.updateUser({password:pw});
+    if(error){okEl.style.display='none';errEl.textContent=error.message;errEl.style.display='block';return;}
+    okEl.textContent='✅ Wachtwoord gewijzigd! Je wordt ingelogd...';
+    // Clean URL
+    window.history.replaceState(null,null,window.location.pathname);
+    setTimeout(async()=>{
+      const {data:{session}}=await sb.auth.getSession();
+      document.getElementById('reset-screen').style.display='none';
+      if(session)await onLogin(session.user);
+      else{document.getElementById('login-screen').style.display='flex';}
+    },1500);
+  }catch(e){okEl.style.display='none';errEl.textContent=e.message;errEl.style.display='block';}
+}
+</script>
+</body></html>`);
+  w.document.close();
+  tN('Factuur geopend voor afdrukken 🧾');
+}
+
+// ══════ MIJN BEDRIJF ══════
+function sMijnBedrijf(){return`
+<div class="card"><div class="chdr">🏢 Mijn bedrijfsgegevens</div><div class="cbdy">
+<div class="al ali">Deze gegevens verschijnen op jouw offertes en facturen.</div>
+<div class="fg">
+<label>Jouw logo</label>
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+${bedrijf.logo?`<img src="${bedrijf.logo}" style="height:60px;border:1px solid var(--gr2);border-radius:6px;padding:4px;background:#fff">`:
+`<div style="width:100px;height:60px;background:var(--gr);border:2px dashed var(--gr2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--t3)">Geen logo</div>`}
+<div>
+<input type="file" id="logo-upload" accept="image/*" style="display:none" onchange="verwerkLogo(this)">
+<button class="btn bout bsm" onclick="document.getElementById('logo-upload').click()">📁 Logo uploaden</button>
+${bedrijf.logo?`<br><button class="btn br bsm" style="margin-top:6px" onclick="bedrijf.logo='';render()">✕ Verwijder logo</button>`:''}
+<div style="font-size:10px;color:var(--t3);margin-top:4px">PNG of JPG, max 2MB</div>
+</div></div></div>
+<div class="g2">
+<div class="fg"><label>Bedrijfsnaam</label><input id="bv0" value="${es(bedrijf.naam)}" placeholder="Jouw Bouwbedrijf BV"></div>
+<div class="fg"><label>Slogan</label><input id="bv1" value="${es(bedrijf.slogan||'')}" placeholder="Vakwerk op maat"></div>
+<div class="fg"><label>Straat + huisnummer</label><input id="bv2" value="${es(bedrijf.straat)}" placeholder="Hoofdstraat 1"></div>
+<div class="fg"><label>Postcode + Stad</label><input id="bv3" value="${es(bedrijf.stad)}" placeholder="1234 AB Amsterdam"></div>
+<div class="fg"><label>Telefoon</label><input id="bv4" value="${es(bedrijf.tel)}" placeholder="06 12345678"></div>
+<div class="fg"><label>E-mail</label><input id="bv5" value="${es(bedrijf.email)}" placeholder="info@jouwbedrijf.nl"></div>
+<div class="fg"><label>KvK-nummer</label><input id="bv6" value="${es(bedrijf.kvk)}" placeholder="12345678"></div>
+<div class="fg"><label>BTW-nummer</label><input id="bv7" value="${es(bedrijf.btwnr)}" placeholder="NL123456789B01"></div>
+</div>
+<div class="fg"><label>IBAN rekeningnummer</label><input id="bv8" value="${es(bedrijf.iban)}" placeholder="NL00 BANK 0000 0000 00"></div>
+<div class="fg"><label>Website</label><input id="bv9" value="${es(bedrijf.website||'')}" placeholder="www.jouwbedrijf.nl"></div>
+<div style="margin-top:16px">
+<button class="btn bg2 blg" onclick="saveBedrijf()">☁ Opslaan in cloud</button>
+</div></div></div>`;}
+
+function verwerkLogo(input){
+  const file=input.files[0];if(!file)return;
+  if(file.size>3*1024*1024){tN('Logo te groot, max 3MB');return;}
+  const reader=new FileReader();
+  reader.onload=e=>{bedrijf.logo=e.target.result;render();tN('Logo geladen ✓');};
+  reader.readAsDataURL(file);
+}
+async function saveBedrijf(){
+  const v=id=>document.getElementById(id)?.value||'';
+  bedrijf={...bedrijf,naam:v('bv0'),slogan:v('bv1'),straat:v('bv2'),stad:v('bv3'),tel:v('bv4'),email:v('bv5'),kvk:v('bv6'),btwnr:v('bv7'),iban:v('bv8'),website:v('bv9')};
+  await slaanBedrijf();
+}
+
+// ══════ MIJN GEGEVENS ══════
+function sMijnGegevens(){
+  const p=profiel||{};
+  return`<div class="card"><div class="chdr">👤 Mijn accountgegevens</div><div class="cbdy">
+<div class="g2">
+<div class="fg"><label>Voornaam</label><input id="pg0" value="${es(p.voornaam||'')}" placeholder="Jan"></div>
+<div class="fg"><label>Achternaam</label><input id="pg1" value="${es(p.achternaam||'')}" placeholder="Jansen"></div>
+<div class="fg"><label>Bedrijfsnaam</label><input id="pg2" value="${es(p.bedrijfsnaam||'')}" placeholder="Jouw Bouwbedrijf"></div>
+<div class="fg"><label>Telefoon</label><input id="pg3" value="${es(p.tel||'')}" placeholder="06 12345678"></div>
+<div class="fg"><label>Straat + huisnummer</label><input id="pg4" value="${es(p.adres||'')}" placeholder="Hoofdstraat 1"></div>
+<div class="fg"><label>Postcode + Stad</label><input id="pg5" value="${es(p.stad||'')}" placeholder="1234 AB Amsterdam"></div>
+</div>
+<div class="fg"><label>E-mailadres</label>
+<input value="${es(user?.email||'')}" disabled style="background:var(--gr);color:var(--t2)">
+<div style="font-size:10px;color:var(--t3);margin-top:3px">E-mailadres kan niet worden gewijzigd</div></div>
+<div class="al ali" style="margin-top:12px">
+Abonnement: <strong>${p.plan||'starter'}</strong> · 
+Contact voor upgrade: <a href="mailto:${CONTACT_EMAIL}" style="color:var(--b)">${CONTACT_EMAIL}</a>
+</div>
+<div style="margin-top:16px">
+<button class="btn bg2 blg" onclick="saveGegevens()">☁ Opslaan</button>
+</div></div></div>`;}
+
+async function saveGegevens(){
+  const v=id=>document.getElementById(id)?.value||'';
+  const updates={voornaam:v('pg0'),achternaam:v('pg1'),bedrijfsnaam:v('pg2'),tel:v('pg3'),adres:v('pg4'),stad:v('pg5')};
+  try{
+    await sb.from('profiles').update(updates).eq('id',user.id);
+    profiel={...profiel,...updates};
+    const chip=document.getElementById('user-chip');
+    if(chip)chip.textContent=(updates.voornaam||profiel?.bedrijfsnaam||user?.email||'');
+    tN('Gegevens opgeslagen ✓');
+  }catch(e){tN('Fout: '+e.message);}
+}
+
+// ══════ ADMIN ══════
+function sAdmin(){
+  setTimeout(async function(){
+    if(!sb)return;
+    try{
+      const {data:users}=await sb.from('profiles').select('*').order('aangemaakt',{ascending:false});
+      const el=document.getElementById('admin-content');if(!el)return;
+      el.innerHTML=!users||users.length===0?'<div class="al ali">Geen gebruikers gevonden.</div>':
+      users.map(u=>`<div class="adm-row">
+<div class="adm-av">${(u.voornaam||u.email||'?')[0].toUpperCase()}</div>
+<div style="flex:1;min-width:120px">
+<div style="font-weight:700;font-size:12px">${es((u.voornaam||'')+' '+(u.achternaam||'')).trim()||es(u.email)}</div>
+<div style="font-size:10px;color:var(--t2)">${es(u.email)}</div>
+<div style="font-size:10px;color:var(--t2)">${es(u.bedrijfsnaam||'—')} · ${es(u.tel||'—')}</div>
+<div style="font-size:10px;color:var(--t2)">${es(u.adres||'')} ${es(u.stad||'')}</div>
+<div style="font-size:10px;color:var(--t3)">Aangemeld: ${new Date(u.aangemaakt).toLocaleDateString('nl-NL')}</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+<span class="badge ${u.plan==='pro'?'bg':u.plan==='admin'?'bo':u.plan==='geblokkeerd'?'br2':'bb'}">${(u.plan||'starter').toUpperCase()}</span>
+<select onchange="wijzigPlan('${u.id}',this.value)" style="font-size:11px;padding:4px 6px;border:1px solid var(--gr2);border-radius:var(--r2);font-family:inherit">
+${['starter','pro','business','admin','geblokkeerd'].map(p=>`<option ${u.plan===p?'selected':''}>${p}</option>`).join('')}
+</select>
+<button class="btn br bsm" onclick="delUser('${u.id}')">✕ Verwijder</button>
+</div></div>`).join('');
+    }catch(e){const el=document.getElementById('admin-content');if(el)el.innerHTML='<div class="al alo">Fout: '+e.message+'</div>';}
+  },100);
+  return`<div class="card"><div class="chdr p">👥 Gebruikersbeheer</div><div class="cbdy">
+<div class="al ali">Hier zie je alle geregistreerde gebruikers. Wijzig het plan of verwijder accounts.</div>
+<div id="admin-content"><div style="text-align:center;padding:20px;color:var(--t2)">Laden...</div></div>
+</div></div>`;}
+
+async function wijzigPlan(uid,plan){
+  await sb.from('profiles').update({plan}).eq('id',uid);
+  tN('Plan bijgewerkt: '+plan+' ✓');ga(22);
+}
+async function delUser(uid){
+  if(!confirm('Gebruiker definitief verwijderen?'))return;
+  await sb.from('profiles').delete().eq('id',uid);
+  tN('Gebruiker verwijderd');ga(22);
+}
+
+// ══════ PROJECT BEHEER ══════
+async function laadProj(id){
+  const p=alleProj.find(x=>x.id===id);if(!p)return;
+  project={id:p.id,naam:p.naam,type:p.type||'Renovatie',opdrachtgever:p.opdrachtgever,adres:p.adres,stad:p.stad,tel:p.tel,email:p.email,offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],notities:p.notities,marge:p.marge||15,btw:p.btw||21,items:p.items||{},status:p.status||'concept'};
+}
+async function delProj(id){
+  if(!confirm('Project verwijderen?'))return;
+  await sb.from('projecten').delete().eq('id',id);
+  await laadAlleProj();
+  if(project.id===id)project=np();
+  render();tN('Project verwijderd');
+}
+function nieuwProj(){if(confirm('Nieuw project starten? Huidige wordt niet verwijderd.'))project=np();}
+
+// ══════ MODAL / NOTIF ══════
+function openM(t,b,f=''){document.getElementById('mhdr').textContent=t;document.getElementById('mbdy').innerHTML=b;document.getElementById('mftr').innerHTML=`${f}<button class="btn bout" onclick="sluitM()">Sluiten</button>`;document.getElementById('mbg').classList.add('on');}
+function sluitM(){document.getElementById('mbg').classList.remove('on');}
+function tN(t){const n=document.getElementById('notif');n.textContent=t;n.classList.add('on');setTimeout(()=>n.classList.remove('on'),2800);}
+
+// ══════ START ══════
+;(function(){
+  const s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+  s.onload=async function(){
+    sb=window.supabase.createClient(SB_URL,SB_KEY);
+    
+    // Check if this is a password reset link
+    const hash=window.location.hash;
+    const params=new URLSearchParams(hash.replace('#',''));
+    const type=params.get('type');
+    const accessToken=params.get('access_token');
+    
+    if(type==='recovery' && accessToken){
+      // Password reset flow
+      showWachtwoordReset();
+      return;
+    }
+    
+    try{
+      const {data:{session}}=await sb.auth.getSession();
+      if(session)await onLogin(session.user);
+    }catch(_){}
+    sb.auth.onAuthStateChange(async(_,session)=>{
+      if(session){
+        // Check if password recovery session
+        if(session.user && window._passwordReset){
+          showWachtwoordReset();
+          return;
+        }
+        await onLogin(session.user);
+      }
+      else{
+        document.getElementById('login-screen').style.display='flex';
+        document.getElementById('app-screen').style.display='none';
+      }
+    });
+  };
+  document.head.appendChild(s);
+})();
+</script>
+
+<!-- WACHTWOORD RESET SCHERM -->
+<div id="reset-screen" style="display:none;position:fixed;inset:0;background:linear-gradient(135deg,#1a3c5e,#2874a6);z-index:9999;align-items:center;justify-content:center;padding:16px">
+  <div class="lbox">
+    <div class="ltop">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiMxYTNjNWUiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI4NSIgcng9IjYiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xMikiLz4KICA8cmVjdCB4PSIzMiIgeT0iNDAiIHdpZHRoPSIzNiIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iI2U2N2UyMiIvPgogIDxyZWN0IHg9IjMyIiB5PSI1MSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiLz4KICA8cmVjdCB4PSIzMiIgeT0iNTkiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzIiByeD0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxyZWN0IHg9IjMyIiB5PSI2NyIgd2lkdGg9IjM4IiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzIiIHk9Ijc1IiB3aWR0aD0iMzAiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8Y2lyY2xlIGN4PSI2NiIgY3k9IjEwMCIgcj0iMTMiIGZpbGw9IiNlNjdlMjIiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI1OSwxMDAgNjQsMTA2IDc0LDkzIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHJlY3QgeD0iOTgiIHk9IjIwIiB3aWR0aD0iMiIgaGVpZ2h0PSIxMjAiIHJ4PSIxIiBmaWxsPSIjZTY3ZTIyIiBvcGFjaXR5PSIwLjUiLz4KICA8dGV4dCB4PSIxMTQiIHk9Ijg4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+RGlyZWNodDwvdGV4dD4KICA8dGV4dCB4PSIxMTQiIHk9IjEzOCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlNjdlMjIiPk9mZmVydGU8L3RleHQ+Cjwvc3ZnPg==" alt="Direcht Offerte">
+    </div>
+    <div class="lbody">
+      <div style="font-size:18px;font-weight:700;color:var(--b);margin-bottom:4px">🔑 Nieuw wachtwoord</div>
+      <div style="font-size:13px;color:var(--t2);margin-bottom:16px">Kies een nieuw wachtwoord voor je account</div>
+      <div class="err" id="reset-err"></div>
+      <div class="ok" id="reset-ok"></div>
+      <div class="fg">
+        <label>Nieuw wachtwoord (min. 6 tekens)</label>
+        <input type="password" id="reset-pw" placeholder="Nieuw wachtwoord">
+      </div>
+      <div class="fg">
+        <label>Herhaal wachtwoord</label>
+        <input type="password" id="reset-pw2" placeholder="Herhaal wachtwoord" onkeydown="if(event.key==='Enter')doResetPw()">
+      </div>
+      <button class="lbtn" onclick="doResetPw()">Wachtwoord opslaan →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function showWachtwoordReset(){
+  // Show reset screen
+  const rs=document.getElementById('reset-screen');
+  if(rs){
+    rs.style.display='flex';
+    // Set logo
+    const img=rs.querySelector('img');
+    if(img)img.src=LOGO;
+  }
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-screen').style.display='none';
+}
+
+async function doResetPw(){
+  const pw=document.getElementById('reset-pw').value;
+  const pw2=document.getElementById('reset-pw2').value;
+  const errEl=document.getElementById('reset-err');
+  const okEl=document.getElementById('reset-ok');
+  errEl.style.display='none';okEl.style.display='none';
+  
+  if(!pw){errEl.textContent='Vul een wachtwoord in';errEl.style.display='block';return;}
+  if(pw.length<6){errEl.textContent='Wachtwoord minimaal 6 tekens';errEl.style.display='block';return;}
+  if(pw!==pw2){errEl.textContent='Wachtwoorden komen niet overeen';errEl.style.display='block';return;}
+  
+  okEl.textContent='Bezig...';okEl.style.display='block';
+  
+  try{
+    const {error}=await sb.auth.updateUser({password:pw});
+    if(error){okEl.style.display='none';errEl.textContent=error.message;errEl.style.display='block';return;}
+    okEl.textContent='✅ Wachtwoord gewijzigd! Je wordt ingelogd...';
+    // Clean URL
+    window.history.replaceState(null,null,window.location.pathname);
+    setTimeout(async()=>{
+      const {data:{session}}=await sb.auth.getSession();
+      document.getElementById('reset-screen').style.display='none';
+      if(session)await onLogin(session.user);
+      else{document.getElementById('login-screen').style.display='flex';}
+    },1500);
+  }catch(e){okEl.style.display='none';errEl.textContent=e.message;errEl.style.display='block';}
+}
+</script>
+</body>
+</html>
