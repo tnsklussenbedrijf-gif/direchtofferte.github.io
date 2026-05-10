@@ -845,7 +845,7 @@ let sb=null, user=null, profiel=null;
 let prijzen={}, scherm=0, alleProj=[], project=np();
 let bedrijf={naam:'',slogan:'',straat:'',stad:'',tel:'',email:'',kvk:'',btwnr:'',iban:'',website:'',logo:''};
 
-function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};}
+function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',geldigDagen:30,betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};}
 function getBT(){return project.betalingstermijnen||[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}];}
 function setBTR(i,veld,waarde){const bt=getBT();bt[i][veld]=(veld==='procent'||veld==='dagen')?parseInt(waarde)||0:waarde;project.betalingstermijnen=bt;render();}
 function addBTR(){const bt=getBT();bt.push({omschrijving:'Nieuwe termijn',procent:0,dagen:14});project.betalingstermijnen=bt;render();}
@@ -988,7 +988,7 @@ async function slaOp(){
   if(!sb||!user){tN('Niet verbonden');return;}
   syncSt('b','Opslaan...');
   try{
-    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,betalingstermijnen:project.betalingstermijnen||[],gewijzigd:new Date().toISOString()};
+    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,betalingstermijnen:project.betalingstermijnen||[],geldig_dagen:project.geldigDagen||30,gewijzigd:new Date().toISOString()};
     if(project.id){await sb.from('projecten').update(p).eq('id',project.id);}
     else{const {data}=await sb.from('projecten').insert(p).select().single();if(data)project.id=data.id;}
     await laadAlleProj();syncSt('ok','Opgeslagen ✓');tN('Opgeslagen ☁');updateNav();
@@ -1103,6 +1103,11 @@ ${['Renovatie','Nieuwbouw','Uitbouw / Aanbouw','Verbouwing','Onderhoud','Dakreno
 ${['concept','verstuurd','akkoord','afgewezen'].map(s=>`<option ${project.status===s?'selected':''}>${s}</option>`).join('')}
 </select></div>
 <div class="fg"><label>Datum</label><input type="date" value="${project.datum}" oninput="project.datum=this.value"></div>
+<div class="fg"><label>Offerte geldig (dagen)</label>
+<div style="display:flex;align-items:center;gap:8px">
+<input type="number" min="1" max="365" value="${project.geldigDagen||30}" oninput="project.geldigDagen=parseInt(this.value)||30" style="width:80px;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:10px 12px;font-size:13px;font-family:inherit">
+<span style="font-size:13px;color:var(--t2)">dagen na dagtekening</span>
+</div></div>
 <div class="fg"><label>Opdrachtgever</label><input value="${es(project.opdrachtgever)}" oninput="project.opdrachtgever=this.value"></div>
 <div class="fg"><label>Straat + huisnummer</label><input value="${es(project.adres)}" oninput="project.adres=this.value"></div>
 <div class="fg"><label>Postcode + Stad</label><input value="${es(project.stad)}" oninput="project.stad=this.value"></div>
@@ -1223,7 +1228,7 @@ function sOfferte(){
 <div style="text-align:right;color:#fff">
 <div style="font-size:26px;font-weight:700;letter-spacing:3px">OFFERTE</div>
 <div style="font-size:11px;opacity:.85">Nr: <strong>${es(project.offNr)}</strong> | ${project.datum}</div>
-<div style="font-size:11px;opacity:.75">Geldig t/m: ${new Date(new Date(project.datum).getTime()+30*864e5).toLocaleDateString('nl-NL')}</div>
+<div style="font-size:11px;opacity:.75">Geldig t/m: ${new Date(new Date(project.datum).getTime()+(project.geldigDagen||30)*864e5).toLocaleDateString('nl-NL')}</div>
 </div></div>
 <div style="background:#2874a6;padding:7px 20px;display:flex;gap:18px;flex-wrap:wrap">
 ${bedrijf.straat?`<span style="color:#fff;font-size:11px">📍 ${es(bedrijf.straat)}, ${es(bedrijf.stad)}</span>`:''}
@@ -1268,7 +1273,7 @@ ${project.notities?`<div style="font-size:10px;color:#888;font-style:italic;marg
 <div class="card"><div class="chdr gr">Voorwaarden & Betaling</div><div class="cbdy">
 ${sBetalingsBlok(inc)}
 <ul style="font-size:11px;color:var(--t2);line-height:2;padding-left:16px;margin-top:12px">
-<li>Offerte geldig 30 dagen na dagtekening.</li>
+<li>Offerte geldig ${project.geldigDagen||30} dagen na dagtekening.</li>
 <li>Exclusief vergunningskosten tenzij anders vermeld.</li>
 <li>Meer- en minderwerk schriftelijk overeengekomen.</li>
 </ul>
@@ -1512,7 +1517,7 @@ async function delUser(uid){
 // ══════ PROJECT BEHEER ══════
 async function laadProj(id){
   const p=alleProj.find(x=>x.id===id);if(!p)return;
-  project={id:p.id,naam:p.naam,type:p.type||'Renovatie',opdrachtgever:p.opdrachtgever,adres:p.adres,stad:p.stad,tel:p.tel,email:p.email,offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],notities:p.notities,marge:p.marge||15,btw:p.btw||21,items:p.items||{},status:p.status||'concept',betalingstermijnen:p.betalingstermijnen||[{omschrijving:'Bij opdracht',procent:30},{omschrijving:'Bij uitvoering',procent:40},{omschrijving:'Bij oplevering',procent:30}]};
+  project={id:p.id,naam:p.naam,type:p.type||'Renovatie',opdrachtgever:p.opdrachtgever,adres:p.adres,stad:p.stad,tel:p.tel,email:p.email,offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],notities:p.notities,marge:p.marge||15,btw:p.btw||21,items:p.items||{},status:p.status||'concept',geldigDagen:p.geldig_dagen||30,betalingstermijnen:p.betalingstermijnen||[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};
 }
 async function delProj(id){
   if(!confirm('Project verwijderen?'))return;
