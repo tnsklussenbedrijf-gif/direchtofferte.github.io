@@ -1424,6 +1424,7 @@ async function saveGegevens(){
 
 // ══════ ADMIN ══════
 function sAdmin(){
+  if(profiel?.plan!=='admin'){return`<div class="card"><div class="cbdy" style="text-align:center;padding:40px"><div style="font-size:36px">🔒</div><div style="font-weight:700;color:var(--r);margin-top:12px">Geen toegang</div><div style="color:var(--t2);font-size:13px;margin-top:8px">Dit gedeelte is alleen voor beheerders.</div></div></div>`;}
   setTimeout(async function(){
     if(!sb)return;
     try{
@@ -1489,7 +1490,7 @@ function sMaterialen(){
   setTimeout(haalMaterialenOp, 50);
   return`<div class="card"><div class="chdr" style="background:#1e8449">🏪 Materialen Catalogus — Hornbach & BMN</div><div class="cbdy">
 <div class="al" style="background:#d5f5e3;border-left:4px solid #1e8449;color:#145a32;margin-bottom:12px">
-Voeg materialen toe uit Hornbach of BMN. Hornbach-prijzen worden automatisch opgehaald via de product-URL.</div>
+Typ een materiaalnaam hieronder — prijzen verschijnen direct.</div>
 <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
 <button class="btn bsm ${matTab==='lijst'?'bp':'bout'}" onclick="matTab='lijst';render()">📦 Catalogus</button>
 <button class="btn bsm ${matTab==='nieuw'?'bp':'bout'}" onclick="matTab='nieuw';render()">➕ Nieuw materiaal</button>
@@ -1501,36 +1502,52 @@ ${matTab==='lijst'?sMatLijst():sMatNieuw()}
 function sMatLijst(){
   if(matLaden)return'<div style="text-align:center;padding:30px;color:var(--t2)">Laden...</div>';
   const gefilterd=matCatalogus.filter(m=>!matZoek||m.naam.toLowerCase().includes(matZoek.toLowerCase()));
-  return`<div style="display:flex;gap:8px;margin-bottom:12px">
-<input placeholder="🔍 Zoek materiaal..." value="${matZoek}" oninput="matZoek=this.value;render()" style="flex:1;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:8px 12px;font-size:13px;font-family:inherit">
-<button class="btn bout bsm" onclick="haalMaterialenOp()">↺ Verversen</button>
+  return`
+<div style="position:relative;margin-bottom:16px">
+<input 
+  placeholder="🔍 Type materiaalnaam... bijv. gipsplaat, isolatie, schroeven" 
+  value="${matZoek}" 
+  oninput="matZoek=this.value;render()" 
+  style="width:100%;border:2px solid var(--b);border-radius:var(--r2);padding:12px 16px;font-size:15px;font-family:inherit;box-shadow:0 2px 8px rgba(26,60,94,.10)"
+  autofocus>
+${matZoek?`<button onclick="matZoek='';render()" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:18px;cursor:pointer;color:var(--t3)">✕</button>`:''}
 </div>
-${gefilterd.length===0?`<div class="al ali">Nog geen materialen. Voeg je eerste materiaal toe via "Nieuw materiaal".</div>`:''}
+
+${matZoek&&gefilterd.length===0?`<div class="al alo">Geen materialen gevonden voor "<strong>${es(matZoek)}</strong>". <a onclick="matTab='nieuw';matFormulier.naam='${es(matZoek)}';render()" style="cursor:pointer;color:var(--b);font-weight:700">➕ Toevoegen?</a></div>`:''}
+
+${!matZoek&&matCatalogus.length===0?`<div class="al ali">Nog geen materialen. Voeg je eerste materiaal toe via "Nieuw materiaal".</div>`:''}
+
+${gefilterd.length>0?`
 <div style="overflow-x:auto">
-<table class="pt"><thead><tr>
-<th>Materiaal</th><th>Leverancier</th><th style="text-align:center">Eenheid</th>
-<th style="text-align:right">Inkoop</th><th style="text-align:right">Marge</th>
-<th style="text-align:right">Verkoopprijs</th><th>Acties</th>
+<table class="pt"><thead><tr style="background:var(--b)">
+<th style="color:#fff">Materiaal</th>
+<th style="color:#fff">Leverancier</th>
+<th style="color:#fff;text-align:center">Eenheid</th>
+<th style="color:#fff;text-align:right">Inkoop</th>
+<th style="color:#fff;text-align:right">Marge</th>
+<th style="color:#fff;text-align:right">Verkoopprijs</th>
+<th style="color:#fff">Acties</th>
 </tr></thead><tbody>
 ${gefilterd.map(m=>{
 const vp=m.inkoopprijs?(m.inkoopprijs*(1+(m.marge_procent||20)/100)).toFixed(2):null;
 const oud=m.prijs_laatst_bijgewerkt&&(Date.now()-new Date(m.prijs_laatst_bijgewerkt).getTime())>7*24*60*60*1000;
-return`<tr>
-<td><div style="font-weight:700;font-size:12px;color:var(--b)">${es(m.naam)}</div>
-${m.artikel_nr?`<div style="font-size:10px;color:var(--t3)">Art. ${es(m.artikel_nr)}</div>`:''}
-${m.categorie?`<div style="font-size:10px;color:var(--t3)">${es(m.categorie)}</div>`:''}
+return`<tr style="border-bottom:1px solid var(--gr2)">
+<td>
+  <div style="font-weight:700;font-size:13px;color:var(--b)">${es(m.naam)}</div>
+  ${m.artikel_nr?`<div style="font-size:10px;color:var(--t3)">Art. ${es(m.artikel_nr)}</div>`:''}
+  ${m.categorie?`<div style="font-size:10px;color:var(--t3)">${es(m.categorie)}</div>`:''}
 </td>
 <td><span class="badge ${m.leverancier==='hornbach'?'bo':m.leverancier==='bmn'?'bb':'bg'}">${m.leverancier.toUpperCase()}</span></td>
 <td style="text-align:center;font-size:12px">${es(m.eenheid)}</td>
-<td style="text-align:right;color:var(--t2);font-size:12px">€${m.inkoopprijs?.toFixed(2)||'—'}</td>
-<td style="text-align:right;font-size:12px">${m.marge_procent||20}%</td>
-<td style="text-align:right;font-weight:700;color:var(--b)">€${vp||'—'}</td>
+<td style="text-align:right;color:var(--t2);font-size:13px">€${m.inkoopprijs?.toFixed(2)||'—'}</td>
+<td style="text-align:right;font-size:13px">${m.marge_procent||20}%</td>
+<td style="text-align:right;font-weight:700;font-size:14px;color:var(--b)">€${vp||'—'}</td>
 <td style="white-space:nowrap">
-${m.leverancier==='hornbach'&&m.product_url?`<button class="btn bsm ${oud?'bo2':'bg2'}" onclick="haalActueleprijs('${m.id}','${m.product_url.replace(/'/g,"\\'")}','${m.id}')" title="${oud?'Prijs ouder dan 7 dagen':'Prijs is actueel'}">${oud?'🔄 Update':'✓ Actueel'}</button> `:''}
+${m.leverancier==='hornbach'&&m.product_url?`<button class="btn bsm ${oud?'bo2':'bg2'}" onclick="haalActueleprijs('${m.id}','${m.product_url.replace(/'/g,"\\'")}')" title="${oud?'Prijs ouder dan 7 dagen — klik om bij te werken':'Prijs is recent'}">${oud?'🔄 Update':'✓ Actueel'}</button> `:''}
 ${m.product_url?`<a href="${es(m.product_url)}" target="_blank" class="btn bout bsm">🔗</a> `:''}
 <button class="btn br bsm" onclick="verwijderMateriaal('${m.id}')">✕</button>
 </td></tr>`;}).join('')}
-</tbody></table></div>`;
+</tbody></table></div>`:''}`;
 }
 
 function sMatNieuw(){
