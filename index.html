@@ -349,8 +349,7 @@ async function doForgot(){
 
 async function doLogout(){
   await sb.auth.signOut();
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('app-screen').style.display='none';
+  location.reload();
 }
 
 async function onLogin(u){
