@@ -845,10 +845,10 @@ let sb=null, user=null, profiel=null;
 let prijzen={}, scherm=0, alleProj=[], project=np();
 let bedrijf={naam:'',slogan:'',straat:'',stad:'',tel:'',email:'',kvk:'',btwnr:'',iban:'',website:'',logo:''};
 
-function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30},{omschrijving:'Bij uitvoering',procent:40},{omschrijving:'Bij oplevering',procent:30}]};}
-function getBT(){return project.betalingstermijnen||[{omschrijving:'Bij opdracht',procent:30},{omschrijving:'Bij uitvoering',procent:40},{omschrijving:'Bij oplevering',procent:30}];}
-function setBTR(i,veld,waarde){const bt=getBT();bt[i][veld]=veld==='procent'?parseInt(waarde)||0:waarde;project.betalingstermijnen=bt;render();}
-function addBTR(){const bt=getBT();bt.push({omschrijving:'Nieuwe termijn',procent:0});project.betalingstermijnen=bt;render();}
+function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};}
+function getBT(){return project.betalingstermijnen||[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}];}
+function setBTR(i,veld,waarde){const bt=getBT();bt[i][veld]=(veld==='procent'||veld==='dagen')?parseInt(waarde)||0:waarde;project.betalingstermijnen=bt;render();}
+function addBTR(){const bt=getBT();bt.push({omschrijving:'Nieuwe termijn',procent:0,dagen:14});project.betalingstermijnen=bt;render();}
 function delBTR(i){const bt=getBT();bt.splice(i,1);project.betalingstermijnen=bt;render();}
 function totBT(){return getBT().reduce((s,r)=>s+(parseInt(r.procent)||0),0);}
 function sBetalingsBlok(inc){
@@ -857,9 +857,12 @@ function sBetalingsBlok(inc){
   if(bt.length===0)return'';
   return`<div style="margin-top:12px;border:1px solid #ddd;border-radius:6px;overflow:hidden">
 <div style="background:#1a3c5e;color:#fff;padding:7px 13px;font-size:11px;font-weight:700">BETALINGSTERMIJNEN</div>
-${bt.map(r=>`<div style="display:flex;justify-content:space-between;padding:7px 13px;border-bottom:1px solid #eee;font-size:12px">
+${bt.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 13px;border-bottom:1px solid #eee;font-size:12px">
 <span>${es(r.omschrijving)}</span>
+<div style="text-align:right">
 <strong>€ ${Math.round(inc*(r.procent/100)).toLocaleString('nl-NL')} (${r.procent}%)</strong>
+${r.dagen?`<div style="font-size:10px;color:#888">Betalen binnen ${r.dagen} dagen</div>`:''}
+</div>
 </div>`).join('')}
 ${tot!==100?`<div style="padding:6px 13px;background:#fdebd0;font-size:11px;color:#e67e22;font-weight:700">⚠ Totaal ${tot}% — moet 100% zijn</div>`:''}
 </div>`;}
@@ -1123,9 +1126,13 @@ ${['concept','verstuurd','akkoord','afgewezen'].map(s=>`<option ${project.status
 <div style="background:var(--gr);border-radius:var(--r2);padding:12px;margin-bottom:6px">
 ${getBT().map((r,i)=>`<div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
 <input value="${es(r.omschrijving)}" oninput="setBTR(${i},'omschrijving',this.value)" placeholder="Omschrijving" style="flex:2;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:7px 10px;font-size:13px;font-family:inherit">
-<div style="display:flex;align-items:center;gap:4px;flex:1">
-<input type="number" min="0" max="100" value="${r.procent}" oninput="setBTR(${i},'procent',this.value)" style="width:65px;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:7px 8px;font-size:13px;font-family:inherit;text-align:right">
-<span style="font-size:13px;color:var(--t2)">%</span>
+<div style="display:flex;align-items:center;gap:4px">
+<input type="number" min="0" max="100" value="${r.procent}" oninput="setBTR(${i},'procent',this.value)" style="width:55px;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:7px 8px;font-size:13px;font-family:inherit;text-align:right">
+<span style="font-size:12px;color:var(--t2)">%</span>
+</div>
+<div style="display:flex;align-items:center;gap:4px">
+<input type="number" min="0" max="365" value="${r.dagen||0}" oninput="setBTR(${i},'dagen',this.value)" style="width:55px;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:7px 8px;font-size:13px;font-family:inherit;text-align:right">
+<span style="font-size:12px;color:var(--t2)">dgn</span>
 </div>
 <button class="btn br bsm" onclick="delBTR(${i})">✕</button>
 </div>`).join('')}
@@ -1135,9 +1142,9 @@ ${getBT().map((r,i)=>`<div style="display:flex;gap:8px;align-items:center;margin
 </div>
 </div>
 <div style="font-size:10px;color:var(--t3)">Snel instellen:
-<a onclick="project.betalingstermijnen=[{omschrijving:'Bij oplevering',procent:100}];render()" style="cursor:pointer;color:var(--b);margin-right:8px">100% bij oplevering</a>
-<a onclick="project.betalingstermijnen=[{omschrijving:'Bij opdracht',procent:50},{omschrijving:'Bij oplevering',procent:50}];render()" style="cursor:pointer;color:var(--b);margin-right:8px">50/50</a>
-<a onclick="project.betalingstermijnen=[{omschrijving:'Bij opdracht',procent:30},{omschrijving:'Bij uitvoering',procent:40},{omschrijving:'Bij oplevering',procent:30}];render()" style="cursor:pointer;color:var(--b)">30/40/30</a>
+<a onclick="project.betalingstermijnen=[{omschrijving:'Bij oplevering',procent:100,dagen:30}];render()" style="cursor:pointer;color:var(--b);margin-right:8px">100% bij oplevering</a>
+<a onclick="project.betalingstermijnen=[{omschrijving:'Bij opdracht',procent:50,dagen:7},{omschrijving:'Bij oplevering',procent:50,dagen:30}];render()" style="cursor:pointer;color:var(--b);margin-right:8px">50/50</a>
+<a onclick="project.betalingstermijnen=[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}];render()" style="cursor:pointer;color:var(--b)">30/40/30</a>
 </div></div>
 <div style="display:flex;justify-content:space-between;gap:8px">
 <button class="btn bg2" onclick="slaOp()">☁ Opslaan</button>
