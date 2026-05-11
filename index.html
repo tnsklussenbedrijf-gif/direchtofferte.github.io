@@ -17,7 +17,7 @@
 body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-height:100vh}
 
 /* ── LOGIN ── */
-#login-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#1a3c5e 0%,#2874a6 60%,#1a3c5e 100%);padding:16px}
+#login-screen{display:block;min-height:100vh;background:#fff}
 .lbox{background:#fff;border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:var(--sh2)}
 .ltop{background:#1a3c5e;padding:22px;text-align:center}
 .ltop img{height:72px}
@@ -171,6 +171,179 @@ body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-h
 
 <!-- ══════ LOGIN SCHERM ══════ -->
 <div id="login-screen">
+
+  <!-- ══ NAVIGATIE ══ -->
+  <nav style="position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(26,60,94,.97);backdrop-filter:blur(10px);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 20px rgba(0,0,0,.3)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiMxYTNjNWUiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI4NSIgcng9IjYiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xMikiLz4KICA8cmVjdCB4PSIzMiIgeT0iNDAiIHdpZHRoPSIzNiIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iI2U2N2UyMiIvPgogIDxyZWN0IHg9IjMyIiB5PSI1MSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiLz4KICA8cmVjdCB4PSIzMiIgeT0iNTkiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzIiByeD0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxyZWN0IHg9IjMyIiB5PSI2NyIgd2lkdGg9IjM4IiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzIiIHk9Ijc1IiB3aWR0aD0iMzAiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8Y2lyY2xlIGN4PSI2NiIgY3k9IjEwMCIgcj0iMTMiIGZpbGw9IiNlNjdlMjIiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI1OSwxMDAgNjQsMTA2IDc0LDkzIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHJlY3QgeD0iOTgiIHk9IjIwIiB3aWR0aD0iMiIgaGVpZ2h0PSIxMjAiIHJ4PSIxIiBmaWxsPSIjZTY3ZTIyIiBvcGFjaXR5PSIwLjUiLz4KICA8dGV4dCB4PSIxMTQiIHk9Ijg4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+RGlyZWNodDwvdGV4dD4KICA8dGV4dCB4PSIxMTQiIHk9IjEzOCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlNjdlMjIiPk9mZmVydGU8L3RleHQ+Cjwvc3ZnPg==" alt="Direcht Offerte" style="height:36px">
+    </div>
+    <div style="display:flex;gap:24px;align-items:center">
+      <a href="#functies" style="color:rgba(255,255,255,.8);text-decoration:none;font-size:13px;font-weight:600" onclick="document.getElementById('functies').scrollIntoView({behavior:'smooth'});return false">Functies</a>
+      <a href="#hoewerkthet" style="color:rgba(255,255,255,.8);text-decoration:none;font-size:13px;font-weight:600" onclick="document.getElementById('hoewerkthet').scrollIntoView({behavior:'smooth'});return false">Hoe werkt het</a>
+      <a href="#prijzen" style="color:rgba(255,255,255,.8);text-decoration:none;font-size:13px;font-weight:600" onclick="document.getElementById('prijzen').scrollIntoView({behavior:'smooth'});return false">Prijzen</a>
+      <a href="#inloggen" style="background:#e67e22;color:#fff;text-decoration:none;font-size:13px;font-weight:700;padding:8px 18px;border-radius:6px" onclick="document.getElementById('inloggen').scrollIntoView({behavior:'smooth'});return false">Inloggen →</a>
+    </div>
+  </nav>
+
+  <!-- ══ HERO SECTIE ══ -->
+  <div style="width:100%;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:100px 24px 60px;background:linear-gradient(135deg,#0f2640 0%,#1a3c5e 50%,#0d1f33 100%);position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2220%22 cy=%2220%22 r=%2240%22 fill=%22rgba(40,116,166,0.1)%22/><circle cx=%2280%22 cy=%2280%22 r=%2260%22 fill=%22rgba(230,126,34,0.05)%22/></svg>');background-size:cover"></div>
+    <div style="max-width:900px;text-align:center;position:relative">
+      <div style="display:inline-block;background:rgba(230,126,34,.15);border:1px solid rgba(230,126,34,.4);color:#e67e22;padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:24px;text-transform:uppercase;letter-spacing:1px">🏗️ Software voor de bouwsector</div>
+      <h1 style="font-size:clamp(36px,6vw,68px);font-weight:800;color:#fff;line-height:1.1;margin-bottom:20px">Professionele offertes<br><span style="color:#e67e22">in minuten</span> klaar</h1>
+      <p style="font-size:clamp(16px,2vw,20px);color:rgba(255,255,255,.7);max-width:600px;margin:0 auto 36px;line-height:1.6">Direcht Offerte is dé offertesoftware voor bouwbedrijven. Maak, verstuur en beheer al je offertes en facturen op één plek.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button onclick="document.getElementById('inloggen').scrollIntoView({behavior:'smooth'})" style="background:#e67e22;color:#fff;border:none;padding:16px 32px;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(230,126,34,.4)">Gratis proberen →</button>
+        <button onclick="document.getElementById('hoewerkthet').scrollIntoView({behavior:'smooth'})" style="background:rgba(255,255,255,.1);color:#fff;border:2px solid rgba(255,255,255,.3);padding:16px 32px;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;font-family:inherit">Hoe werkt het?</button>
+      </div>
+      <div style="margin-top:48px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap">
+        <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#e67e22">5 min</div><div style="font-size:12px;color:rgba(255,255,255,.5)">Offerte gemaakt</div></div>
+        <div style="width:1px;background:rgba(255,255,255,.1)"></div>
+        <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#e67e22">100%</div><div style="font-size:12px;color:rgba(255,255,255,.5)">Cloud opslag</div></div>
+        <div style="width:1px;background:rgba(255,255,255,.1)"></div>
+        <div style="text-align:center"><div style="font-size:28px;font-weight:800;color:#e67e22">Direct</div><div style="font-size:12px;color:rgba(255,255,255,.5)">Per e-mail verstuurd</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ FUNCTIES ══ -->
+  <div id="functies" style="width:100%;background:#fff;padding:80px 24px">
+    <div style="max-width:1100px;margin:0 auto">
+      <div style="text-align:center;margin-bottom:56px">
+        <div style="color:#e67e22;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Alles wat je nodig hebt</div>
+        <h2 style="font-size:clamp(28px,4vw,42px);font-weight:800;color:#1a3c5e;margin-bottom:16px">Één software voor je hele bedrijf</h2>
+        <p style="color:#566573;font-size:16px;max-width:500px;margin:0 auto">Van offerte tot factuur — alles geregeld in één overzichtelijk systeem</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px">
+        <div style="background:#f8fafc;border-radius:12px;padding:28px;border:1px solid #e5e8ea" onmouseover="this.style.borderColor='#1a3c5e';this.style.boxShadow='0 4px 20px rgba(26,60,94,.1)'" onmouseout="this.style.borderColor='#e5e8ea';this.style.boxShadow='none'">
+          <div style="font-size:36px;margin-bottom:14px">📄</div>
+          <h3 style="font-size:17px;font-weight:700;color:#1a3c5e;margin-bottom:8px">Professionele offertes</h3>
+          <p style="color:#566573;font-size:14px;line-height:1.6">Maak in minuten een complete offerte met alle werkzaamheden, materialen en btw berekeningen. Direct klaar om te versturen.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:28px;border:1px solid #e5e8ea" onmouseover="this.style.borderColor='#1a3c5e';this.style.boxShadow='0 4px 20px rgba(26,60,94,.1)'" onmouseout="this.style.borderColor='#e5e8ea';this.style.boxShadow='none'">
+          <div style="font-size:36px;margin-bottom:14px">✉️</div>
+          <h3 style="font-size:17px;font-weight:700;color:#1a3c5e;margin-bottom:8px">Versturen per e-mail</h3>
+          <p style="color:#566573;font-size:14px;line-height:1.6">Stuur offertes en facturen direct per e-mail vanuit het systeem. Klant ontvangt een mooie e-mail met alle details.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:28px;border:1px solid #e5e8ea" onmouseover="this.style.borderColor='#1a3c5e';this.style.boxShadow='0 4px 20px rgba(26,60,94,.1)'" onmouseout="this.style.borderColor='#e5e8ea';this.style.boxShadow='none'">
+          <div style="font-size:36px;margin-bottom:14px">🧾</div>
+          <h3 style="font-size:17px;font-weight:700;color:#1a3c5e;margin-bottom:8px">Facturen maken</h3>
+          <p style="color:#566573;font-size:14px;line-height:1.6">Zet een goedgekeurde offerte met één klik om naar een professionele factuur. Automatisch gegenereerd met alle gegevens.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:28px;border:1px solid #e5e8ea" onmouseover="this.style.borderColor='#1a3c5e';this.style.boxShadow='0 4px 20px rgba(26,60,94,.1)'" onmouseout="this.style.borderColor='#e5e8ea';this.style.boxShadow='none'">
+          <div style="font-size:36px;margin-bottom:14px">💰</div>
+          <h3 style="font-size:17px;font-weight:700;color:#1a3c5e;margin-bottom:8px">Betalingstermijnen</h3>
+          <p style="color:#566573;font-size:14px;line-height:1.6">Stel zelf betalingstermijnen in per offerte. 30/40/30 of 100% bij oplevering — jij bepaalt de voorwaarden.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:28px;border:1px solid #e5e8ea" onmouseover="this.style.borderColor='#1a3c5e';this.style.boxShadow='0 4px 20px rgba(26,60,94,.1)'" onmouseout="this.style.borderColor='#e5e8ea';this.style.boxShadow='none'">
+          <div style="font-size:36px;margin-bottom:14px">👥</div>
+          <h3 style="font-size:17px;font-weight:700;color:#1a3c5e;margin-bottom:8px">Klanten database</h3>
+          <p style="color:#566573;font-size:14px;line-height:1.6">Sla vaste klanten op in je eigen database. Bij een nieuwe offerte selecteer je de klant en alle gegevens worden automatisch ingevuld.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:28px;border:1px solid #e5e8ea" onmouseover="this.style.borderColor='#1a3c5e';this.style.boxShadow='0 4px 20px rgba(26,60,94,.1)'" onmouseout="this.style.borderColor='#e5e8ea';this.style.boxShadow='none'">
+          <div style="font-size:36px;margin-bottom:14px">☁️</div>
+          <h3 style="font-size:17px;font-weight:700;color:#1a3c5e;margin-bottom:8px">Cloud opslag</h3>
+          <p style="color:#566573;font-size:14px;line-height:1.6">Alle offertes en projecten worden veilig opgeslagen in de cloud. Altijd en overal toegankelijk, nooit meer kwijt.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:28px;border:1px solid #e5e8ea" onmouseover="this.style.borderColor='#1a3c5e';this.style.boxShadow='0 4px 20px rgba(26,60,94,.1)'" onmouseout="this.style.borderColor='#e5e8ea';this.style.boxShadow='none'">
+          <div style="font-size:36px;margin-bottom:14px">🏗️</div>
+          <h3 style="font-size:17px;font-weight:700;color:#1a3c5e;margin-bottom:8px">Alle bouwcategorieën</h3>
+          <p style="color:#566573;font-size:14px;line-height:1.6">Van grond & fundering tot afwerking — alle bouwcategorieën zijn standaard ingebouwd met vakkundige omschrijvingen.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:28px;border:1px solid #e5e8ea" onmouseover="this.style.borderColor='#1a3c5e';this.style.boxShadow='0 4px 20px rgba(26,60,94,.1)'" onmouseout="this.style.borderColor='#e5e8ea';this.style.boxShadow='none'">
+          <div style="font-size:36px;margin-bottom:14px">📊</div>
+          <h3 style="font-size:17px;font-weight:700;color:#1a3c5e;margin-bottom:8px">Prijsbeheer</h3>
+          <p style="color:#566573;font-size:14px;line-height:1.6">Stel jouw standaard uurtarieven en materiaalprijzen in. Eenmalig instellen, altijd automatisch toegepast.</p>
+        </div>
+        <div style="background:#f8fafc;border-radius:12px;padding:28px;border:1px solid #e5e8ea" onmouseover="this.style.borderColor='#1a3c5e';this.style.boxShadow='0 4px 20px rgba(26,60,94,.1)'" onmouseout="this.style.borderColor='#e5e8ea';this.style.boxShadow='none'">
+          <div style="font-size:36px;margin-bottom:14px">🔒</div>
+          <h3 style="font-size:17px;font-weight:700;color:#1a3c5e;margin-bottom:8px">Veilig & betrouwbaar</h3>
+          <p style="color:#566573;font-size:14px;line-height:1.6">Inloggen met e-mail en wachtwoord. Jouw data is alleen voor jou zichtbaar, beveiligd met Supabase authenticatie.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ HOE WERKT HET ══ -->
+  <div id="hoewerkthet" style="width:100%;background:#1a3c5e;padding:80px 24px">
+    <div style="max-width:900px;margin:0 auto;text-align:center">
+      <div style="color:#e67e22;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Simpel en snel</div>
+      <h2 style="font-size:clamp(28px,4vw,42px);font-weight:800;color:#fff;margin-bottom:56px">In 3 stappen een offerte versturen</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px">
+        <div>
+          <div style="width:64px;height:64px;background:#e67e22;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px">📋</div>
+          <div style="background:rgba(255,255,255,.05);border-radius:10px;padding:24px">
+            <div style="font-size:11px;font-weight:700;color:#e67e22;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Stap 1</div>
+            <h3 style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Vul projectgegevens in</h3>
+            <p style="color:rgba(255,255,255,.6);font-size:14px;line-height:1.6">Voer de klantgegevens en projectinformatie in. Kies een bestaande klant of voeg snel een nieuwe toe.</p>
+          </div>
+        </div>
+        <div>
+          <div style="width:64px;height:64px;background:#e67e22;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px">🏗️</div>
+          <div style="background:rgba(255,255,255,.05);border-radius:10px;padding:24px">
+            <div style="font-size:11px;font-weight:700;color:#e67e22;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Stap 2</div>
+            <h3 style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Selecteer werkzaamheden</h3>
+            <p style="color:rgba(255,255,255,.6);font-size:14px;line-height:1.6">Kies de werkzaamheden uit de categorieën, vul de aantallen in en pas prijzen aan. De totalen worden automatisch berekend.</p>
+          </div>
+        </div>
+        <div>
+          <div style="width:64px;height:64px;background:#e67e22;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px">✉️</div>
+          <div style="background:rgba(255,255,255,.05);border-radius:10px;padding:24px">
+            <div style="font-size:11px;font-weight:700;color:#e67e22;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Stap 3</div>
+            <h3 style="font-size:18px;font-weight:700;color:#fff;margin-bottom:10px">Verstuur per e-mail</h3>
+            <p style="color:rgba(255,255,255,.6);font-size:14px;line-height:1.6">Klik op "Verstuur offerte" — de klant ontvangt direct een professionele e-mail met alle details en betalingstermijnen.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PRIJZEN ══ -->
+  <div id="prijzen" style="width:100%;background:#f4f6f7;padding:80px 24px">
+    <div style="max-width:700px;margin:0 auto;text-align:center">
+      <div style="color:#e67e22;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">Transparante prijzen</div>
+      <h2 style="font-size:clamp(28px,4vw,42px);font-weight:800;color:#1a3c5e;margin-bottom:16px">Kies jouw abonnement</h2>
+      <p style="color:#566573;font-size:16px;margin-bottom:48px">Geen verborgen kosten. Betaling via factuur na registratie.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:500px;margin:0 auto">
+        <div style="background:#fff;border:2px solid #e5e8ea;border-radius:16px;padding:28px;text-align:center">
+          <div style="font-size:12px;color:#566573;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Maandelijks</div>
+          <div style="font-size:40px;font-weight:800;color:#1a3c5e;line-height:1">€29,90</div>
+          <div style="font-size:12px;color:#95a5a6;margin:6px 0 20px">per maand · excl. BTW</div>
+          <div style="text-align:left;margin-bottom:20px">
+            <div style="font-size:13px;color:#566573;margin-bottom:6px">✓ Onbeperkt offertes</div>
+            <div style="font-size:13px;color:#566573;margin-bottom:6px">✓ Cloud opslag</div>
+            <div style="font-size:13px;color:#566573;margin-bottom:6px">✓ PDF & Facturen</div>
+            <div style="font-size:13px;color:#566573;margin-bottom:6px">✓ E-mail versturen</div>
+            <div style="font-size:13px;color:#566573;margin-bottom:6px">✓ Altijd opzegbaar</div>
+          </div>
+          <button onclick="document.getElementById('inloggen').scrollIntoView({behavior:'smooth'})" style="width:100%;padding:12px;background:#1a3c5e;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Starten →</button>
+        </div>
+        <div style="background:#1a3c5e;border:2px solid #e67e22;border-radius:16px;padding:28px;text-align:center;position:relative">
+          <div style="position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#e67e22;color:#fff;font-size:10px;font-weight:700;padding:4px 14px;border-radius:10px;white-space:nowrap">BESTE DEAL</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Jaarlijks</div>
+          <div style="font-size:40px;font-weight:800;color:#e67e22;line-height:1">€330</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.4);margin:6px 0 20px">per jaar · excl. BTW · bespaar €28,80</div>
+          <div style="text-align:left;margin-bottom:20px">
+            <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:6px">✓ Onbeperkt offertes</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:6px">✓ Cloud opslag</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:6px">✓ PDF & Facturen</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:6px">✓ E-mail versturen</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:6px">✓ 2 maanden gratis</div>
+          </div>
+          <button onclick="document.getElementById('inloggen').scrollIntoView({behavior:'smooth'})" style="width:100%;padding:12px;background:#e67e22;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Starten →</button>
+        </div>
+      </div>
+      <p style="margin-top:20px;color:#95a5a6;font-size:12px">Alle prijzen zijn excl. 21% BTW · Betaling via factuur na registratie</p>
+    </div>
+  </div>
+
+  <!-- ══ LOGIN / REGISTREREN ══ -->
+  <div id="inloggen" style="width:100%;background:linear-gradient(135deg,#1a3c5e 0%,#2874a6 60%,#1a3c5e 100%);padding:80px 24px">
+    <div style="text-align:center;margin-bottom:36px">
+      <h2 style="font-size:32px;font-weight:800;color:#fff;margin-bottom:10px">Direct aan de slag</h2>
+      <p style="color:rgba(255,255,255,.7);font-size:16px">Log in of maak een gratis account aan</p>
+    </div>
+    <div style="display:flex;justify-content:center">
   <div class="lbox">
     <div class="ltop">
       <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiMxYTNjNWUiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI4NSIgcng9IjYiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xMikiLz4KICA8cmVjdCB4PSIzMiIgeT0iNDAiIHdpZHRoPSIzNiIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iI2U2N2UyMiIvPgogIDxyZWN0IHg9IjMyIiB5PSI1MSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiLz4KICA8cmVjdCB4PSIzMiIgeT0iNTkiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzIiByeD0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxyZWN0IHg9IjMyIiB5PSI2NyIgd2lkdGg9IjM4IiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzIiIHk9Ijc1IiB3aWR0aD0iMzAiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8Y2lyY2xlIGN4PSI2NiIgY3k9IjEwMCIgcj0iMTMiIGZpbGw9IiNlNjdlMjIiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI1OSwxMDAgNjQsMTA2IDc0LDkzIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHJlY3QgeD0iOTgiIHk9IjIwIiB3aWR0aD0iMiIgaGVpZ2h0PSIxMjAiIHJ4PSIxIiBmaWxsPSIjZTY3ZTIyIiBvcGFjaXR5PSIwLjUiLz4KICA8dGV4dCB4PSIxMTQiIHk9Ijg4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+RGlyZWNodDwvdGV4dD4KICA8dGV4dCB4PSIxMTQiIHk9IjEzOCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlNjdlMjIiPk9mZmVydGU8L3RleHQ+Cjwvc3ZnPg==" alt="Direcht Offerte">
@@ -180,7 +353,6 @@ body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-h
         <div class="tab on" onclick="ltab('in')">Inloggen</div>
         <div class="tab" onclick="ltab('reg')">Registreren</div>
       </div>
-
       <!-- INLOGGEN -->
       <div class="view on" id="v-in">
         <div class="err" id="in-err"></div>
@@ -190,7 +362,6 @@ body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-h
         <button class="lbtn" onclick="doLogin()">Inloggen →</button>
         <div class="lnk"><a onclick="ltab('fp')">Wachtwoord vergeten?</a></div>
       </div>
-
       <!-- REGISTREREN -->
       <div class="view" id="v-reg">
         <div class="err" id="reg-err"></div>
@@ -220,7 +391,6 @@ body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-h
         <button class="lbtn o" onclick="doRegister()">Account aanmaken →</button>
         <div class="lnk"><a onclick="ltab('in')">Al een account? Inloggen</a></div>
       </div>
-
       <!-- WACHTWOORD VERGETEN -->
       <div class="view" id="v-fp">
         <div class="err" id="fp-err"></div>
@@ -232,51 +402,41 @@ body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-h
       </div>
     </div>
   </div>
+    </div>
+  </div>
 
-  <!-- Prijzen sectie -->
-  <div style="width:100%;max-width:500px;margin-top:24px">
-    <div style="text-align:center;color:rgba(255,255,255,.8);font-size:13px;font-weight:600;margin-bottom:14px;letter-spacing:1px;text-transform:uppercase">Kies jouw abonnement</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <!-- Maandelijks -->
-      <div style="background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.2);border-radius:12px;padding:18px;text-align:center;transition:.15s" onmouseover="this.style.background='rgba(255,255,255,.14)'" onmouseout="this.style.background='rgba(255,255,255,.08)'">
-        <div style="font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Maandelijks</div>
-        <div style="font-size:32px;font-weight:700;color:#fff;line-height:1">€29,90</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">per maand</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">excl. BTW</div>
-        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
-          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ Onbeperkt offertes</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ Cloud opslag</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ PDF & Facturen</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.7)">✓ Altijd opzegbaar</div>
-        </div>
-        <button onclick="window.location.href='mailto:info@direchtofferte.nl?subject=Aanvraag%20maandelijks%20abonnement%20Direcht%20Offerte&body=Goedendag%2C%0A%0AIk%20wil%20graag%20een%20maandelijks%20abonnement%20aanvragen%20voor%20Direcht%20Offerte%20(%E2%82%AC29%2C90%20per%20maand%20excl.%20BTW).%0A%0ANaam%3A%20%0ABedrijfsnaam%3A%20%0ATelefoon%3A%20%0AKVK-nummer%3A%20%0ABTW-nummer%3A%20%0AEmail%3A%20%0A%0AMet%20vriendelijke%20groet'" style="margin-top:14px;width:100%;padding:9px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:6px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s" onmouseover="this.style.background='rgba(255,255,255,.25)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">Abonnement aanvragen →</button>
+  <!-- ══ FOOTER ══ -->
+  <div style="width:100%;background:#0d1f33;padding:40px 24px">
+    <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:32px">
+      <div>
+        <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MDAiIGhlaWdodD0iMTYwIiB2aWV3Qm94PSIwIDAgNjAwIDE2MCI+CiAgPHJlY3Qgd2lkdGg9IjYwMCIgaGVpZ2h0PSIxNjAiIGZpbGw9IiMxYTNjNWUiIHJ4PSIxMCIvPgogIDxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iI2U2N2UyMiIgcng9IjQiLz4KICA8cmVjdCB4PSIwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iNyIgZmlsbD0iIzI4NzRhNiIgcng9IjQiLz4KICA8cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI4NSIgcng9IjYiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4xMikiLz4KICA8cmVjdCB4PSIzMiIgeT0iNDAiIHdpZHRoPSIzNiIgaGVpZ2h0PSI1IiByeD0iMiIgZmlsbD0iI2U2N2UyMiIvPgogIDxyZWN0IHg9IjMyIiB5PSI1MSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuNCkiLz4KICA8cmVjdCB4PSIzMiIgeT0iNTkiIHdpZHRoPSIzNCIgaGVpZ2h0PSIzIiByeD0iMSIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjM1KSIvPgogIDxyZWN0IHg9IjMyIiB5PSI2NyIgd2lkdGg9IjM4IiBoZWlnaHQ9IjMiIHJ4PSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMzUpIi8+CiAgPHJlY3QgeD0iMzIiIHk9Ijc1IiB3aWR0aD0iMzAiIGhlaWdodD0iMyIgcng9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4zNSkiLz4KICA8Y2lyY2xlIGN4PSI2NiIgY3k9IjEwMCIgcj0iMTMiIGZpbGw9IiNlNjdlMjIiLz4KICA8cG9seWxpbmUgcG9pbnRzPSI1OSwxMDAgNjQsMTA2IDc0LDkzIiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+CiAgPHJlY3QgeD0iOTgiIHk9IjIwIiB3aWR0aD0iMiIgaGVpZ2h0PSIxMjAiIHJ4PSIxIiBmaWxsPSIjZTY3ZTIyIiBvcGFjaXR5PSIwLjUiLz4KICA8dGV4dCB4PSIxMTQiIHk9Ijg4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksQXJpYWwsc2Fucy1zZXJpZiIgZm9udC1zaXplPSI1MCIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iI2ZmZmZmZiI+RGlyZWNodDwvdGV4dD4KICA8dGV4dCB4PSIxMTQiIHk9IjEzOCIgZm9udC1mYW1pbHk9IlNlZ29lIFVJLEFyaWFsLHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNTAiIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiNlNjdlMjIiPk9mZmVydGU8L3RleHQ+Cjwvc3ZnPg==" alt="Direcht Offerte" style="height:40px;margin-bottom:12px">
+        <p style="color:rgba(255,255,255,.5);font-size:13px;line-height:1.6">Professionele offertesoftware voor de bouwsector. Snel, betrouwbaar en altijd up-to-date.</p>
       </div>
-      <!-- Jaarlijks -->
-      <div style="background:rgba(230,126,34,.15);border:2px solid #e67e22;border-radius:12px;padding:18px;text-align:center;position:relative;transition:.15s" onmouseover="this.style.background='rgba(230,126,34,.25)'" onmouseout="this.style.background='rgba(230,126,34,.15)'">
-        <div style="position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#e67e22;color:#fff;font-size:10px;font-weight:700;padding:3px 12px;border-radius:10px;white-space:nowrap">BESTE DEAL</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">Jaarlijks</div>
-        <div style="font-size:32px;font-weight:700;color:#e67e22;line-height:1">€330</div>
-        <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:4px">eenmalig per jaar</div>
-        <div style="font-size:10px;color:rgba(255,255,255,.4);margin-top:2px">excl. BTW · bespaar €28,80</div>
-        <div style="margin-top:14px;border-top:1px solid rgba(255,255,255,.1);padding-top:12px">
-          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ Onbeperkt offertes</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ Cloud opslag</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.7);margin-bottom:4px">✓ PDF & Facturen</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.7)">✓ 2 maanden gratis</div>
+      <div>
+        <h4 style="color:#fff;font-size:13px;font-weight:700;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px">Software</h4>
+        <div style="margin-bottom:8px"><a href="#inloggen" onclick="document.getElementById('inloggen').scrollIntoView({behavior:'smooth'});return false" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:13px">Offertes maken</a></div>
+        <div style="margin-bottom:8px"><a href="#inloggen" onclick="document.getElementById('inloggen').scrollIntoView({behavior:'smooth'});return false" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:13px">Facturen versturen</a></div>
+        <div style="margin-bottom:8px"><a href="#inloggen" onclick="document.getElementById('inloggen').scrollIntoView({behavior:'smooth'});return false" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:13px">Klanten beheren</a></div>
+        <div style="margin-bottom:8px"><a href="#inloggen" onclick="document.getElementById('inloggen').scrollIntoView({behavior:'smooth'});return false" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:13px">Prijzen instellen</a></div>
+        <div style="margin-bottom:8px"><a href="#inloggen" onclick="document.getElementById('inloggen').scrollIntoView({behavior:'smooth'});return false" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:13px">Cloud opslag</a></div>
+      </div>
+      <div>
+        <h4 style="color:#fff;font-size:13px;font-weight:700;margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px">Contact</h4>
+        <div style="color:rgba(255,255,255,.5);font-size:13px;line-height:2">
+          <div>📧 <a href="mailto:info@direchtofferte.nl" style="color:rgba(255,255,255,.6);text-decoration:none">info@direchtofferte.nl</a></div>
+          <div>🌐 direchtofferte.nl</div>
+          <div>🏗️ Bouw Software Platform</div>
         </div>
-        <button onclick="window.location.href='mailto:info@direchtofferte.nl?subject=Aanvraag%20jaarlijks%20abonnement%20Direcht%20Offerte&body=Goedendag%2C%0A%0AIk%20wil%20graag%20een%20jaarlijks%20abonnement%20aanvragen%20voor%20Direcht%20Offerte%20(%E2%82%AC330%20per%20jaar%20excl.%20BTW).%0A%0ANaam%3A%20%0ABedrijfsnaam%3A%20%0ATelefoon%3A%20%0AKVK-nummer%3A%20%0ABTW-nummer%3A%20%0AEmail%3A%20%0A%0AMet%20vriendelijke%20groet'" style="margin-top:14px;width:100%;padding:9px;background:#e67e22;border:none;border-radius:6px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s" onmouseover="this.style.background='#ca6f1e'" onmouseout="this.style.background='#e67e22'">Abonnement aanvragen →</button>
       </div>
     </div>
-    <div style="text-align:center;color:rgba(255,255,255,.4);font-size:10px;margin-top:10px">Alle prijzen zijn excl. 21% BTW · Betaling via factuur na registratie</div>
+    <div style="max-width:1100px;margin:32px auto 0;padding-top:24px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <div style="color:rgba(255,255,255,.3);font-size:12px">© 2026 Direcht Offerte — Bouw Software Platform</div>
+      <div style="color:rgba(255,255,255,.3);font-size:12px">Alle prijzen excl. 21% BTW</div>
+    </div>
   </div>
 
-  <!-- Contact info onder login box -->
-  <div class="lcontact">
-    Vragen? Neem contact op:<br>
-    <a href="mailto:info@direchtofferte.nl">📧 info@direchtofferte.nl</a><br>
-    <span style="font-size:11px;opacity:.7;margin-top:4px;display:block">© 2026 Direcht Offerte — Bouw Software Platform</span>
-  </div>
 </div>
+
 
 <!-- ══════ APP SCHERM ══════ -->
 <div id="app-screen">
