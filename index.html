@@ -945,7 +945,9 @@ async function doForgot(){
 }
 
 async function doLogout(){
-  await sb.auth.signOut();
+  try{
+    if(sb)await sb.auth.signOut();
+  }catch(_){}
   project=np();
   profiel=null;
   user=null;
@@ -953,6 +955,8 @@ async function doLogout(){
   scherm=0;
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app-screen').style.display='none';
+  // Forceer herladen zodat alles schoon is
+  setTimeout(()=>location.reload(),300);
 }
 
 // ══════ APP INIT ══════
