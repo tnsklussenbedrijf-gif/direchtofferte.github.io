@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -947,6 +948,11 @@ async function doForgot(){
 
 async function doLogout(){
   await sb.auth.signOut();
+  project=np();
+  profiel=null;
+  user=null;
+  alleProj=[];
+  scherm=0;
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('app-screen').style.display='none';
 }
@@ -969,6 +975,14 @@ async function laadProfiel(){
   try{
     const {data}=await sb.from('profiles').select('*').eq('id',user.id).single();
     if(data){
+      // Geblokkeerde gebruiker uitloggen
+      if(data.plan==='geblokkeerd'){
+        await sb.auth.signOut();
+        document.getElementById('login-screen').style.display='flex';
+        document.getElementById('app-screen').style.display='none';
+        alert('Uw account is geblokkeerd. Neem contact op met de beheerder.');
+        return;
+      }
       profiel=data;
       const chip=document.getElementById('user-chip');
       if(chip)chip.textContent=(data.voornaam||data.bedrijfsnaam||data.email||'');
@@ -1289,6 +1303,9 @@ ${sBetalingsBlok(inc)}
 
 // ══════ OFFERTE PER E-MAIL ══════
 async function verstuurOfferteEmail(){
+  // Eerst opslaan
+  await slaOp();
+
   const email=project.email||'';
   const invoer=prompt('E-mailadres klant:', email);
   if(!invoer)return;
@@ -1380,7 +1397,6 @@ ${bedrijf.iban?`<div style="margin-top:10px;padding:12px;background:#eef5fb;bord
     // Status bijwerken naar verstuurd
     project.status='verstuurd';
     await slaOp();
-    render();
   }catch(e){
     tN('Fout bij versturen: '+e.message);
     console.error(e);
@@ -1625,7 +1641,7 @@ async function delProj(id){
   if(project.id===id)project=np();
   render();tN('Project verwijderd');
 }
-function nieuwProj(){if(confirm('Nieuw project starten? Huidige wordt niet verwijderd.'))project=np();}
+function nieuwProj(){if(confirm('Nieuw project starten? Huidige wordt niet verwijderd.')){project=np();scherm=0;render();}}
 
 // ══════ MODAL / NOTIF ══════
 function openM(t,b,f=''){document.getElementById('mhdr').textContent=t;document.getElementById('mbdy').innerHTML=b;document.getElementById('mftr').innerHTML=`${f}<button class="btn bout" onclick="sluitM()">Sluiten</button>`;document.getElementById('mbg').classList.add('on');}
