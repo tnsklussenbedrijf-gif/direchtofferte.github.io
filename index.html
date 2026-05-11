@@ -1406,24 +1406,24 @@ function sArchief(){
     if(!sb||!user)return;
     try{
       const {data:projs}=await sb.from('projecten').select('*').eq('user_id',user.id).order('gewijzigd',{ascending:false});
+      alleProj=projs||[];
       const el=document.getElementById('arch-content');if(!el)return;
       const zoek=document.getElementById('arch-zoek')?.value?.toLowerCase()||'';
-      const gef=zoek?projs.filter(p=>(p.naam||'').toLowerCase().includes(zoek)||(p.opdrachtgever||'').toLowerCase().includes(zoek)||(p.off_nr||'').toLowerCase().includes(zoek)):projs;
+      const gef=zoek?alleProj.filter(p=>(p.naam||'').toLowerCase().includes(zoek)||(p.opdrachtgever||'').toLowerCase().includes(zoek)||(p.off_nr||'').toLowerCase().includes(zoek)):alleProj;
       el.innerHTML=!gef||gef.length===0?'<div class="al ali">Geen projecten gevonden.</div>':
       gef.map(p=>`<div class="pli">
 <div class="pli-ico">📋</div>
-<div class="pli-info" onclick="laadProj('${p.id}');ga(1)" style="cursor:pointer">
+<div class="pli-info" onclick="laadProj('${p.id}');ga(18)" style="cursor:pointer">
 <div class="pli-naam">${es(p.naam)}</div>
 <div class="pli-sub">Nr: <strong>${es(p.off_nr)}</strong> · ${es(p.opdrachtgever||'—')} · ${new Date(p.gewijzigd).toLocaleDateString('nl-NL')}</div>
-<div class="pli-sub">${es(p.type||'')} · <span class="badge ${p.status==='akkoord'?'bg':p.status==='verstuurd'?'bo':'bb'}">${(p.status||'concept').toUpperCase()}</span></div>
+<div class="pli-sub">${es(p.type||'')} · <span class="badge ${p.status==='akkoord'?'bg':p.status==='verstuurd'?'bo':p.status==='factuur'?'bb':'bb'}">${(p.status||'concept').toUpperCase()}</span></div>
 </div>
 <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">
 <button class="btn bp bsm" onclick="laadProj('${p.id}');ga(18)" title="Offerte bekijken">📄 Offerte</button>
 <button class="btn bo2 bsm" onclick="laadEnFactuur('${p.id}')" title="Factuur maken">🧾 Factuur</button>
-<button class="btn bp bsm" onclick="laadProj('${p.id}');ga(18);setTimeout(verstuurOfferteEmail,300)" title="Offerte versturen">✉ Verstuur</button>
 <button class="btn br bsm" onclick="delProj('${p.id}')">✕</button>
 </div></div>`).join('');
-    }catch(e){const el=document.getElementById('arch-content');if(el)el.innerHTML='<div class="al alo">Fout: '+e.message+'</div>';}
+    }catch(e){const el=document.getElementById('arch-content');if(el)el.innerHTML='<div class="al alo">Fout bij laden: '+e.message+'</div>';}
   },100);
   return`<div class="card"><div class="chdr">📁 Offertes archief</div><div class="cbdy">
 <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
@@ -1631,8 +1631,30 @@ async function delUser(uid){
 
 // ══════ PROJECT BEHEER ══════
 async function laadProj(id){
-  const p=alleProj.find(x=>x.id===id);if(!p)return;
-  project={id:p.id,naam:p.naam,type:p.type||'Renovatie',opdrachtgever:p.opdrachtgever,adres:p.adres,stad:p.stad,tel:p.tel,email:p.email,offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],notities:p.notities,marge:p.marge||15,btw:p.btw||21,items:p.items||{},status:p.status||'concept',geldigDagen:p.geldig_dagen||30,betalingstermijnen:p.betalingstermijnen||[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};
+  let p=alleProj.find(x=>x.id===id);
+  if(!p){
+    // Niet in cache, direct uit database laden
+    try{
+      const {data}=await sb.from('projecten').select('*').eq('id',id).single();
+      if(data)p=data;
+    }catch(_){}
+  }
+  if(!p){tN('Project niet gevonden');return;}
+  project={
+    id:p.id,naam:p.naam,type:p.type||'Renovatie',
+    opdrachtgever:p.opdrachtgever||'',adres:p.adres||'',
+    stad:p.stad||'',tel:p.tel||'',email:p.email||'',
+    offNr:p.off_nr,datum:p.datum?.split('T')[0]||new Date().toISOString().split('T')[0],
+    notities:p.notities||'',marge:p.marge||15,btw:p.btw||21,
+    items:p.items||{},status:p.status||'concept',
+    geldigDagen:p.geldig_dagen||30,
+    betalingstermijnen:p.betalingstermijnen||[
+      {omschrijving:'Bij opdracht',procent:30,dagen:7},
+      {omschrijving:'Bij uitvoering',procent:40,dagen:14},
+      {omschrijving:'Bij oplevering',procent:30,dagen:30}
+    ]
+  };
+  render();
 }
 async function delProj(id){
   if(!confirm('Project verwijderen?'))return;
