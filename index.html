@@ -1299,7 +1299,7 @@ function sDash(){
 </div>
 <div class="card"><div class="chdr">📁 Recente projecten</div><div class="cbdy">
 ${alleProj.length===0?'<div class="al ali">Nog geen projecten. Maak een nieuw project aan.</div>':
-alleProj.slice(0,5).map(p=>`<div class="pli" onclick="laadProj('${p.id}');ga(1)">
+alleProj.slice(0,5).map(p=>`<div class="pli" onclick="laadEnGa('${p.id}',18)">
 <div class="pli-ico">📋</div>
 <div class="pli-info"><div class="pli-naam">${es(p.naam)}</div>
 <div class="pli-sub">Nr: ${es(p.off_nr)} · ${es(p.opdrachtgever||'—')} · ${new Date(p.gewijzigd).toLocaleDateString('nl-NL')}</div></div>
@@ -1758,14 +1758,14 @@ function sArchief(){
       el.innerHTML=!gef||gef.length===0?'<div class="al ali">Geen projecten gevonden.</div>':
       gef.map(p=>`<div class="pli">
 <div class="pli-ico">📋</div>
-<div class="pli-info" onclick="laadProj('${p.id}');ga(18)" style="cursor:pointer">
+<div class="pli-info" onclick="laadEnGa('${p.id}',18)" style="cursor:pointer">
 <div class="pli-naam">${es(p.naam)}</div>
 <div class="pli-sub">Nr: <strong>${es(p.off_nr)}</strong> · ${es(p.opdrachtgever||'—')} · ${new Date(p.gewijzigd).toLocaleDateString('nl-NL')}</div>
 <div class="pli-sub">${es(p.type||'')} · <span class="badge ${p.status==='akkoord'?'bg':p.status==='verstuurd'?'bo':p.status==='factuur'?'bb':'bb'}">${(p.status||'concept').toUpperCase()}</span></div>
 </div>
 <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">
-<button class="btn bp bsm" onclick="laadProj('${p.id}');ga(18)" title="Offerte bekijken">📄 Offerte</button>
-<button class="btn bo2 bsm" onclick="laadEnFactuur('${p.id}')" title="Factuur maken">🧾 Factuur</button>
+<button class="btn bp bsm" onclick="laadEnGa('${p.id}',18)">📄 Offerte</button>
+<button class="btn bo2 bsm" onclick="laadEnFactuur('${p.id}')">🧾 Factuur PDF</button>
 <button class="btn br bsm" onclick="delProj('${p.id}')">✕</button>
 </div></div>`).join('');
     }catch(e){const el=document.getElementById('arch-content');if(el)el.innerHTML='<div class="al alo">Fout bij laden: '+e.message+'</div>';}
@@ -1778,7 +1778,14 @@ function sArchief(){
 <div id="arch-content"><div style="text-align:center;padding:20px;color:var(--t2)">Laden...</div></div>
 </div></div>`;}
 
-async function laadEnFactuur(id){await laadProj(id);maakFactuur();}
+async function laadEnGa(id,schermNr){
+  await laadProj(id);
+  ga(schermNr);
+}
+async function laadEnFactuur(id){
+  await laadProj(id);
+  setTimeout(()=>maakFactuur(),200);
+}
 
 // ══════ FACTUUR ══════
 function maakFactuur(){
