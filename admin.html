@@ -154,10 +154,12 @@ async function doLogin(){
   try{
     const {data,error}=await sb.auth.signInWithPassword({email,password:pw});
     if(error)throw error;
-    const {data:profiel}=await sb.from('profiles').select('plan').eq('id',data.user.id).single();
-    if(profiel?.plan!=='admin'){
+    // Check admin via user ID
+    const {data:profiel,error:profErr}=await sb.from('profiles').select('plan').eq('id',data.user.id).single();
+    if(profErr||!profiel){throw new Error('Profiel niet gevonden.');}
+    if(profiel.plan!=='admin'){
       await sb.auth.signOut();
-      throw new Error('Geen admin toegang. Alleen admins kunnen hier inloggen.');
+      throw new Error('Geen admin toegang.');
     }
     document.getElementById('login').style.display='none';
     document.getElementById('app').style.display='block';
@@ -177,12 +179,22 @@ async function doLogout(){
 
 async function laadGebruikers(){
   document.getElementById('tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:#888">Laden...</td></tr>';
+  // Haal profielen op
   const {data,error}=await sb.from('profiles').select('*').order('aangemaakt',{ascending:false});
   if(error){document.getElementById('tbody').innerHTML=`<tr><td colspan="6" style="color:red;padding:20px">${error.message}</td></tr>`;return;}
+  // Haal auth users op voor emails
+  const {data:authData}=await sb.auth.admin?.listUsers?.()??{data:null};
+  const emailMap={};
+  if(authData?.users){authData.users.forEach(u=>{emailMap[u.id]=u.email;});}
+  // Haal projecten aantallen op
   const {data:projs}=await sb.from('projecten').select('user_id');
   const projCount={};
   (projs||[]).forEach(p=>{projCount[p.user_id]=(projCount[p.user_id]||0)+1;});
-  gebruikers=(data||[]).map(g=>({...g,aantal_projecten:projCount[g.id]||0}));
+  gebruikers=(data||[]).map(g=>({
+    ...g,
+    email:g.email||emailMap[g.id]||'—',
+    aantal_projecten:projCount[g.id]||0
+  }));
   renderStats();
   renderTabel();
 }
