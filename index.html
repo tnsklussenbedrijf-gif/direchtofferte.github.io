@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -1663,7 +1664,7 @@ async function delProj(id){
   if(project.id===id)project=np();
   render();tN('Project verwijderd');
 }
-function nieuwProj(){if(confirm('Nieuw project starten? Huidige wordt niet verwijderd.')){project=np();scherm=0;render();}}
+function nieuwProj(){project=np();scherm=0;render();}
 
 // ══════ MODAL / NOTIF ══════
 function openM(t,b,f=''){document.getElementById('mhdr').textContent=t;document.getElementById('mbdy').innerHTML=b;document.getElementById('mftr').innerHTML=`${f}<button class="btn bout" onclick="sluitM()">Sluiten</button>`;document.getElementById('mbg').classList.add('on');}
