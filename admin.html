@@ -8,8 +8,6 @@
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--b:#1a3c5e;--b2:#2874a6;--o:#e67e22;--g:#1e8449;--r:#c0392b;--gr:#f4f6f7;--gr2:#e5e8ea;--t:#2c3e50;--t2:#566573;--sh:0 2px 12px rgba(0,0,0,.08)}
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gr);color:var(--t);min-height:100vh}
-
-/* Login scherm */
 #login{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0f2640,#1a3c5e)}
 .lbox{background:#fff;border-radius:16px;padding:40px;width:360px;box-shadow:0 8px 32px rgba(0,0,0,.3)}
 .lbox h1{font-size:22px;color:var(--b);margin-bottom:4px}
@@ -20,9 +18,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gr);color:var(--t)
 .fg input:focus{outline:none;border-color:var(--b)}
 .btn{width:100%;padding:12px;background:var(--b);color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
 .btn:hover{background:#152f4a}
+.btn:disabled{opacity:.6;cursor:not-allowed}
 .err{background:#fdf2f2;border-left:4px solid var(--r);color:var(--r);padding:10px 12px;border-radius:0 6px 6px 0;font-size:13px;margin-bottom:12px;display:none}
-
-/* App scherm */
 #app{display:none}
 .topbar{background:var(--b);padding:0 24px;height:52px;display:flex;align-items:center;gap:12px;position:fixed;top:0;left:0;right:0;z-index:100}
 .topbar-logo{font-size:16px;font-weight:700;color:#fff}
@@ -32,46 +29,37 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gr);color:var(--t)
 .tbtn{background:rgba(255,255,255,.12);border:none;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
 .tbtn:hover{background:rgba(255,255,255,.22)}
 .tbtn.o{background:var(--o)}
-
-.content{margin-top:52px;padding:24px;max-width:1400px;margin-left:auto;margin-right:auto;margin-top:76px}
+.content{margin-top:76px;padding:24px;max-width:1400px;margin-left:auto;margin-right:auto}
 .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
 .stat{background:#fff;border-radius:10px;padding:16px;box-shadow:var(--sh);border-left:4px solid var(--b)}
 .stat-num{font-size:24px;font-weight:700;color:var(--b)}
 .stat-lbl{font-size:11px;color:var(--t2);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
-
 .card{background:#fff;border-radius:10px;box-shadow:var(--sh);margin-bottom:16px}
 .card-hdr{padding:14px 20px;border-bottom:1px solid var(--gr2);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .card-hdr h2{font-size:14px;font-weight:700;color:var(--b)}
-
 .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .filter-btn{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--gr2);background:#fff;color:var(--t2);font-family:inherit}
 .filter-btn.on{background:var(--b);color:#fff;border-color:var(--b)}
 .search-inp{border:1.5px solid var(--gr2);border-radius:6px;padding:6px 12px;font-size:12px;font-family:inherit;width:220px}
 .search-inp:focus{outline:none;border-color:var(--b)}
-
 table{width:100%;border-collapse:collapse}
 th{background:var(--b);color:#fff;padding:9px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
 td{padding:10px 12px;border-bottom:1px solid var(--gr2);font-size:13px;vertical-align:middle}
 tr:last-child td{border:none}
 tr:hover td{background:#f8fafc}
-
 .badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;white-space:nowrap}
 .badge-trial{background:#eef5fb;color:#2874a6}
+.badge-starter{background:#eef5fb;color:#2874a6}
+.badge-business{background:#d5f5e3;color:#1e8449}
+.badge-pro{background:#e8daef;color:#6c3483}
+.badge-admin{background:#fdebd0;color:#e67e22}
 .badge-actief{background:#d5f5e3;color:#1e8449}
 .badge-verlopen{background:#fadbd8;color:#c0392b}
 .badge-geblokkeerd{background:#f9ebea;color:#922b21}
-
-.days-bar{height:6px;background:var(--gr2);border-radius:3px;width:80px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:6px}
-.days-fill{height:100%;border-radius:3px;background:var(--g)}
-.days-fill.warn{background:var(--o)}
-.days-fill.danger{background:var(--r)}
-
 .action-btn{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:inherit;margin:1px}
 .ab-plan{background:var(--b);color:#fff}
-.ab-email{background:var(--b2);color:#fff}
 .ab-block{background:var(--r);color:#fff}
-
-/* Modal */
+.ab-unblock{background:var(--g);color:#fff}
 .mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center}
 .mbg.on{display:flex}
 .modal{background:#fff;border-radius:10px;width:480px;max-width:95vw;overflow:hidden}
@@ -81,14 +69,11 @@ tr:hover td{background:#f8fafc}
 select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9px 12px;font-size:14px;font-family:inherit;margin-top:8px}
 .notif{position:fixed;bottom:20px;right:20px;background:var(--g);color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:300;transform:translateX(130%);transition:.3s}
 .notif.on{transform:translateX(0)}
-
 @media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.content{padding:16px}}
 @media(max-width:600px){.stats{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
-<!-- LOGIN -->
 <div id="login">
   <div class="lbox">
     <h1>🔐 Beheer</h1>
@@ -96,34 +81,29 @@ select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9p
     <div class="err" id="lerr"></div>
     <div class="fg"><label>E-mailadres</label><input type="email" id="lemail" placeholder="admin@direchtofferte.nl" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="fg"><label>Wachtwoord</label><input type="password" id="lpw" onkeydown="if(event.key==='Enter')doLogin()"></div>
-    <button class="btn" onclick="doLogin()">Inloggen →</button>
+    <button class="btn" id="loginbtn" onclick="doLogin()">Inloggen →</button>
   </div>
 </div>
-
-<!-- APP -->
 <div id="app">
   <div class="topbar">
     <div class="topbar-logo">Direcht <span>Offerte</span></div>
     <div class="topbar-badge">Admin Panel</div>
     <div class="topbar-right">
       <span id="admin-email" style="color:rgba(255,255,255,.7);font-size:12px"></span>
-      <button class="tbtn o" onclick="stuurAlleReminders()">📧 Reminders sturen</button>
       <button class="tbtn" onclick="doLogout()">Uitloggen</button>
     </div>
   </div>
   <div class="content">
-    <!-- Stats -->
     <div class="stats" id="stats"></div>
-    <!-- Tabel -->
     <div class="card">
       <div class="card-hdr">
         <h2>👥 Alle gebruikers</h2>
         <div class="filters">
-          <input class="search-inp" id="zoek" placeholder="Zoek op naam, email, bedrijf..." oninput="filterGebruikers()">
-          <button class="filter-btn on" onclick="setFilter('alle')">Alle</button>
-          <button class="filter-btn" onclick="setFilter('trial')">Trial</button>
-          <button class="filter-btn" onclick="setFilter('actief')">Actief</button>
-          <button class="filter-btn" onclick="setFilter('verlopen')">Verlopen</button>
+          <input class="search-inp" id="zoek" placeholder="Zoek op naam, email, bedrijf..." oninput="renderTabel()">
+          <button class="filter-btn on" onclick="setFilter('alle',this)">Alle</button>
+          <button class="filter-btn" onclick="setFilter('starter',this)">Starter</button>
+          <button class="filter-btn" onclick="setFilter('business',this)">Business</button>
+          <button class="filter-btn" onclick="setFilter('geblokkeerd',this)">Geblokkeerd</button>
           <button class="filter-btn" onclick="laadGebruikers()">🔄</button>
         </div>
       </div>
@@ -133,12 +113,9 @@ select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9p
             <tr>
               <th>Naam / Bedrijf</th>
               <th>E-mail</th>
-              <th>KvK</th>
               <th>Plan</th>
-              <th>Trial restant</th>
-              <th>Emails</th>
               <th>Projecten</th>
-              <th>Registratie</th>
+              <th>Geregistreerd</th>
               <th>Acties</th>
             </tr>
           </thead>
@@ -148,8 +125,6 @@ select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9p
     </div>
   </div>
 </div>
-
-<!-- Modal plan wijzigen -->
 <div class="mbg" id="mbg">
   <div class="modal">
     <div class="mhdr" id="mhdr">Plan wijzigen</div>
@@ -160,224 +135,143 @@ select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9p
     </div>
   </div>
 </div>
-
 <div class="notif" id="notif"></div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SB_URL='https://esrnpreydarwfrwawcug.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzcm5wcmV5ZGFyd2Zyd2F3Y3VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDg4MzcsImV4cCI6MjA5MzU4NDgzN30.TSh_Ljc72aOX1tNSDvHBvAkk9QmP6NQ-jsAkrski0TU';
-let sb, gebruikers=[], huidigFilter='alle', huidigUser=null;
+const sb = supabase.createClient(SB_URL, SB_KEY);
+let gebruikers=[], huidigFilter='alle', huidigId=null;
 
-// ── Init ──
-const s=document.createElement('script');
-s.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-s.onload=()=>{sb=window.supabase.createClient(SB_URL,SB_KEY);};
-document.head.appendChild(s);
-
-// ── Login ──
 async function doLogin(){
   const email=document.getElementById('lemail').value.trim();
   const pw=document.getElementById('lpw').value;
-  document.getElementById('lerr').style.display='none';
+  const errEl=document.getElementById('lerr');
+  const btn=document.getElementById('loginbtn');
+  errEl.style.display='none';
+  if(!email||!pw){errEl.textContent='Vul e-mail en wachtwoord in';errEl.style.display='block';return;}
+  btn.disabled=true;btn.textContent='Inloggen...';
   try{
     const {data,error}=await sb.auth.signInWithPassword({email,password:pw});
     if(error)throw error;
-    // Check of admin
     const {data:profiel}=await sb.from('profiles').select('plan').eq('id',data.user.id).single();
     if(profiel?.plan!=='admin'){
       await sb.auth.signOut();
-      throw new Error('Geen admin toegang.');
+      throw new Error('Geen admin toegang. Alleen admins kunnen hier inloggen.');
     }
     document.getElementById('login').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('admin-email').textContent=data.user.email;
     await laadGebruikers();
   }catch(e){
-    const el=document.getElementById('lerr');
-    el.textContent=e.message;
-    el.style.display='block';
+    errEl.textContent=e.message;
+    errEl.style.display='block';
+    btn.disabled=false;btn.textContent='Inloggen →';
   }
 }
 
-async function doLogout(){await sb.auth.signOut();location.reload();}
+async function doLogout(){
+  await sb.auth.signOut();
+  location.reload();
+}
 
-// ── Gebruikers laden ──
 async function laadGebruikers(){
-  document.getElementById('tbody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:30px;color:#888">Laden...</td></tr>';
-  // Haal alle gebruikers op via profiles
+  document.getElementById('tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:#888">Laden...</td></tr>';
   const {data,error}=await sb.from('profiles').select('*').order('aangemaakt',{ascending:false});
-  if(error){document.getElementById('tbody').innerHTML=`<tr><td colspan="9" style="color:red;padding:20px">${error.message}</td></tr>`;return;}
-  
-  // Haal projecten aantallen op
+  if(error){document.getElementById('tbody').innerHTML=`<tr><td colspan="6" style="color:red;padding:20px">${error.message}</td></tr>`;return;}
   const {data:projs}=await sb.from('projecten').select('user_id');
   const projCount={};
   (projs||[]).forEach(p=>{projCount[p.user_id]=(projCount[p.user_id]||0)+1;});
-  
   gebruikers=(data||[]).map(g=>({...g,aantal_projecten:projCount[g.id]||0}));
   renderStats();
   renderTabel();
 }
 
 function renderStats(){
-  const nu=new Date();
-  const trial=gebruikers.filter(g=>g.plan==='trial').length;
-  const actief=gebruikers.filter(g=>g.plan==='actief').length;
-  const verlopen=gebruikers.filter(g=>g.plan==='verlopen').length;
+  const totaal=gebruikers.length;
+  const starter=gebruikers.filter(g=>g.plan==='starter').length;
+  const business=gebruikers.filter(g=>g.plan==='business').length;
   const geblokkeerd=gebruikers.filter(g=>g.plan==='geblokkeerd').length;
-  const expireren=gebruikers.filter(g=>{
-    if(g.plan!=='trial')return false;
-    const d=Math.ceil((new Date(g.trial_end)-nu)/(1000*60*60*24));
-    return d<=5&&d>0;
-  }).length;
+  const admin=gebruikers.filter(g=>g.plan==='admin').length;
   document.getElementById('stats').innerHTML=`
-    <div class="stat"><div class="stat-num">${gebruikers.length}</div><div class="stat-lbl">Totaal gebruikers</div></div>
-    <div class="stat" style="border-left-color:#2874a6"><div class="stat-num" style="color:#2874a6">${trial}</div><div class="stat-lbl">In trial</div></div>
-    <div class="stat" style="border-left-color:#1e8449"><div class="stat-num" style="color:#1e8449">${actief}</div><div class="stat-lbl">Actief betaald</div></div>
-    <div class="stat" style="border-left-color:#e67e22"><div class="stat-num" style="color:#e67e22">${expireren}</div><div class="stat-lbl">Verlopen binnenkort</div></div>
-    <div class="stat" style="border-left-color:#c0392b"><div class="stat-num" style="color:#c0392b">${verlopen+geblokkeerd}</div><div class="stat-lbl">Verlopen/geblokkeerd</div></div>`;
+    <div class="stat"><div class="stat-num">${totaal}</div><div class="stat-lbl">Totaal gebruikers</div></div>
+    <div class="stat" style="border-left-color:#2874a6"><div class="stat-num" style="color:#2874a6">${starter}</div><div class="stat-lbl">Starter</div></div>
+    <div class="stat" style="border-left-color:#1e8449"><div class="stat-num" style="color:#1e8449">${business}</div><div class="stat-lbl">Business</div></div>
+    <div class="stat" style="border-left-color:#e67e22"><div class="stat-num" style="color:#e67e22">${admin}</div><div class="stat-lbl">Admins</div></div>
+    <div class="stat" style="border-left-color:#c0392b"><div class="stat-num" style="color:#c0392b">${geblokkeerd}</div><div class="stat-lbl">Geblokkeerd</div></div>`;
 }
 
 function renderTabel(){
   const zoek=document.getElementById('zoek').value.toLowerCase();
-  const nu=new Date();
   const gefilterd=gebruikers.filter(g=>{
     if(huidigFilter!=='alle'&&g.plan!==huidigFilter)return false;
     if(zoek){
-      const tekst=`${g.email} ${g.voornaam} ${g.achternaam} ${g.bedrijfsnaam} ${g.kvk}`.toLowerCase();
+      const tekst=`${g.email||''} ${g.voornaam||''} ${g.achternaam||''} ${g.bedrijfsnaam||''} ${g.kvk||''}`.toLowerCase();
       if(!tekst.includes(zoek))return false;
     }
     return true;
   });
-
   if(gefilterd.length===0){
-    document.getElementById('tbody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:30px;color:#888">Geen gebruikers gevonden</td></tr>';
+    document.getElementById('tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:#888">Geen gebruikers gevonden</td></tr>';
     return;
   }
-
+  const planKleur={starter:'badge-starter',business:'badge-business',pro:'badge-pro',admin:'badge-admin',geblokkeerd:'badge-geblokkeerd'};
   document.getElementById('tbody').innerHTML=gefilterd.map(g=>{
-    const dagenOver=Math.ceil((new Date(g.trial_end)-nu)/(1000*60*60*24));
-    const dagenPct=Math.max(0,Math.min(100,(dagenOver/30)*100));
-    const barKleur=dagenOver>10?'':'warn'+(dagenOver<=2?' danger':'');
-    const planBadge={trial:'badge-trial',actief:'badge-actief',verlopen:'badge-verlopen',geblokkeerd:'badge-geblokkeerd'}[g.plan]||'badge-trial';
-    const emails=[
-      g.welkom_mail_verstuurd?'✅W':'⬜W',
-      g.dag25_mail_verstuurd?'✅25':'⬜25',
-      g.dag28_mail_verstuurd?'✅28':'⬜28',
-      g.verlopen_mail_verstuurd?'✅V':'⬜V',
-    ].join(' ');
     const naam=`${g.voornaam||''} ${g.achternaam||''}`.trim()||'—';
     const reg=g.aangemaakt?new Date(g.aangemaakt).toLocaleDateString('nl-NL'):'—';
+    const isGeblokkeerd=g.plan==='geblokkeerd';
     return`<tr>
-      <td><div style="font-weight:700;font-size:12px">${naam}</div><div style="font-size:11px;color:#888">${g.bedrijfsnaam||'—'}</div></td>
+      <td><div style="font-weight:700;font-size:13px">${naam}</div><div style="font-size:11px;color:#888">${g.bedrijfsnaam||'—'}</div></td>
       <td style="font-size:12px"><a href="mailto:${g.email}" style="color:var(--b2)">${g.email}</a></td>
-      <td style="font-size:12px;color:#888">${g.kvk||'—'}</td>
-      <td><span class="badge ${planBadge}">${g.plan||'trial'}</span></td>
-      <td>${g.plan==='trial'?`
-        <span style="font-size:12px;font-weight:${dagenOver<=5?'700':'400'};color:${dagenOver<=2?'#c0392b':dagenOver<=5?'#e67e22':'#555'}">${dagenOver>0?dagenOver+' dgn':'Verlopen'}</span>
-        <div class="days-bar"><div class="days-fill ${dagenPct<25?'danger':dagenPct<50?'warn':''}" style="width:${dagenPct}%"></div></div>
-      `:'—'}</td>
-      <td style="font-size:10px;white-space:nowrap">${emails}</td>
+      <td><span class="badge ${planKleur[g.plan]||'badge-starter'}">${g.plan||'starter'}</span></td>
       <td style="text-align:center">${g.aantal_projecten}</td>
       <td style="font-size:11px;color:#888">${reg}</td>
       <td style="white-space:nowrap">
-        <button class="action-btn ab-plan" onclick="wijzigPlan('${g.id}','${g.plan||'trial'}','${naam.replace(/'/g,"\\'")}')">Plan</button>
-        <button class="action-btn ab-email" onclick="stuurEmail('${g.id}','${g.email}','${naam.replace(/'/g,"\\'")}')">Email</button>
-        <button class="action-btn ab-block" onclick="blokkeer('${g.id}','${g.plan}')">Blokkeer</button>
+        <button class="action-btn ab-plan" onclick="wijzigPlan('${g.id}','${g.plan||'starter'}','${naam.replace(/'/g,"\\'")}')">✏️ Plan</button>
+        ${isGeblokkeerd
+          ?`<button class="action-btn ab-unblock" onclick="blokkeer('${g.id}','${g.plan}')">✅ Deblokkeer</button>`
+          :`<button class="action-btn ab-block" onclick="blokkeer('${g.id}','${g.plan}')">🚫 Blokkeer</button>`
+        }
       </td>
     </tr>`;
   }).join('');
 }
 
-function setFilter(f){
+function setFilter(f,el){
   huidigFilter=f;
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
-  event.target.classList.add('on');
+  el.classList.add('on');
   renderTabel();
 }
-function filterGebruikers(){renderTabel();}
 
-// ── Plan wijzigen ──
-let huidigId=null;
 function wijzigPlan(id,huidigPlan,naam){
   huidigId=id;
   document.getElementById('mhdr').textContent='Plan wijzigen — '+naam;
   document.getElementById('mbdy').innerHTML=`
-    <p style="color:#555;font-size:14px;margin-bottom:12px">Selecteer het nieuwe plan voor deze gebruiker:</p>
+    <p style="color:#555;font-size:14px;margin-bottom:12px">Selecteer het nieuwe plan:</p>
     <select class="sel" id="nieuw-plan">
-      ${['trial','actief','verlopen','geblokkeerd','admin'].map(p=>`<option value="${p}" ${p===huidigPlan?'selected':''}>${p.charAt(0).toUpperCase()+p.slice(1)}</option>`).join('')}
-    </select>
-    <div style="margin-top:12px;padding:10px;background:#eef5fb;border-radius:6px;font-size:12px;color:#555">
-      <strong>Trial verlengbaar:</strong><br>
-      <button style="margin-top:6px;padding:6px 12px;background:#2874a6;color:#fff;border:none;border-radius:4px;cursor:pointer;font-family:inherit;font-size:12px" onclick="verlengTrial('${id}')">+30 dagen trial</button>
-    </div>`;
+      ${['starter','business','pro','admin','geblokkeerd'].map(p=>`<option value="${p}" ${p===huidigPlan?'selected':''}>${p.charAt(0).toUpperCase()+p.slice(1)}</option>`).join('')}
+    </select>`;
   document.getElementById('mbg').classList.add('on');
 }
 
 async function slaanPlan(){
   const plan=document.getElementById('nieuw-plan').value;
-  await sb.from('profiles').update({plan}).eq('id',huidigId);
+  const {error}=await sb.from('profiles').update({plan}).eq('id',huidigId);
+  if(error){tN('Fout: '+error.message);return;}
   sluitM();
   tN('Plan bijgewerkt ✓');
   await laadGebruikers();
 }
 
-async function verlengTrial(id){
-  const g=gebruikers.find(x=>x.id===id);
-  const nieuweEind=new Date(Math.max(new Date(),new Date(g?.trial_end||new Date())));
-  nieuweEind.setDate(nieuweEind.getDate()+30);
-  await sb.from('profiles').update({
-    trial_end:nieuweEind.toISOString(),
-    plan:'trial',
-    dag25_mail_verstuurd:false,
-    dag28_mail_verstuurd:false,
-    verlopen_mail_verstuurd:false
-  }).eq('id',id);
-  sluitM();
-  tN('Trial verlengd met 30 dagen ✓');
-  await laadGebruikers();
-}
-
 async function blokkeer(id,huidigPlan){
-  const nieuwPlan=huidigPlan==='geblokkeerd'?'trial':'geblokkeerd';
-  if(!confirm(nieuwPlan==='geblokkeerd'?'Gebruiker blokkeren?':'Gebruiker deblokkeren?'))return;
-  await sb.from('profiles').update({plan:nieuwPlan}).eq('id',id);
-  tN(nieuwPlan==='geblokkeerd'?'Gebruiker geblokkeerd':'Gebruiker gedeblokkeerd');
+  const nieuwPlan=huidigPlan==='geblokkeerd'?'starter':'geblokkeerd';
+  const bevestig=nieuwPlan==='geblokkeerd'?'Gebruiker blokkeren?':'Gebruiker deblokkeren?';
+  if(!confirm(bevestig))return;
+  const {error}=await sb.from('profiles').update({plan:nieuwPlan}).eq('id',id);
+  if(error){tN('Fout: '+error.message);return;}
+  tN(nieuwPlan==='geblokkeerd'?'Gebruiker geblokkeerd 🚫':'Gebruiker gedeblokkeerd ✅');
   await laadGebruikers();
-}
-
-// ── Email sturen ──
-function stuurEmail(id,email,naam){
-  huidigId=id;
-  document.getElementById('mhdr').textContent='Email sturen — '+naam;
-  document.getElementById('mbdy').innerHTML=`
-    <p style="color:#555;font-size:14px;margin-bottom:12px">Stuur een handmatige email naar <strong>${email}</strong>:</p>
-    <select class="sel" id="email-type">
-      <option value="welkom">Welkomstmail</option>
-      <option value="dag25">Herinnering (5 dagen voor einde)</option>
-      <option value="dag28">Urgente herinnering (2 dagen)</option>
-      <option value="verlopen">Proefperiode verlopen</option>
-    </select>
-    <div style="margin-top:12px">
-      <label style="font-size:11px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.3px;display:block;margin-bottom:4px">Of stuur direct email via:</label>
-      <a href="mailto:${email}" style="display:inline-block;padding:8px 16px;background:#2874a6;color:#fff;border-radius:6px;text-decoration:none;font-size:13px;font-weight:600">📧 Open in Mail</a>
-    </div>`;
-  document.getElementById('mbg').classList.add('on');
-}
-
-async function stuurAlleReminders(){
-  if(!confirm('Wil je reminder emails sturen naar alle trial gebruikers die bijna verlopen zijn?'))return;
-  tN('Reminders worden verstuurd...');
-  // Dit roept de Edge Function aan als die geïnstalleerd is
-  // Anders: toon overzicht van wie email moet krijgen
-  const nu=new Date();
-  const teSturen=gebruikers.filter(g=>{
-    if(g.plan!=='trial')return false;
-    const d=Math.ceil((new Date(g.trial_end)-nu)/(1000*60*60*24));
-    return d<=5;
-  });
-  if(teSturen.length===0){tN('Geen gebruikers om te mailen');return;}
-  const lijst=teSturen.map(g=>`${g.email} (${Math.ceil((new Date(g.trial_end)-nu)/(1000*60*60*24))} dagen over)`).join('\n');
-  alert(`${teSturen.length} gebruikers krijgen een reminder:\n\n${lijst}\n\nOpen elk email adres handmatig of installeer de Edge Function.`);
 }
 
 function sluitM(){document.getElementById('mbg').classList.remove('on');}
