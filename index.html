@@ -65,8 +65,7 @@
 body{font-family:'Segoe UI',Arial,sans-serif;font-size:14px;color:var(--t);min-height:100vh}
 
 /* ── LOGIN ── */
-#login-screen{display:block!important;min-height:100vh;background:#fff;overflow-x:hidden}
-#login-screen>nav,#login-screen>div,#login-screen>section{display:block!important;width:100%!important;float:none!important}
+#login-screen{display:block;min-height:100vh;background:#fff;overflow-x:hidden}
 .lbox{background:#fff;border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:var(--sh2)}
 .ltop{background:#1a3c5e;padding:22px;text-align:center}
 .ltop img{height:72px}
@@ -1171,8 +1170,10 @@ async function doLogout(){
 // ══════ APP INIT ══════
 async function onLogin(u){
   user=u;
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app-screen').style.display='block';
+  const ls=document.getElementById('login-screen');
+  const as=document.getElementById('app-screen');
+  if(ls){ls.style.display='none';ls.style.visibility='hidden';ls.style.position='absolute';ls.style.top='-9999px';}
+  if(as){as.style.display='block';}
   await laadProfiel();
   await laadPrijzenCloud();
   await laadBedrijfCloud();
