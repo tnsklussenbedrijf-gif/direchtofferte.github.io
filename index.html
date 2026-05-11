@@ -1268,10 +1268,11 @@ ${project.notities?`<div style="font-size:10px;color:#888;font-style:italic;marg
 <div class="cbdy" style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
 <div><div style="font-size:12px;color:var(--t2)">${es(project.opdrachtgever)||'—'} · ${es(project.adres)} ${es(project.stad)}</div>
 <div style="font-size:10px;color:var(--t3)">Nr: ${es(project.offNr)} · ${project.datum} · ${nr-1} regels</div></div>
-<div style="display:flex;gap:6px;flex-wrap:wrap">
+<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+<span class="badge ${project.status==='verstuurd'?'bo':project.status==='akkoord'?'bg':project.status==='factuur'?'bb':'bb'}" style="font-size:11px">${(project.status||'concept').toUpperCase()}</span>
 <button class="btn bg2 bsm" onclick="slaOp()">☁ Opslaan</button>
 <button class="btn bo2 bsm" onclick="maakFactuur()">🧾 Factuur</button>
-<button class="btn bp bsm" onclick="verstuurOfferteEmail()">✉ Verstuur per e-mail</button>
+<button class="btn bp bsm" onclick="verstuurOfferteEmail()">✉ Verstuur offerte</button>
 <button class="btn bout bsm" onclick="window.print()">🖨 PDF</button>
 </div></div></div>
 <div class="card"><div class="cbdy" style="padding:0;overflow-x:auto">
@@ -1417,8 +1418,9 @@ function sArchief(){
 <div class="pli-sub">${es(p.type||'')} · <span class="badge ${p.status==='akkoord'?'bg':p.status==='verstuurd'?'bo':'bb'}">${(p.status||'concept').toUpperCase()}</span></div>
 </div>
 <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end">
-<button class="btn bp bsm" onclick="laadProj('${p.id}');ga(18)">📄</button>
-<button class="btn bo2 bsm" onclick="laadEnFactuur('${p.id}')">🧾</button>
+<button class="btn bp bsm" onclick="laadProj('${p.id}');ga(18)" title="Offerte bekijken">📄 Offerte</button>
+<button class="btn bo2 bsm" onclick="laadEnFactuur('${p.id}')" title="Factuur maken">🧾 Factuur</button>
+<button class="btn bp bsm" onclick="laadProj('${p.id}');ga(18);setTimeout(verstuurOfferteEmail,300)" title="Offerte versturen">✉ Verstuur</button>
 <button class="btn br bsm" onclick="delProj('${p.id}')">✕</button>
 </div></div>`).join('');
     }catch(e){const el=document.getElementById('arch-content');if(el)el.innerHTML='<div class="al alo">Fout: '+e.message+'</div>';}
