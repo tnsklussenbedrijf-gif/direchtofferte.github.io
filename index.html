@@ -1148,7 +1148,7 @@ let sb=null, user=null, profiel=null;
 let prijzen={}, scherm=0, alleProj=[], project=np();
 let bedrijf={naam:'',slogan:'',straat:'',stad:'',tel:'',email:'',kvk:'',btwnr:'',iban:'',website:'',logo:''};
 
-function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',geldigDagen:30,eigen:[],catNotities:{},betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};}
+function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',geldigDagen:30,eigen:[],catNotities:{},itemNamen:{},betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};}
 function getBT(){return project.betalingstermijnen||[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}];}
 function setBTR(i,veld,waarde){const bt=getBT();bt[i][veld]=(veld==='procent'||veld==='dagen')?parseInt(waarde)||0:waarde;project.betalingstermijnen=bt;render();}
 function addBTR(){const bt=getBT();bt.push({omschrijving:'Nieuwe termijn',procent:0,dagen:14});project.betalingstermijnen=bt;render();}
@@ -1302,7 +1302,7 @@ async function slaOp(){
   if(!sb||!user){tN('Niet verbonden');return;}
   syncSt('b','Opslaan...');
   try{
-    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,betalingstermijnen:project.betalingstermijnen||[],geldig_dagen:project.geldigDagen||30,eigen:project.eigen||[],cat_notities:project.catNotities||{},gewijzigd:new Date().toISOString()};
+    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,betalingstermijnen:project.betalingstermijnen||[],geldig_dagen:project.geldigDagen||30,eigen:project.eigen||[],cat_notities:project.catNotities||{},item_namen:project.itemNamen||{},gewijzigd:new Date().toISOString()};
     if(project.id){await sb.from('projecten').update(p).eq('id',project.id);}
     else{const {data}=await sb.from('projecten').insert(p).select().single();if(data)project.id=data.id;}
     await laadAlleProj();syncSt('ok','Opgeslagen ✓');tN('Opgeslagen ☁');updateNav();
@@ -1357,29 +1357,37 @@ function ber(){
 }
 const eu=n=>n===0?'—':'€\u00A0'+Math.round(n).toLocaleString('nl-NL');
 const es=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+// Fix setQ - sla gewoon het getal op
 function setQ(id,val){
   const v=parseFloat(val)||0;
   if(v<=0){delete project.items[id];}
-  else{
-    if(!project.items[id]||typeof project.items[id]==='number'){
-      project.items[id]={q:v,naam:''};
-    } else {
-      project.items[id].q=v;
-    }
-  }
+  else{project.items[id]=v;}
   updateNav();
+  const ep=prijzen[id]||(project.eigen||[]).find(e=>e.id===id)?.prijs||0;
   const el=document.getElementById('t_'+id);
-  if(el){const ep=prijzen[id]||0;const q=typeof project.items[id]==='object'?project.items[id].q:project.items[id]||0;el.textContent=q>0?eu(q*ep):'—';}
+  if(el)el.textContent=v>0?eu(v*ep):'—';
 }
+// Naam opslaan apart
 function setNaam(id,naam){
-  if(project.items[id]){
-    if(typeof project.items[id]==='number'){project.items[id]={q:project.items[id],naam};}
-    else{project.items[id].naam=naam;}
-  }
+  if(!project.itemNamen)project.itemNamen={};
+  project.itemNamen[id]=naam;
 }
-function getQ(id){const v=project.items[id];if(!v)return 0;return typeof v==='object'?v.q:v;}
-function getNaam(id,standaard){const v=project.items[id];if(!v||typeof v==='number')return standaard;return v.naam||standaard;}
-
+function getQ(id){const v=project.items[id];if(!v)return 0;return typeof v==='object'?v.q||0:v;}
+function getNaam(id,standaard){return(project.itemNamen&&project.itemNamen[id])||standaard;}
+function setCatNotitie(catKey,val){if(!project.catNotities)project.catNotities={};project.catNotities[catKey]=val;}
+function voegCatNotatieToe(catKey){
+  const extra=document.getElementById('extra-cat-'+catKey)?.value?.trim();
+  if(!extra)return;
+  const d=new Date().toLocaleDateString('nl-NL');
+  const t=new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+  if(!project.catNotities)project.catNotities={};
+  const nieuw=`[${d} ${t}] ${extra}`;
+  project.catNotities[catKey]=project.catNotities[catKey]?project.catNotities[catKey]+'\n'+nieuw:nieuw;
+  const veld=document.getElementById('cat-notitie-'+catKey);
+  if(veld)veld.value=project.catNotities[catKey];
+  document.getElementById('extra-cat-'+catKey).value='';
+  tN('✓ Opmerking toegevoegd!');
+}
 // Eigen werkzaamheden toevoegen
 function voegEigenToe(catKey){
   const naam=prompt('Omschrijving van de werkzaamheid:','');
@@ -1389,13 +1397,14 @@ function voegEigenToe(catKey){
   const id='custom_'+Date.now();
   if(!project.eigen)project.eigen=[];
   project.eigen.push({id,catKey,naam,eenh,prijs});
-  project.items[id]={q:1,naam};
+  project.items[id]=1;
   render();
   tN('✓ Werkzaamheid toegevoegd!');
 }
 function verwijderEigen(id){
   project.eigen=(project.eigen||[]).filter(e=>e.id!==id);
   delete project.items[id];
+  if(project.itemNamen)delete project.itemNamen[id];
   render();
 }
 
@@ -2183,6 +2192,9 @@ async function laadProj(id){
     notities:p.notities||'',marge:p.marge||15,btw:p.btw||21,
     items:p.items||{},status:p.status||'concept',
     geldigDagen:p.geldig_dagen||30,
+    eigen:p.eigen||[],
+    catNotities:p.cat_notities||{},
+    itemNamen:p.item_namen||{},
     betalingstermijnen:p.betalingstermijnen||[
       {omschrijving:'Bij opdracht',procent:30,dagen:7},
       {omschrijving:'Bij uitvoering',procent:40,dagen:14},
