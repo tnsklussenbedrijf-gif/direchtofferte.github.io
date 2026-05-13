@@ -1203,8 +1203,18 @@ async function doLogin(){
   se('in-err','');sok('in-ok','');
   if(!email||!pw){se('in-err','Vul e-mail en wachtwoord in');return;}
   sok('in-ok','Inloggen...');
-  try{const {error}=await sb.auth.signInWithPassword({email,password:pw});
-  if(error){sok('in-ok','');se('in-err',error.message);}
+  try{
+    const {data,error}=await sb.auth.signInWithPassword({email,password:pw});
+    if(error){sok('in-ok','');se('in-err','E-mail of wachtwoord onjuist');return;}
+    // Check geblokkeerd VOOR app laden
+    const {data:profiel}=await sb.from('profiles').select('plan').eq('id',data.user.id).single();
+    if(profiel?.plan==='geblokkeerd'){
+      await sb.auth.signOut();
+      sok('in-ok','');
+      se('in-err','❌ Uw account is geblokkeerd. Neem contact op met info@direchtofferte.nl');
+      return;
+    }
+    sok('in-ok','✓ Ingelogd!');
   }catch(e){sok('in-ok','');se('in-err',e.message);}
 }
 
@@ -1224,16 +1234,25 @@ async function doRegister(){
   if(!/^\d{8}$/.test(kvk)){se('reg-err','KvK-nummer moet 8 cijfers zijn');return;}
   if(!/^NL\d{9}B\d{2}$/i.test(btwNr)){se('reg-err','BTW-nummer ongeldig (bijv. NL123456789B01)');return;}
   if(pw.length<6){se('reg-err','Wachtwoord minimaal 6 tekens');return;}
+  sok('reg-ok','Controleren...');
+  // Check of KvK al bestaat
+  try{
+    const {data:bestaand}=await sb.from('profiles').select('id,bedrijfsnaam').eq('kvk',kvk);
+    if(bestaand&&bestaand.length>0){
+      sok('reg-ok','');
+      se('reg-err',`KvK-nummer ${kvk} is al geregistreerd (${bestaand[0].bedrijfsnaam}). Neem contact op als dit een fout is.`);
+      return;
+    }
+  }catch(_){}
   sok('reg-ok','Account aanmaken...');
   try{
     const {data,error}=await sb.auth.signUp({email,password:pw,options:{data:{voornaam:fn,achternaam:ln,bedrijfsnaam:bn,plan:'starter'}}});
     if(error){sok('reg-ok','');se('reg-err',error.message);return;}
     if(data.user){
       try{
-      const kvk=document.getElementById('reg-kvk').value.trim();
-      const btwnr=document.getElementById('reg-btw').value.trim().toUpperCase();
-      await sb.from('profiles').upsert({id:data.user.id,email,voornaam:fn,achternaam:ln,bedrijfsnaam:bn,tel,adres,stad,kvk,btwnr,plan:'starter'});
-    }catch(_){}
+        const btwnr=btwNr.toUpperCase();
+        await sb.from('profiles').upsert({id:data.user.id,email,voornaam:fn,achternaam:ln,bedrijfsnaam:bn,tel,adres,stad,kvk,btwnr,plan:'starter'});
+      }catch(_){}
     }
     sok('reg-ok','✅ Account aangemaakt! Je kunt nu inloggen.');
     setTimeout(()=>ltab('in'),2000);
