@@ -1148,7 +1148,7 @@ let sb=null, user=null, profiel=null;
 let prijzen={}, scherm=0, alleProj=[], project=np();
 let bedrijf={naam:'',slogan:'',straat:'',stad:'',tel:'',email:'',kvk:'',btwnr:'',iban:'',website:'',logo:''};
 
-function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',geldigDagen:30,betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};}
+function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',geldigDagen:30,eigen:[],betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};}
 function getBT(){return project.betalingstermijnen||[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}];}
 function setBTR(i,veld,waarde){const bt=getBT();bt[i][veld]=(veld==='procent'||veld==='dagen')?parseInt(waarde)||0:waarde;project.betalingstermijnen=bt;render();}
 function addBTR(){const bt=getBT();bt.push({omschrijving:'Nieuwe termijn',procent:0,dagen:14});project.betalingstermijnen=bt;render();}
@@ -1302,7 +1302,7 @@ async function slaOp(){
   if(!sb||!user){tN('Niet verbonden');return;}
   syncSt('b','Opslaan...');
   try{
-    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,betalingstermijnen:project.betalingstermijnen||[],geldig_dagen:project.geldigDagen||30,gewijzigd:new Date().toISOString()};
+    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,betalingstermijnen:project.betalingstermijnen||[],geldig_dagen:project.geldigDagen||30,eigen:project.eigen||[],gewijzigd:new Date().toISOString()};
     if(project.id){await sb.from('projecten').update(p).eq('id',project.id);}
     else{const {data}=await sb.from('projecten').insert(p).select().single();if(data)project.id=data.id;}
     await laadAlleProj();syncSt('ok','Opgeslagen ✓');tN('Opgeslagen ☁');updateNav();
@@ -1332,9 +1332,18 @@ function ber(){
   ['grond','metselwerk','dak','kozijnen','timmerwerk','gevel','elektra','loodgieter','stukadoor','badkamer','keuken','vloeren','tuin','sloop','afval'].forEach(ck=>{
     const cat=WERKZAAMHEDEN[ck];if(!cat)return;
     cat.secties.forEach(sec=>sec.items.forEach(item=>{
-      const q=project.items[item.id]||0;
-      if(q>0){const ep=prijzen[item.id]||item.prijs;reg.push({cat:cat.titel.replace(/^.\s/,''),naam:item.naam,q,eh:item.eenh,ep,tot:q*ep});}
+      const q=getQ(item.id);
+      if(q>0){
+        const ep=prijzen[item.id]||item.prijs;
+        const naam=getNaam(item.id,item.naam);
+        reg.push({cat:cat.titel.replace(/^.\s/,''),naam,q,eh:item.eenh,ep,tot:q*ep});
+      }
     }));
+    // Eigen werkzaamheden voor deze categorie
+    (project.eigen||[]).filter(e=>e.catKey===ck).forEach(e=>{
+      const q=getQ(e.id);
+      if(q>0)reg.push({cat:cat.titel.replace(/^.\s/,''),naam:e.naam,q,eh:e.eenh,ep:e.prijs,tot:q*e.prijs});
+    });
   });
   const s1=reg.reduce((s,r)=>s+r.tot,0);
   const bpl=Math.round(s1*((prijzen.bouwplaats_pct||5)/100));
@@ -1348,7 +1357,47 @@ function ber(){
 }
 const eu=n=>n===0?'—':'€\u00A0'+Math.round(n).toLocaleString('nl-NL');
 const es=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-function setQ(id,val){const v=parseFloat(val)||0;if(v<=0)delete project.items[id];else project.items[id]=v;updateNav();const el=document.getElementById('t_'+id);if(el){const ep=prijzen[id]||0;el.textContent=v>0?eu(v*ep):'—';}}
+function setQ(id,val){
+  const v=parseFloat(val)||0;
+  if(v<=0){delete project.items[id];}
+  else{
+    if(!project.items[id]||typeof project.items[id]==='number'){
+      project.items[id]={q:v,naam:''};
+    } else {
+      project.items[id].q=v;
+    }
+  }
+  updateNav();
+  const el=document.getElementById('t_'+id);
+  if(el){const ep=prijzen[id]||0;const q=typeof project.items[id]==='object'?project.items[id].q:project.items[id]||0;el.textContent=q>0?eu(q*ep):'—';}
+}
+function setNaam(id,naam){
+  if(project.items[id]){
+    if(typeof project.items[id]==='number'){project.items[id]={q:project.items[id],naam};}
+    else{project.items[id].naam=naam;}
+  }
+}
+function getQ(id){const v=project.items[id];if(!v)return 0;return typeof v==='object'?v.q:v;}
+function getNaam(id,standaard){const v=project.items[id];if(!v||typeof v==='number')return standaard;return v.naam||standaard;}
+
+// Eigen werkzaamheden toevoegen
+function voegEigenToe(catKey){
+  const naam=prompt('Omschrijving van de werkzaamheid:','');
+  if(!naam)return;
+  const eenh=prompt('Eenheid (bijv. m², stuks, uur):','stuks');
+  const prijs=parseFloat(prompt('Prijs per eenheid (€):','0'))||0;
+  const id='custom_'+Date.now();
+  if(!project.eigen)project.eigen=[];
+  project.eigen.push({id,catKey,naam,eenh,prijs});
+  project.items[id]={q:1,naam};
+  render();
+  tN('✓ Werkzaamheid toegevoegd!');
+}
+function verwijderEigen(id){
+  project.eigen=(project.eigen||[]).filter(e=>e.id!==id);
+  delete project.items[id];
+  render();
+}
 
 // ══════ RENDER ══════
 function render(){document.getElementById('main').innerHTML=SCREENS[scherm]();updateNav();}
@@ -1487,21 +1536,45 @@ function updBTW(){[0,9,21].forEach(p=>{const el=document.getElementById('btw'+p)
 // ══════ WERKSCHERMEN ══════
 function sWerk(catKey,prevIdx,nextLabel){
   const cat=WERKZAAMHEDEN[catKey];if(!cat)return'<div class="al alo">Categorie niet gevonden</div>';
-  const act=cat.secties.flatMap(s=>s.items).filter(i=>(project.items[i.id]||0)>0).length;
-  const tot=cat.secties.flatMap(s=>s.items).reduce((s,i)=>{const q=project.items[i.id]||0;return s+q*(prijzen[i.id]||i.prijs);},0);
+  const act=cat.secties.flatMap(s=>s.items).filter(i=>getQ(i.id)>0).length+(project.eigen||[]).filter(e=>e.catKey===catKey&&getQ(e.id)>0).length;
+  const tot=cat.secties.flatMap(s=>s.items).reduce((s,i)=>{const q=getQ(i.id);return s+q*(prijzen[i.id]||i.prijs);},0)+
+    (project.eigen||[]).filter(e=>e.catKey===catKey).reduce((s,e)=>s+getQ(e.id)*e.prijs,0);
   return`<div class="card"><div class="chdr">${cat.titel}</div><div class="cbdy">
 ${act>0?`<div class="al ali">${act} post${act>1?'en':''} actief — subtotaal: <strong>${eu(tot)}</strong></div>`:''}
 ${cat.secties.map(sec=>`<div class="wsec">${sec.naam}</div>
-${sec.items.map(item=>{const q=project.items[item.id]||0;const ep=prijzen[item.id]||item.prijs;return`<div class="wi">
+${sec.items.map(item=>{const q=getQ(item.id);const ep=prijzen[item.id]||item.prijs;const aangNaam=getNaam(item.id,item.naam);return`<div class="wi">
+<div style="flex:1;min-width:0">
 <div class="wi-naam">${item.naam}</div>
+${q>0?`<input value="${es(aangNaam)}" onchange="setNaam('${item.id}',this.value)" placeholder="Eigen omschrijving..." style="font-size:11px;border:1px solid var(--gr2);border-radius:4px;padding:3px 6px;width:100%;margin-top:3px;font-family:inherit;color:var(--b)">`:''}
+</div>
 <span class="wi-ep">${eu(ep)}</span>
 <span class="wi-eh">${item.eenh}</span>
 <div style="display:flex;align-items:center;gap:5px">
-<button class="qb" onclick="setQ('${item.id}',Math.max(0,(project.items['${item.id}']||0)-1));document.getElementById('qi_${item.id}').value=project.items['${item.id}']||0">−</button>
+<button class="qb" onclick="setQ('${item.id}',Math.max(0,getQ('${item.id}')-1));document.getElementById('qi_${item.id}').value=getQ('${item.id}')">−</button>
 <input class="qin" id="qi_${item.id}" type="number" min="0" step="0.5" value="${q}" oninput="setQ('${item.id}',this.value)">
-<button class="qb" onclick="setQ('${item.id}',(parseFloat(document.getElementById('qi_${item.id}').value)||0)+1);document.getElementById('qi_${item.id}').value=project.items['${item.id}']||0">+</button>
+<button class="qb" onclick="setQ('${item.id}',getQ('${item.id}')+1);document.getElementById('qi_${item.id}').value=getQ('${item.id}')">+</button>
 </div>
 <div class="wi-tot" id="t_${item.id}">${q>0?eu(q*ep):'—'}</div></div>`;}).join('')}`).join('')}
+
+${(project.eigen||[]).filter(e=>e.catKey===catKey).map(e=>{const q=getQ(e.id);return`<div class="wi" style="background:#fff9f0;border:1px solid #fdebd0;border-radius:8px;margin-bottom:4px">
+<div style="flex:1;min-width:0">
+<input value="${es(e.naam)}" onchange="e.naam=this.value;setNaam('${e.id}',this.value)" style="font-size:13px;font-weight:600;border:none;background:transparent;width:100%;font-family:inherit;color:var(--b)" placeholder="Omschrijving">
+<div style="font-size:10px;color:var(--t3)">${e.eenh} · €${e.prijs}/eenh.</div>
+</div>
+<span class="wi-ep">${eu(e.prijs)}</span>
+<span class="wi-eh">${e.eenh}</span>
+<div style="display:flex;align-items:center;gap:5px">
+<button class="qb" onclick="setQ('${e.id}',Math.max(0,getQ('${e.id}')-1));document.getElementById('qe_${e.id}').value=getQ('${e.id}')">−</button>
+<input class="qin" id="qe_${e.id}" type="number" min="0" step="0.5" value="${q}" oninput="setQ('${e.id}',this.value)">
+<button class="qb" onclick="setQ('${e.id}',getQ('${e.id}')+1);document.getElementById('qe_${e.id}').value=getQ('${e.id}')">+</button>
+</div>
+<div class="wi-tot">${q>0?eu(q*e.prijs):'—'}</div>
+<button class="btn br bsm" onclick="verwijderEigen('${e.id}')" style="margin-left:4px">✕</button>
+</div>`;}).join('')}
+
+<div style="margin-top:12px">
+<button class="btn bout bsm" onclick="voegEigenToe('${catKey}')">➕ Eigen werkzaamheid toevoegen</button>
+</div>
 </div></div>
 <div style="display:flex;justify-content:space-between;gap:8px">
 <button class="btn bout" onclick="nav(-1)">← Vorige</button>
