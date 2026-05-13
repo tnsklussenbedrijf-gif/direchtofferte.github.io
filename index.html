@@ -1573,19 +1573,19 @@ ${q>0?`<input value="${es(aangNaam)}" onchange="setNaam('${item.id}',this.value)
 </div>
 <div class="wi-tot" id="t_${item.id}">${q>0?eu(q*ep):'—'}</div></div>`;}).join('')}`).join('')}
 
-${(project.eigen||[]).filter(e=>e.catKey===catKey).map(e=>{const q=getQ(e.id);return`<div class="wi" style="background:#fff9f0;border:1px solid #fdebd0;border-radius:8px;margin-bottom:4px">
+${(project.eigen||[]).filter(e=>e.catKey===catKey).map(e=>{const q=getQ(e.id);const tot=q*e.prijs;return`<div class="wi" style="background:#fff9f0;border:1px solid #fdebd0;border-radius:8px;margin-bottom:4px">
 <div style="flex:1;min-width:0">
-<input value="${es(e.naam)}" onchange="e.naam=this.value;setNaam('${e.id}',this.value)" style="font-size:13px;font-weight:600;border:none;background:transparent;width:100%;font-family:inherit;color:var(--b)" placeholder="Omschrijving">
-<div style="font-size:10px;color:var(--t3)">${e.eenh} · €${e.prijs}/eenh.</div>
+<input value="${es(e.naam)}" onchange="e.naam=this.value" style="font-size:13px;font-weight:600;border:none;background:transparent;width:100%;font-family:inherit;color:var(--b)" placeholder="Omschrijving">
+<div style="font-size:10px;color:var(--t3)">${e.eenh} · €${e.prijs} per ${e.eenh}</div>
 </div>
 <span class="wi-ep">${eu(e.prijs)}</span>
 <span class="wi-eh">${e.eenh}</span>
 <div style="display:flex;align-items:center;gap:5px">
-<button class="qb" onclick="setQ('${e.id}',Math.max(0,getQ('${e.id}')-1));document.getElementById('qe_${e.id}').value=getQ('${e.id}')">−</button>
-<input class="qin" id="qe_${e.id}" type="number" min="0" step="0.5" value="${q}" oninput="setQ('${e.id}',this.value)">
-<button class="qb" onclick="setQ('${e.id}',getQ('${e.id}')+1);document.getElementById('qe_${e.id}').value=getQ('${e.id}')">+</button>
+<button class="qb" onclick="project.items['${e.id}']=Math.max(0,(project.items['${e.id}']||0)-1);document.getElementById('qe_${e.id}').value=project.items['${e.id}']||0;document.getElementById('t_${e.id}').textContent=project.items['${e.id}']>0?'€\u00A0'+(project.items['${e.id}']*${e.prijs}).toLocaleString('nl-NL'):'—';updateNav()">−</button>
+<input class="qin" id="qe_${e.id}" type="number" min="0" step="0.5" value="${q}" oninput="project.items['${e.id}']=parseFloat(this.value)||0;document.getElementById('t_${e.id}').textContent=parseFloat(this.value)>0?'€\u00A0'+(parseFloat(this.value)*${e.prijs}).toLocaleString('nl-NL'):'—';updateNav()">
+<button class="qb" onclick="project.items['${e.id}']=(project.items['${e.id}']||0)+1;document.getElementById('qe_${e.id}').value=project.items['${e.id}'];document.getElementById('t_${e.id}').textContent='€\u00A0'+(project.items['${e.id}']*${e.prijs}).toLocaleString('nl-NL');updateNav()">+</button>
 </div>
-<div class="wi-tot">${q>0?eu(q*e.prijs):'—'}</div>
+<div class="wi-tot" id="t_${e.id}">${tot>0?eu(tot):'—'}</div>
 <button class="btn br bsm" onclick="verwijderEigen('${e.id}')" style="margin-left:4px">✕</button>
 </div>`;}).join('')}
 
@@ -1594,12 +1594,12 @@ ${(project.eigen||[]).filter(e=>e.catKey===catKey).map(e=>{const q=getQ(e.id);re
 </div>
 
 <!-- Opmerkingen per categorie -->
-<div style="margin-top:16px;border-top:1px solid var(--gr2);padding-top:12px">
-<label style="font-size:11px;font-weight:700;color:var(--b);display:block;margin-bottom:6px">📝 Opmerkingen voor ${cat.titel.replace(/^.\s/,'')}</label>
-<textarea id="cat-notitie-${catKey}" placeholder="Bijv: Let op zachte grond, kleur afspraken, speciale materialen..." style="width:100%;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:8px 12px;font-size:13px;font-family:inherit;min-height:70px;resize:vertical" oninput="setCatNotitie('${catKey}',this.value)">${es(catNotitie)}</textarea>
-<div style="display:flex;gap:8px;margin-top:6px;align-items:center">
-<input id="extra-cat-${catKey}" placeholder="Snel iets bijschrijven..." style="flex:1;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:7px 12px;font-size:13px;font-family:inherit">
-<button class="btn bp bsm" onclick="voegCatNotatieToe('${catKey}')">+ Toevoegen</button>
+<div style="margin-top:16px;background:#f0f9ff;border:1.5px solid #bfdbfe;border-radius:8px;padding:14px">
+<label style="font-size:12px;font-weight:700;color:var(--b);display:block;margin-bottom:8px">📝 Opmerkingen — ${cat.titel.replace(/^.\s/,'')}</label>
+<textarea id="cat-notitie-${catKey}" placeholder="Schrijf hier opmerkingen, bijzonderheden of afspraken voor deze categorie..." style="width:100%;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:8px 12px;font-size:13px;font-family:inherit;min-height:80px;resize:vertical;background:#fff" oninput="setCatNotitie('${catKey}',this.value)">${es(catNotitie)}</textarea>
+<div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+<input id="extra-cat-${catKey}" placeholder="Snel iets bijschrijven (blijft bewaard naast bestaande tekst)..." style="flex:1;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:8px 12px;font-size:13px;font-family:inherit">
+<button class="btn bp bsm" onclick="voegCatNotatieToe('${catKey}')">+ Bijschrijven</button>
 </div>
 </div>
 
