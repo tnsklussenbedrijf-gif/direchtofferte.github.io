@@ -1148,7 +1148,7 @@ let sb=null, user=null, profiel=null;
 let prijzen={}, scherm=0, alleProj=[], project=np();
 let bedrijf={naam:'',slogan:'',straat:'',stad:'',tel:'',email:'',kvk:'',btwnr:'',iban:'',website:'',logo:''};
 
-function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',geldigDagen:30,eigen:[],betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};}
+function np(){return{id:null,naam:'Nieuw project',type:'Renovatie',opdrachtgever:'',adres:'',stad:'',tel:'',email:'',offNr:'OFF-'+new Date().getFullYear()+'-'+String(Math.floor(Math.random()*998)+1).padStart(3,'0'),datum:new Date().toISOString().split('T')[0],notities:'',marge:15,btw:21,items:{},status:'concept',geldigDagen:30,eigen:[],catNotities:{},betalingstermijnen:[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}]};}
 function getBT(){return project.betalingstermijnen||[{omschrijving:'Bij opdracht',procent:30,dagen:7},{omschrijving:'Bij uitvoering',procent:40,dagen:14},{omschrijving:'Bij oplevering',procent:30,dagen:30}];}
 function setBTR(i,veld,waarde){const bt=getBT();bt[i][veld]=(veld==='procent'||veld==='dagen')?parseInt(waarde)||0:waarde;project.betalingstermijnen=bt;render();}
 function addBTR(){const bt=getBT();bt.push({omschrijving:'Nieuwe termijn',procent:0,dagen:14});project.betalingstermijnen=bt;render();}
@@ -1302,7 +1302,7 @@ async function slaOp(){
   if(!sb||!user){tN('Niet verbonden');return;}
   syncSt('b','Opslaan...');
   try{
-    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,betalingstermijnen:project.betalingstermijnen||[],geldig_dagen:project.geldigDagen||30,eigen:project.eigen||[],gewijzigd:new Date().toISOString()};
+    const p={user_id:user.id,naam:project.naam,type:project.type,opdrachtgever:project.opdrachtgever,adres:project.adres,stad:project.stad,tel:project.tel,email:project.email,off_nr:project.offNr,datum:project.datum,notities:project.notities,marge:project.marge,btw:project.btw,items:project.items,status:project.status,betalingstermijnen:project.betalingstermijnen||[],geldig_dagen:project.geldigDagen||30,eigen:project.eigen||[],cat_notities:project.catNotities||{},gewijzigd:new Date().toISOString()};
     if(project.id){await sb.from('projecten').update(p).eq('id',project.id);}
     else{const {data}=await sb.from('projecten').insert(p).select().single();if(data)project.id=data.id;}
     await laadAlleProj();syncSt('ok','Opgeslagen ✓');tN('Opgeslagen ☁');updateNav();
@@ -1546,6 +1546,7 @@ function sWerk(catKey,prevIdx,nextLabel){
   const act=cat.secties.flatMap(s=>s.items).filter(i=>getQ(i.id)>0).length+(project.eigen||[]).filter(e=>e.catKey===catKey&&getQ(e.id)>0).length;
   const tot=cat.secties.flatMap(s=>s.items).reduce((s,i)=>{const q=getQ(i.id);return s+q*(prijzen[i.id]||i.prijs);},0)+
     (project.eigen||[]).filter(e=>e.catKey===catKey).reduce((s,e)=>s+getQ(e.id)*e.prijs,0);
+  const catNotitie=project.catNotities?.[catKey]||'';
   return`<div class="card"><div class="chdr">${cat.titel}</div><div class="cbdy">
 ${act>0?`<div class="al ali">${act} post${act>1?'en':''} actief — subtotaal: <strong>${eu(tot)}</strong></div>`:''}
 ${cat.secties.map(sec=>`<div class="wsec">${sec.naam}</div>
@@ -1582,6 +1583,17 @@ ${(project.eigen||[]).filter(e=>e.catKey===catKey).map(e=>{const q=getQ(e.id);re
 <div style="margin-top:12px">
 <button class="btn bout bsm" onclick="voegEigenToe('${catKey}')">➕ Eigen werkzaamheid toevoegen</button>
 </div>
+
+<!-- Opmerkingen per categorie -->
+<div style="margin-top:16px;border-top:1px solid var(--gr2);padding-top:12px">
+<label style="font-size:11px;font-weight:700;color:var(--b);display:block;margin-bottom:6px">📝 Opmerkingen voor ${cat.titel.replace(/^.\s/,'')}</label>
+<textarea id="cat-notitie-${catKey}" placeholder="Bijv: Let op zachte grond, kleur afspraken, speciale materialen..." style="width:100%;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:8px 12px;font-size:13px;font-family:inherit;min-height:70px;resize:vertical" oninput="setCatNotitie('${catKey}',this.value)">${es(catNotitie)}</textarea>
+<div style="display:flex;gap:8px;margin-top:6px;align-items:center">
+<input id="extra-cat-${catKey}" placeholder="Snel iets bijschrijven..." style="flex:1;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:7px 12px;font-size:13px;font-family:inherit">
+<button class="btn bp bsm" onclick="voegCatNotatieToe('${catKey}')">+ Toevoegen</button>
+</div>
+</div>
+
 </div></div>
 <div style="display:flex;justify-content:space-between;gap:8px">
 <button class="btn bout" onclick="nav(-1)">← Vorige</button>
@@ -2189,6 +2201,23 @@ async function delProj(id){
     render();
     tN('Project verwijderd ✓');
   }catch(e){tN('Fout bij verwijderen: '+e.message);}
+}
+function setCatNotitie(catKey,val){
+  if(!project.catNotities)project.catNotities={};
+  project.catNotities[catKey]=val;
+}
+function voegCatNotatieToe(catKey){
+  const extra=document.getElementById('extra-cat-'+catKey)?.value?.trim();
+  if(!extra)return;
+  const datum=new Date().toLocaleDateString('nl-NL');
+  const tijd=new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+  const nieuw=`[${datum} ${tijd}] ${extra}`;
+  if(!project.catNotities)project.catNotities={};
+  project.catNotities[catKey]=project.catNotities[catKey]?project.catNotities[catKey]+'\n'+nieuw:nieuw;
+  const veld=document.getElementById('cat-notitie-'+catKey);
+  if(veld)veld.value=project.catNotities[catKey];
+  document.getElementById('extra-cat-'+catKey).value='';
+  tN('✓ Opmerking toegevoegd!');
 }
 function voegNotatieToe(){
   const extra=document.getElementById('extra-notitie')?.value?.trim();
