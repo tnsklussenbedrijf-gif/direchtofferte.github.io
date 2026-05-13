@@ -1499,7 +1499,14 @@ ${klanten.map(k=>`<option value="${k.id}">${es(k.naam)}${k.bedrijf?' — '+es(k.
 <div class="fg"><label>Aannemersmarge</label>
 <div class="rr"><input type="range" min="0" max="40" step="1" value="${project.marge}" oninput="project.marge=parseInt(this.value);document.getElementById('mrv').textContent=this.value+'%';updateNav()">
 <div class="rv" id="mrv">${project.marge}%</div></div></div>
-<div class="fg"><label>Notities</label><textarea oninput="project.notities=this.value">${es(project.notities)}</textarea></div>
+<div class="fg"><label>Notities / Opmerkingen</label>
+<textarea id="notities-veld" oninput="project.notities=this.value" style="min-height:100px">${es(project.notities)}</textarea>
+<div style="display:flex;gap:8px;margin-top:6px;align-items:center">
+<input id="extra-notitie" placeholder="Extra opmerking toevoegen..." style="flex:1;border:1.5px solid var(--gr2);border-radius:var(--r2);padding:8px 12px;font-size:13px;font-family:inherit">
+<button class="btn bp bsm" onclick="voegNotatieToe()">+ Toevoegen</button>
+</div>
+<div style="font-size:10px;color:var(--t3);margin-top:3px">Klik "+ Toevoegen" om een opmerking met datum bij te schrijven zonder de oude tekst te verwijderen</div>
+</div>
 </div></div>
 <div class="fg" style="margin-top:8px"><label>Betalingstermijnen</label>
 <div style="background:var(--gr);border-radius:var(--r2);padding:12px;margin-bottom:6px">
@@ -2183,7 +2190,18 @@ async function delProj(id){
     tN('Project verwijderd ✓');
   }catch(e){tN('Fout bij verwijderen: '+e.message);}
 }
-function nieuwProj(){project=np();scherm=1;render();}
+function voegNotatieToe(){
+  const extra=document.getElementById('extra-notitie')?.value?.trim();
+  if(!extra)return;
+  const datum=new Date().toLocaleDateString('nl-NL');
+  const tijd=new Date().toLocaleTimeString('nl-NL',{hour:'2-digit',minute:'2-digit'});
+  const nieuw=`[${datum} ${tijd}] ${extra}`;
+  project.notities=project.notities?project.notities+'\n'+nieuw:nieuw;
+  const veld=document.getElementById('notities-veld');
+  if(veld)veld.value=project.notities;
+  document.getElementById('extra-notitie').value='';
+  tN('✓ Opmerking toegevoegd!');
+}
 
 // ══════ MODAL / NOTIF ══════
 function openM(t,b,f=''){document.getElementById('mhdr').textContent=t;document.getElementById('mbdy').innerHTML=b;document.getElementById('mftr').innerHTML=`${f}<button class="btn bout" onclick="sluitM()">Sluiten</button>`;document.getElementById('mbg').classList.add('on');}
