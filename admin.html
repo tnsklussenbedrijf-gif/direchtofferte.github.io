@@ -14,8 +14,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gr);color:var(--t)
 .lbox p{color:var(--t2);font-size:13px;margin-bottom:24px}
 .fg{margin-bottom:16px}
 .fg label{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
-.fg input{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:10px 12px;font-size:14px;font-family:inherit}
-.fg input:focus{outline:none;border-color:var(--b)}
+.fg input,.fg select{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:10px 12px;font-size:14px;font-family:inherit}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--b)}
 .btn{width:100%;padding:12px;background:var(--b);color:#fff;border:none;border-radius:6px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
 .btn:hover{background:#152f4a}
 .btn:disabled{opacity:.6;cursor:not-allowed}
@@ -28,8 +28,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gr);color:var(--t)
 .topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px}
 .tbtn{background:rgba(255,255,255,.12);border:none;color:#fff;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit}
 .tbtn:hover{background:rgba(255,255,255,.22)}
-.tbtn.o{background:var(--o)}
-.content{margin-top:76px;padding:24px;max-width:1400px;margin-left:auto;margin-right:auto}
+.content{margin-top:76px;padding:24px;max-width:1600px;margin-left:auto;margin-right:auto}
 .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
 .stat{background:#fff;border-radius:10px;padding:16px;box-shadow:var(--sh);border-left:4px solid var(--b)}
 .stat-num{font-size:24px;font-weight:700;color:var(--b)}
@@ -43,37 +42,52 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gr);color:var(--t)
 .search-inp{border:1.5px solid var(--gr2);border-radius:6px;padding:6px 12px;font-size:12px;font-family:inherit;width:220px}
 .search-inp:focus{outline:none;border-color:var(--b)}
 table{width:100%;border-collapse:collapse}
-th{background:var(--b);color:#fff;padding:9px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
-td{padding:10px 12px;border-bottom:1px solid var(--gr2);font-size:13px;vertical-align:middle}
+th{background:var(--b);color:#fff;padding:9px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+td{padding:9px 12px;border-bottom:1px solid var(--gr2);font-size:12px;vertical-align:middle}
 tr:last-child td{border:none}
-tr:hover td{background:#f8fafc}
-.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;white-space:nowrap}
-.badge-trial{background:#eef5fb;color:#2874a6}
+/* Rij kleuren */
+tr.rij-actief td{background:#f0fdf4} tr.rij-actief:hover td{background:#dcfce7}
+tr.rij-bijna td{background:#fffbeb} tr.rij-bijna:hover td{background:#fef3c7}
+tr.rij-verlopen td{background:#fff7ed} tr.rij-verlopen:hover td{background:#fee2e2}
+tr.rij-geblokkeerd td{background:#fef2f2} tr.rij-geblokkeerd:hover td{background:#fecaca}
+tr.rij-normaal:hover td{background:#f8fafc}
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:10px;font-size:10px;font-weight:700;text-transform:uppercase;white-space:nowrap}
 .badge-starter{background:#eef5fb;color:#2874a6}
 .badge-business{background:#d5f5e3;color:#1e8449}
 .badge-pro{background:#e8daef;color:#6c3483}
 .badge-admin{background:#fdebd0;color:#e67e22}
-.badge-actief{background:#d5f5e3;color:#1e8449}
 .badge-verlopen{background:#fadbd8;color:#c0392b}
 .badge-geblokkeerd{background:#f9ebea;color:#922b21}
-.action-btn{padding:4px 10px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:inherit;margin:1px}
-.ab-plan{background:var(--b);color:#fff}
-.ab-block{background:var(--r);color:#fff}
+.ab{padding:4px 9px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:inherit;margin:1px;white-space:nowrap}
+.ab-bewerken{background:var(--b);color:#fff}
+.ab-block{background:#e67e22;color:#fff}
 .ab-unblock{background:var(--g);color:#fff}
+.ab-del{background:var(--r);color:#fff}
+.dag-bar{height:6px;background:var(--gr2);border-radius:3px;width:70px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:5px}
+.dag-fill{height:100%;border-radius:3px}
+.legenda{padding:10px 20px;background:#f8fafc;border-bottom:1px solid var(--gr2);display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--t2)}
+.legenda span{display:flex;align-items:center;gap:5px}
+.lkleur{width:14px;height:14px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.1)}
 .mbg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center}
 .mbg.on{display:flex}
-.modal{background:#fff;border-radius:10px;width:480px;max-width:95vw;overflow:hidden}
-.mhdr{background:var(--b);color:#fff;padding:14px 18px;font-weight:700}
+.modal{background:#fff;border-radius:10px;width:500px;max-width:95vw;overflow:hidden;max-height:90vh;overflow-y:auto}
+.mhdr{background:var(--b);color:#fff;padding:14px 18px;font-weight:700;font-size:15px}
 .mbdy{padding:20px}
 .mftr{padding:12px 18px;border-top:1px solid var(--gr2);display:flex;justify-content:flex-end;gap:8px}
-select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9px 12px;font-size:14px;font-family:inherit;margin-top:8px}
-.notif{position:fixed;bottom:20px;right:20px;background:var(--g);color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:300;transform:translateX(130%);transition:.3s}
+.mfg{margin-bottom:14px}
+.mfg label{display:block;font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;margin-bottom:5px}
+.mfg input,.mfg select{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:8px 12px;font-size:13px;font-family:inherit}
+.mbtn{padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
+.notif{position:fixed;bottom:20px;right:20px;color:#fff;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:600;z-index:300;transform:translateX(130%);transition:.3s}
 .notif.on{transform:translateX(0)}
-@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.content{padding:16px}}
+.notif.ok{background:var(--g)}
+.notif.fout{background:var(--r)}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}.content{padding:12px}}
 @media(max-width:600px){.stats{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
+
 <div id="login">
   <div class="lbox">
     <h1>🔐 Beheer</h1>
@@ -84,6 +98,7 @@ select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9p
     <button class="btn" id="loginbtn" onclick="doLogin()">Inloggen →</button>
   </div>
 </div>
+
 <div id="app">
   <div class="topbar">
     <div class="topbar-logo">Direcht <span>Offerte</span></div>
@@ -103,9 +118,16 @@ select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9p
           <button class="filter-btn on" onclick="setFilter('alle',this)">Alle</button>
           <button class="filter-btn" onclick="setFilter('starter',this)">Starter</button>
           <button class="filter-btn" onclick="setFilter('business',this)">Business</button>
+          <button class="filter-btn" onclick="setFilter('verlopen',this)">Verlopen</button>
           <button class="filter-btn" onclick="setFilter('geblokkeerd',this)">Geblokkeerd</button>
           <button class="filter-btn" onclick="laadGebruikers()">🔄</button>
         </div>
+      </div>
+      <div class="legenda">
+        <span><span class="lkleur" style="background:#f0fdf4;border-color:#1e8449"></span>Actief abonnement</span>
+        <span><span class="lkleur" style="background:#fffbeb;border-color:#e67e22"></span>Verloopt binnenkort (&lt;30 dagen)</span>
+        <span><span class="lkleur" style="background:#fff7ed;border-color:#c0392b"></span>Verlopen</span>
+        <span><span class="lkleur" style="background:#fef2f2;border-color:#922b21"></span>Geblokkeerd</span>
       </div>
       <div style="overflow-x:auto">
         <table>
@@ -114,6 +136,9 @@ select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9p
               <th>Naam / Bedrijf</th>
               <th>E-mail</th>
               <th>Plan</th>
+              <th>Abo. start</th>
+              <th>Abo. einde</th>
+              <th>Resterende dagen</th>
               <th>Projecten</th>
               <th>Geregistreerd</th>
               <th>Acties</th>
@@ -125,23 +150,26 @@ select.sel{width:100%;border:1.5px solid var(--gr2);border-radius:6px;padding:9p
     </div>
   </div>
 </div>
+
 <div class="mbg" id="mbg">
   <div class="modal">
-    <div class="mhdr" id="mhdr">Plan wijzigen</div>
+    <div class="mhdr" id="mhdr">Bewerken</div>
     <div class="mbdy" id="mbdy"></div>
     <div class="mftr">
-      <button style="padding:8px 16px;border-radius:6px;border:1.5px solid var(--gr2);background:#fff;cursor:pointer;font-family:inherit" onclick="sluitM()">Annuleren</button>
-      <button style="padding:8px 20px;border-radius:6px;background:var(--b);color:#fff;border:none;font-weight:700;cursor:pointer;font-family:inherit" onclick="slaanPlan()">Opslaan</button>
+      <button class="mbtn" style="border:1.5px solid var(--gr2);background:#fff;color:var(--t)" onclick="sluitM()">Annuleren</button>
+      <button class="mbtn" style="background:var(--b);color:#fff" onclick="slaanPlan()">💾 Opslaan</button>
     </div>
   </div>
 </div>
-<div class="notif" id="notif"></div>
+
+<div class="notif ok" id="notif"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SB_URL='https://esrnpreydarwfrwawcug.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzcm5wcmV5ZGFyd2Zyd2F3Y3VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDg4MzcsImV4cCI6MjA5MzU4NDgzN30.TSh_Ljc72aOX1tNSDvHBvAkk9QmP6NQ-jsAkrski0TU';
-const sb = supabase.createClient(SB_URL, SB_KEY);
-let gebruikers=[], huidigFilter='alle', huidigId=null;
+const sb=supabase.createClient(SB_URL,SB_KEY);
+let gebruikers=[],huidigFilter='alle',huidigId=null;
 
 async function doLogin(){
   const email=document.getElementById('lemail').value.trim();
@@ -154,140 +182,183 @@ async function doLogin(){
   try{
     const {data,error}=await sb.auth.signInWithPassword({email,password:pw});
     if(error)throw error;
-    // Check admin via user ID
     const {data:profiel,error:profErr}=await sb.from('profiles').select('plan').eq('id',data.user.id).single();
-    if(profErr||!profiel){throw new Error('Profiel niet gevonden.');}
-    if(profiel.plan!=='admin'){
-      await sb.auth.signOut();
-      throw new Error('Geen admin toegang.');
-    }
+    if(profErr||!profiel)throw new Error('Profiel niet gevonden.');
+    if(profiel.plan!=='admin'){await sb.auth.signOut();throw new Error('Geen admin toegang.');}
     document.getElementById('login').style.display='none';
     document.getElementById('app').style.display='block';
     document.getElementById('admin-email').textContent=data.user.email;
     await laadGebruikers();
   }catch(e){
-    errEl.textContent=e.message;
-    errEl.style.display='block';
+    errEl.textContent=e.message;errEl.style.display='block';
     btn.disabled=false;btn.textContent='Inloggen →';
   }
 }
-
-async function doLogout(){
-  await sb.auth.signOut();
-  location.reload();
-}
+async function doLogout(){await sb.auth.signOut();location.reload();}
 
 async function laadGebruikers(){
-  document.getElementById('tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:#888">Laden...</td></tr>';
-  // Haal profielen op
+  document.getElementById('tbody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:30px;color:#888">Laden...</td></tr>';
   const {data,error}=await sb.from('profiles').select('*').order('aangemaakt',{ascending:false});
-  if(error){document.getElementById('tbody').innerHTML=`<tr><td colspan="6" style="color:red;padding:20px">${error.message}</td></tr>`;return;}
-  // Haal auth users op voor emails
-  const {data:authData}=await sb.auth.admin?.listUsers?.()??{data:null};
-  const emailMap={};
-  if(authData?.users){authData.users.forEach(u=>{emailMap[u.id]=u.email;});}
-  // Haal projecten aantallen op
+  if(error){document.getElementById('tbody').innerHTML=`<tr><td colspan="9" style="color:red;padding:20px">${error.message}</td></tr>`;return;}
   const {data:projs}=await sb.from('projecten').select('user_id');
   const projCount={};
   (projs||[]).forEach(p=>{projCount[p.user_id]=(projCount[p.user_id]||0)+1;});
-  gebruikers=(data||[]).map(g=>({
-    ...g,
-    email:g.email||emailMap[g.id]||'—',
-    aantal_projecten:projCount[g.id]||0
-  }));
+  gebruikers=(data||[]).map(g=>({...g,aantal_projecten:projCount[g.id]||0}));
   renderStats();
   renderTabel();
 }
 
 function renderStats(){
+  const nu=new Date();
   const totaal=gebruikers.length;
   const starter=gebruikers.filter(g=>g.plan==='starter').length;
   const business=gebruikers.filter(g=>g.plan==='business').length;
   const geblokkeerd=gebruikers.filter(g=>g.plan==='geblokkeerd').length;
-  const admin=gebruikers.filter(g=>g.plan==='admin').length;
+  const bijna=gebruikers.filter(g=>{
+    if(!g.abo_einde)return false;
+    const d=Math.ceil((new Date(g.abo_einde)-nu)/864e5);
+    return d>0&&d<=30;
+  }).length;
   document.getElementById('stats').innerHTML=`
     <div class="stat"><div class="stat-num">${totaal}</div><div class="stat-lbl">Totaal gebruikers</div></div>
     <div class="stat" style="border-left-color:#2874a6"><div class="stat-num" style="color:#2874a6">${starter}</div><div class="stat-lbl">Starter</div></div>
     <div class="stat" style="border-left-color:#1e8449"><div class="stat-num" style="color:#1e8449">${business}</div><div class="stat-lbl">Business</div></div>
-    <div class="stat" style="border-left-color:#e67e22"><div class="stat-num" style="color:#e67e22">${admin}</div><div class="stat-lbl">Admins</div></div>
+    <div class="stat" style="border-left-color:#e67e22"><div class="stat-num" style="color:#e67e22">${bijna}</div><div class="stat-lbl">Verloopt binnenkort</div></div>
     <div class="stat" style="border-left-color:#c0392b"><div class="stat-num" style="color:#c0392b">${geblokkeerd}</div><div class="stat-lbl">Geblokkeerd</div></div>`;
 }
 
 function renderTabel(){
   const zoek=document.getElementById('zoek').value.toLowerCase();
+  const nu=new Date();
   const gefilterd=gebruikers.filter(g=>{
     if(huidigFilter!=='alle'&&g.plan!==huidigFilter)return false;
     if(zoek){
-      const tekst=`${g.email||''} ${g.voornaam||''} ${g.achternaam||''} ${g.bedrijfsnaam||''} ${g.kvk||''}`.toLowerCase();
-      if(!tekst.includes(zoek))return false;
+      const t=`${g.email||''} ${g.voornaam||''} ${g.achternaam||''} ${g.bedrijfsnaam||''} ${g.kvk||''}`.toLowerCase();
+      if(!t.includes(zoek))return false;
     }
     return true;
   });
-  if(gefilterd.length===0){
-    document.getElementById('tbody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;color:#888">Geen gebruikers gevonden</td></tr>';
-    return;
-  }
-  const planKleur={starter:'badge-starter',business:'badge-business',pro:'badge-pro',admin:'badge-admin',geblokkeerd:'badge-geblokkeerd'};
+  if(!gefilterd.length){document.getElementById('tbody').innerHTML='<tr><td colspan="9" style="text-align:center;padding:30px;color:#888">Geen gebruikers gevonden</td></tr>';return;}
+  const planKleur={starter:'badge-starter',business:'badge-business',pro:'badge-pro',admin:'badge-admin',verlopen:'badge-verlopen',geblokkeerd:'badge-geblokkeerd'};
   document.getElementById('tbody').innerHTML=gefilterd.map(g=>{
     const naam=`${g.voornaam||''} ${g.achternaam||''}`.trim()||'—';
     const reg=g.aangemaakt?new Date(g.aangemaakt).toLocaleDateString('nl-NL'):'—';
-    const isGeblokkeerd=g.plan==='geblokkeerd';
-    return`<tr>
-      <td><div style="font-weight:700;font-size:13px">${naam}</div><div style="font-size:11px;color:#888">${g.bedrijfsnaam||'—'}</div></td>
-      <td style="font-size:12px"><a href="mailto:${g.email}" style="color:var(--b2)">${g.email}</a></td>
+    const aboStart=g.abo_start?new Date(g.abo_start).toLocaleDateString('nl-NL'):'—';
+    const aboEinde=g.abo_einde?new Date(g.abo_einde).toLocaleDateString('nl-NL'):'—';
+    let dagenHtml='—',rijKlasse='rij-normaal';
+    if(g.plan==='geblokkeerd'){
+      rijKlasse='rij-geblokkeerd';
+      dagenHtml='<span style="color:#922b21;font-weight:700">🚫 Geblokkeerd</span>';
+    } else if(g.abo_einde){
+      const dagen=Math.ceil((new Date(g.abo_einde)-nu)/864e5);
+      const totDag=g.abo_start?Math.ceil((new Date(g.abo_einde)-new Date(g.abo_start))/864e5):365;
+      const pct=Math.max(0,Math.min(100,(dagen/totDag)*100));
+      if(dagen<=0){
+        rijKlasse='rij-verlopen';
+        dagenHtml='<span style="color:#c0392b;font-weight:700">⚠️ Verlopen</span>';
+      } else if(dagen<=30){
+        rijKlasse='rij-bijna';
+        dagenHtml=`<span style="color:#e67e22;font-weight:700">${dagen} dgn</span><div class="dag-bar"><div class="dag-fill" style="width:${pct}%;background:#e67e22"></div></div>`;
+      } else {
+        rijKlasse='rij-actief';
+        dagenHtml=`<span style="color:#1e8449;font-weight:700">${dagen} dgn</span><div class="dag-bar"><div class="dag-fill" style="width:${pct}%;background:#1e8449"></div></div>`;
+      }
+    }
+    return`<tr class="${rijKlasse}">
+      <td><div style="font-weight:700;font-size:12px">${naam}</div><div style="font-size:11px;color:#888">${g.bedrijfsnaam||'—'}</div></td>
+      <td style="font-size:11px"><a href="mailto:${g.email||''}" style="color:var(--b2)">${g.email||'—'}</a></td>
       <td><span class="badge ${planKleur[g.plan]||'badge-starter'}">${g.plan||'starter'}</span></td>
-      <td style="text-align:center">${g.aantal_projecten}</td>
+      <td style="font-size:11px;color:#555">${aboStart}</td>
+      <td style="font-size:11px;color:#555">${aboEinde}</td>
+      <td>${dagenHtml}</td>
+      <td style="text-align:center;font-weight:600">${g.aantal_projecten}</td>
       <td style="font-size:11px;color:#888">${reg}</td>
       <td style="white-space:nowrap">
-        <button class="action-btn ab-plan" onclick="wijzigPlan('${g.id}','${g.plan||'starter'}','${naam.replace(/'/g,"\\'")}')">✏️ Plan</button>
-        ${isGeblokkeerd
-          ?`<button class="action-btn ab-unblock" onclick="blokkeer('${g.id}','${g.plan}')">✅ Deblokkeer</button>`
-          :`<button class="action-btn ab-block" onclick="blokkeer('${g.id}','${g.plan}')">🚫 Blokkeer</button>`
-        }
+        <button class="ab ab-bewerken" onclick="wijzigPlan('${g.id}','${g.plan||'starter'}','${naam.replace(/'/g,"\\'")}','${g.abo_start||''}','${g.abo_einde||''}')">✏️ Bewerken</button>
+        ${g.plan==='geblokkeerd'
+          ?`<button class="ab ab-unblock" onclick="blokkeer('${g.id}','${g.plan}')">✅ Deblokkeer</button>`
+          :`<button class="ab ab-block" onclick="blokkeer('${g.id}','${g.plan}')">🚫 Blokkeer</button>`}
+        <button class="ab ab-del" onclick="verwijderGebruiker('${g.id}','${naam.replace(/'/g,"\\'")}')">🗑️ Verwijder</button>
       </td>
     </tr>`;
   }).join('');
 }
 
-function setFilter(f,el){
-  huidigFilter=f;
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  renderTabel();
+function setFilter(f,el){huidigFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('on'));el.classList.add('on');renderTabel();}
+
+function wijzigPlan(id,huidigPlan,naam,aboStart,aboEinde){
+  huidigId=id;
+  document.getElementById('mhdr').textContent='✏️ Bewerken — '+naam;
+  document.getElementById('mbdy').innerHTML=`
+    <div class="mfg">
+      <label>Plan</label>
+      <select id="nieuw-plan">
+        ${['starter','business','pro','admin','verlopen','geblokkeerd'].map(p=>`<option value="${p}" ${p===huidigPlan?'selected':''}>${p.charAt(0).toUpperCase()+p.slice(1)}</option>`).join('')}
+      </select>
+    </div>
+    <div style="background:#eef5fb;border-radius:8px;padding:14px;margin-top:4px">
+      <div style="font-size:12px;font-weight:700;color:var(--b);margin-bottom:12px">📅 Abonnement datums</div>
+      <div class="mfg">
+        <label>Start datum abonnement</label>
+        <input type="date" id="abo-start" value="${aboStart?aboStart.split('T')[0]:''}">
+      </div>
+      <div class="mfg" style="margin-bottom:10px">
+        <label>Eind datum abonnement</label>
+        <input type="date" id="abo-einde" value="${aboEinde?aboEinde.split('T')[0]:''}">
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button onclick="setAboSnel(1)" style="padding:5px 12px;background:#1a3c5e;color:#fff;border:none;border-radius:5px;font-size:11px;cursor:pointer;font-family:inherit">+1 maand</button>
+        <button onclick="setAboSnel(3)" style="padding:5px 12px;background:#1a3c5e;color:#fff;border:none;border-radius:5px;font-size:11px;cursor:pointer;font-family:inherit">+3 maanden</button>
+        <button onclick="setAboSnel(6)" style="padding:5px 12px;background:#1a3c5e;color:#fff;border:none;border-radius:5px;font-size:11px;cursor:pointer;font-family:inherit">+6 maanden</button>
+        <button onclick="setAboSnel(12)" style="padding:5px 12px;background:#e67e22;color:#fff;border:none;border-radius:5px;font-size:11px;cursor:pointer;font-family:inherit">+1 jaar</button>
+      </div>
+      <div style="font-size:10px;color:#888;margin-top:6px">Klik een knop om einddatum automatisch in te stellen vanaf vandaag</div>
+    </div>`;
+  document.getElementById('mbg').classList.add('on');
 }
 
-function wijzigPlan(id,huidigPlan,naam){
-  huidigId=id;
-  document.getElementById('mhdr').textContent='Plan wijzigen — '+naam;
-  document.getElementById('mbdy').innerHTML=`
-    <p style="color:#555;font-size:14px;margin-bottom:12px">Selecteer het nieuwe plan:</p>
-    <select class="sel" id="nieuw-plan">
-      ${['starter','business','pro','admin','geblokkeerd'].map(p=>`<option value="${p}" ${p===huidigPlan?'selected':''}>${p.charAt(0).toUpperCase()+p.slice(1)}</option>`).join('')}
-    </select>`;
-  document.getElementById('mbg').classList.add('on');
+function setAboSnel(maanden){
+  const nu=new Date();
+  const einde=new Date(nu);
+  einde.setMonth(einde.getMonth()+maanden);
+  const startEl=document.getElementById('abo-start');
+  const eindeEl=document.getElementById('abo-einde');
+  if(!startEl.value)startEl.value=nu.toISOString().split('T')[0];
+  eindeEl.value=einde.toISOString().split('T')[0];
 }
 
 async function slaanPlan(){
   const plan=document.getElementById('nieuw-plan').value;
-  const {error}=await sb.from('profiles').update({plan}).eq('id',huidigId);
-  if(error){tN('Fout: '+error.message);return;}
-  sluitM();
-  tN('Plan bijgewerkt ✓');
-  await laadGebruikers();
+  const aboStart=document.getElementById('abo-start').value||null;
+  const aboEinde=document.getElementById('abo-einde').value||null;
+  const {error}=await sb.from('profiles').update({plan,abo_start:aboStart,abo_einde:aboEinde}).eq('id',huidigId);
+  if(error){tN('Fout: '+error.message,true);return;}
+  sluitM();tN('✓ Opgeslagen!');await laadGebruikers();
 }
 
 async function blokkeer(id,huidigPlan){
-  const nieuwPlan=huidigPlan==='geblokkeerd'?'starter':'geblokkeerd';
-  const bevestig=nieuwPlan==='geblokkeerd'?'Gebruiker blokkeren?':'Gebruiker deblokkeren?';
-  if(!confirm(bevestig))return;
-  const {error}=await sb.from('profiles').update({plan:nieuwPlan}).eq('id',id);
-  if(error){tN('Fout: '+error.message);return;}
-  tN(nieuwPlan==='geblokkeerd'?'Gebruiker geblokkeerd 🚫':'Gebruiker gedeblokkeerd ✅');
-  await laadGebruikers();
+  const nieuw=huidigPlan==='geblokkeerd'?'starter':'geblokkeerd';
+  if(!confirm(nieuw==='geblokkeerd'?'Gebruiker blokkeren?':'Gebruiker deblokkeren?'))return;
+  const {error}=await sb.from('profiles').update({plan:nieuw}).eq('id',id);
+  if(error){tN('Fout: '+error.message,true);return;}
+  tN(nieuw==='geblokkeerd'?'Geblokkeerd 🚫':'Gedeblokkeerd ✅');await laadGebruikers();
+}
+
+async function verwijderGebruiker(id,naam){
+  if(!confirm(`Gebruiker "${naam}" verwijderen?\n\nAlle data wordt verwijderd. Dit kan NIET ongedaan worden!`))return;
+  if(!confirm(`BEVESTIG: "${naam}" permanent verwijderen?`))return;
+  try{
+    await sb.from('projecten').delete().eq('user_id',id);
+    await sb.from('bedrijfsdata').delete().eq('user_id',id);
+    await sb.from('prijzen').delete().eq('user_id',id);
+    await sb.from('klanten').delete().eq('user_id',id);
+    await sb.from('profiles').delete().eq('id',id);
+    tN('✓ Gebruiker verwijderd!');await laadGebruikers();
+  }catch(e){tN('Fout: '+e.message,true);}
 }
 
 function sluitM(){document.getElementById('mbg').classList.remove('on');}
-function tN(t){const n=document.getElementById('notif');n.textContent=t;n.classList.add('on');setTimeout(()=>n.classList.remove('on'),3000);}
+function tN(t,err=false){const n=document.getElementById('notif');n.textContent=t;n.className='notif on '+(err?'fout':'ok');setTimeout(()=>n.classList.remove('on'),3500);}
 </script>
 </body>
 </html>
