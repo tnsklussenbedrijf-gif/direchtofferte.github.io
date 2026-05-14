@@ -2491,8 +2491,8 @@ async function haalActueleprijs(id,url){
 async function slaMateriaalOp(){
   if(!matFormulier.naam||!matFormulier.inkoopprijs){tN('Naam en inkoopprijs zijn verplicht');return;}
   try{
-    const {error}=await sb.from('materials_catalog').insert
-      user_id:(await sb.auth.getUser()).data.user?.id,
+    const {error}=await sb.from('materials_catalog').insert({
+      user_id:(await sb.auth.getUser()).data.user.id,
       naam:matFormulier.naam,leverancier:matFormulier.leverancier,
       product_url:matFormulier.product_url||null,artikel_nr:matFormulier.artikel_nr||null,
       eenheid:matFormulier.eenheid,inkoopprijs:parseFloat(matFormulier.inkoopprijs),
