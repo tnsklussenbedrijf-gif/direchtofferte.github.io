@@ -109,6 +109,9 @@
     <div class="sidebar-section">Groei</div>
     <button class="nav-btn" onclick="showTab('leads', this)">🎯 Leads Agent</button>
     <button class="nav-btn" onclick="showTab('rapport', this)">📊 Rapportage</button>
+
+    <div class="sidebar-section">Beveiliging</div>
+    <button class="nav-btn" onclick="showTab('bewaking', this)">🛡️ Bewaking</button>
   </div>
 
   <div class="main">
@@ -315,6 +318,18 @@
       </div>
     </div>
 
+    <div class="tab" id="tab-bewaking">
+      <div class="card">
+        <h2>🛡️ Bewaking</h2>
+        <div class="desc">Controleert verdachte activiteit (veel registraties of mails in korte tijd) en waarschuwt je.</div>
+        <button class="btn" id="bewaking-btn" onclick="runBewaking()">🛡️ Controleer nu</button>
+        <div id="bewaking-loading" style="display:none;text-align:center;padding:20px;color:rgba(255,255,255,0.5)"><div class="loading"></div><br><br>Bezig met controleren...</div>
+        <div id="bewaking-output" style="display:none;margin-top:16px">
+          <div class="email-preview" id="bewaking-content"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -436,6 +451,35 @@ function showTab(naam, btn) {
   document.getElementById('tab-' + naam).classList.add('active');
   if(btn) btn.classList.add('active');
   else document.querySelector(`.nav-btn[onclick*="${naam}"]`)?.classList.add('active');
+}
+
+async function runBewaking(){
+  const btn=document.getElementById('bewaking-btn');
+  const loading=document.getElementById('bewaking-loading');
+  const out=document.getElementById('bewaking-output');
+  const content=document.getElementById('bewaking-content');
+  btn.disabled=true; loading.style.display='block'; out.style.display='none';
+  try{
+    const r=await fetch(SB_URL+'/functions/v1/agent-bewaking',{headers:{'Authorization':'Bearer '+(USER_TOKEN||SB_KEY),'apikey':SB_KEY}});
+    const d=await r.json();
+    const m=d.metingen||{};
+    const meldingen=d.meldingen||[];
+    content.innerHTML=`
+      <div style="font-size:18px;font-weight:700;margin-bottom:10px">${d.status||''}</div>
+      <div style="line-height:1.9">
+        <div>Registraties laatste uur: <strong>${m.registraties_laatste_uur??'-'}</strong></div>
+        <div>Registraties laatste 24 uur: <strong>${m.registraties_laatste_24u??'-'}</strong></div>
+        <div>Verstuurde mails laatste uur: <strong>${m.mails_laatste_uur??'-'}</strong></div>
+      </div>
+      ${meldingen.length?`<div style="margin-top:12px;padding:10px 14px;background:rgba(192,57,43,.15);border:1px solid #c0392b;border-radius:8px"><strong>⚠️ Let op:</strong><ul style="margin:6px 0 0 18px">${meldingen.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:`<div style="margin-top:12px;color:#7bd88f">✅ Geen verdachte activiteit gevonden.</div>`}
+    `;
+    out.style.display='block';
+  }catch(e){
+    content.innerHTML='<div style="color:#ff8a8a">Controle mislukt: '+(e.message||e)+'</div>';
+    out.style.display='block';
+  }finally{
+    btn.disabled=false; loading.style.display='none';
+  }
 }
 
 async function callAI(system, userMsg, maxTokens=400) {
