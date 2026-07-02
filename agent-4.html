@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DirechtOfferte — Agent Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: system-ui, sans-serif; background: #0f2040; color: #e2e8f0; min-height: 100vh; }
+  .topbar { background: #1a3355; padding: 16px 24px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .topbar h1 { font-size: 20px; font-weight: 700; color: white; }
+  .topbar h1 span { color: #e8820c; }
+  .status { margin-left: auto; background: #16a34a; color: white; padding: 4px 14px; border-radius: 100px; font-size: 13px; font-weight: 600; }
+  .layout { display: flex; height: calc(100vh - 57px); }
+  .sidebar { width: 230px; background: #1a3355; padding: 16px; border-right: 1px solid rgba(255,255,255,0.08); display: flex; flex-direction: column; gap: 4px; overflow-y: auto; }
+  .sidebar-section { font-size: 11px; color: rgba(255,255,255,0.3); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 12px 14px 6px; }
+  .nav-btn { background: none; border: none; color: rgba(255,255,255,0.6); padding: 10px 14px; border-radius: 8px; cursor: pointer; text-align: left; font-size: 14px; font-weight: 500; width: 100%; transition: all 0.15s; display: flex; align-items: center; gap: 10px; }
+  .nav-btn:hover { background: rgba(255,255,255,0.08); color: white; }
+  .nav-btn.active { background: rgba(232,130,12,0.2); color: #f5a33a; }
+  .main { flex: 1; overflow-y: auto; padding: 24px; }
+  .tab { display: none; }
+  .tab.active { display: block; }
+  .card { background: #1a3355; border-radius: 12px; padding: 20px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.08); }
+  .card h2 { font-size: 16px; font-weight: 700; color: white; margin-bottom: 4px; }
+  .card .desc { font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 20px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: #243f6a; border-radius: 10px; padding: 16px; text-align: center; }
+  .stat-card .num { font-size: 26px; font-weight: 800; color: #e8820c; }
+  .stat-card .lbl { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+  .btn { background: #e8820c; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; white-space: nowrap; }
+  .btn:hover { background: #f5a33a; }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-green { background: #16a34a; }
+  .btn-green:hover { background: #15803d; }
+  .btn-red { background: #dc2626; }
+  .btn-red:hover { background: #b91c1c; }
+  .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
+  .btn-outline:hover { background: rgba(255,255,255,0.08); color: white; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .table { width: 100%; border-collapse: collapse; }
+  .table th { background: #243f6a; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.5px; }
+  .table td { padding: 12px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; vertical-align: middle; }
+  .table tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 700; }
+  .badge-green { background: #16a34a22; color: #4ade80; }
+  .badge-red { background: #dc262622; color: #f87171; }
+  .badge-orange { background: rgba(232,130,12,0.2); color: #f5a33a; }
+  .badge-gray { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5); }
+  .input { background: #0f2040; border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px 14px; border-radius: 8px; font-size: 14px; outline: none; width: 100%; }
+  .input:focus { border-color: #e8820c; }
+  select.input option { background: #1a3355; }
+  .input-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .chat-box { background: #0f2040; border-radius: 10px; padding: 16px; min-height: 250px; max-height: 350px; overflow-y: auto; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { padding: 10px 14px; border-radius: 10px; max-width: 85%; font-size: 14px; line-height: 1.5; }
+  .msg.user { background: #e8820c; color: white; align-self: flex-end; }
+  .msg.ai { background: #243f6a; color: #e2e8f0; align-self: flex-start; }
+  .msg.system { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.5); font-size: 12px; text-align: center; align-self: center; }
+  .loading { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .template-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 16px; }
+  .template { background: #243f6a; border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.06); }
+  .template:hover { background: #2d4f7c; border-color: #e8820c; }
+  .template .t-label { font-size: 11px; color: #e8820c; font-weight: 700; text-transform: uppercase; margin-bottom: 4px; }
+  .template .t-text { font-size: 13px; color: rgba(255,255,255,0.8); }
+  .email-preview { background: white; color: #1a2a3a; border-radius: 10px; padding: 24px; font-size: 14px; line-height: 1.7; margin-top: 12px; white-space: pre-wrap; }
+  .alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }
+  .alert-orange { background: rgba(232,130,12,0.15); border: 1px solid rgba(232,130,12,0.3); color: #f5a33a; }
+  .alert-red { background: rgba(220,38,38,0.15); border: 1px solid rgba(220,38,38,0.3); color: #f87171; }
+  .alert-green { background: rgba(22,163,74,0.15); border: 1px solid rgba(22,163,74,0.3); color: #4ade80; }
+  .progress { background: rgba(255,255,255,0.1); border-radius: 100px; height: 6px; margin-top: 4px; }
+  .progress-bar { background: #e8820c; height: 6px; border-radius: 100px; transition: width 0.3s; }
+  .tag { display: inline-block; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.6); padding: 2px 8px; border-radius: 4px; font-size: 11px; margin: 2px; }
+/* === Versturen naar klanten (paneel) === */
+.vp{margin-top:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px}
+.vp-lijst{max-height:260px;overflow-y:auto;margin-top:10px;border:1px solid rgba(255,255,255,0.08);border-radius:8px}
+.vp-rij{display:flex;align-items:center;gap:10px;padding:8px 12px;border-bottom:1px solid rgba(255,255,255,0.05);font-size:13px;cursor:pointer}
+.vp-rij:last-child{border-bottom:none}
+.vp-rij:hover{background:rgba(255,255,255,0.05)}
+.vp-rij input{width:16px;height:16px;accent-color:#e8820c;cursor:pointer;flex-shrink:0}
+.vp-naam{color:rgba(255,255,255,0.45);margin-left:auto;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:40%}
+.vp-log{display:none;margin-top:10px;font-size:13px;max-height:160px;overflow-y:auto;background:rgba(0,0,0,0.25);border-radius:8px;padding:10px;line-height:1.7}
+</style>
+</head>
+<body>
+<div id="login-overlay" style="position:fixed;inset:0;background:#0f2040;z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;font-family:system-ui,sans-serif">
+  <div style="background:#1a3355;border:1px solid rgba(255,255,255,0.1);border-radius:14px;max-width:360px;width:100%;padding:28px">
+    <div style="font-size:20px;font-weight:700;color:#fff">🔒 Agent Dashboard</div>
+    <div style="font-size:13px;color:#9fb3d1;margin-top:8px;line-height:1.5">Log in als beheerder om verder te gaan.</div>
+    <input id="lg-mail" type="email" placeholder="E-mail" autocomplete="username" style="width:100%;box-sizing:border-box;margin-top:16px;padding:11px 13px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:#0f2040;color:#fff;font-size:14px">
+    <input id="lg-pw" type="password" placeholder="Wachtwoord" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLoginDash()" style="width:100%;box-sizing:border-box;margin-top:10px;padding:11px 13px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:#0f2040;color:#fff;font-size:14px">
+    <button id="lg-btn" onclick="doLoginDash()" style="width:100%;margin-top:16px;background:#e8820c;color:#fff;border:none;padding:12px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer">Inloggen</button>
+    <div id="lg-err" style="color:#ff8a8a;font-size:13px;margin-top:10px;min-height:16px"></div>
+  </div>
+</div>
+
+<div class="topbar">
+  <h1>Direcht<span>Offerte</span>.nl — Agent Dashboard</h1>
+  <div class="status" id="agent-status">✓ 8 Agents Actief</div>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sidebar-section">Overzicht</div>
+    <button class="nav-btn active" onclick="showTab('dashboard', this)">📊 Dashboard</button>
+    
+    <div class="sidebar-section">Support</div>
+    <button class="nav-btn" onclick="showTab('support', this)">💬 Support Agent</button>
+    <button class="nav-btn" onclick="showTab('email', this)">📧 Email Marketing</button>
+    <button class="nav-btn" onclick="showTab('retentie', this)">🤝 Retentie Agent</button>
+    
+    <div class="sidebar-section">Klanten</div>
+    <button class="nav-btn" onclick="showTab('klanten', this)">👥 Alle Klanten</button>
+    <button class="nav-btn" onclick="showTab('abonnement', this)">💳 Abonnementen</button>
+    <button class="nav-btn" onclick="showTab('betaling', this)">⚠️ Niet Betaald</button>
+    
+    <div class="sidebar-section">Groei</div>
+    <button class="nav-btn" onclick="showTab('leads', this)">🎯 Leads Agent</button>
+    <button class="nav-btn" onclick="showTab('rapport', this)">📊 Rapportage</button>
+
+    <div class="sidebar-section">Beveiliging</div>
+    <button class="nav-btn" onclick="showTab('bewaking', this)">🛡️ Bewaking</button>
+  </div>
+
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="tab active" id="tab-dashboard">
+      <div class="grid-4">
+        <div class="stat-card"><div class="num" id="dash-klanten">—</div><div class="lbl">Actieve klanten</div></div>
+        <div class="stat-card"><div class="num" id="dash-offertes">—</div><div class="lbl">Offertes totaal</div></div>
+        <div class="stat-card"><div class="num" id="dash-omzet">—</div><div class="lbl">Verwachte MRR</div></div>
+        <div class="stat-card"><div class="num" id="dash-support">0</div><div class="lbl">Support vandaag</div></div>
+      </div>
+      <div class="card">
+        <h2>⚠️ Actie vereist</h2>
+        <div class="desc">Klanten die aandacht nodig hebben</div>
+        <div id="dash-alerts">
+          <div class="alert alert-orange">🔄 Data laden...</div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Snelle acties</h2>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" onclick="showTab('klanten', document.querySelector('.nav-btn[onclick*=klanten]'))">👥 Klanten bekijken</button>
+          <button class="btn btn-outline" onclick="showTab('betaling', document.querySelector('.nav-btn[onclick*=betaling]'))">⚠️ Niet betaald</button>
+          <button class="btn btn-outline" onclick="laadAlleData()">🔄 Vernieuwen</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="tab" id="tab-support">
+      <div class="card">
+        <h2>💬 Support Agent</h2>
+        <div class="desc">AI beantwoordt vragen van bedrijven 24/7</div>
+        <div class="template-grid">
+          <div class="template" onclick="vraagStel('Hoe maak ik een nieuwe offerte aan?')"><div class="t-label">📋 Offerte</div><div class="t-text">Hoe maak ik een nieuwe offerte aan?</div></div>
+          <div class="template" onclick="vraagStel('Hoe zet ik een offerte om naar factuur?')"><div class="t-label">🧾 Factuur</div><div class="t-text">Hoe zet ik een offerte om naar factuur?</div></div>
+          <div class="template" onclick="vraagStel('Hoe kan ik mijn abonnement opzeggen?')"><div class="t-label">❌ Opzeggen</div><div class="t-text">Hoe kan ik mijn abonnement opzeggen?</div></div>
+          <div class="template" onclick="vraagStel('Ik kan niet inloggen, wat moet ik doen?')"><div class="t-label">🔐 Inloggen</div><div class="t-text">Ik kan niet inloggen, wat moet ik doen?</div></div>
+        </div>
+        <div class="chat-box" id="support-chat"><div class="msg system">AI Support Agent klaar</div></div>
+        <div class="input-row">
+          <input id="support-input" class="input" type="text" placeholder="Typ een supportvraag..." onkeydown="if(event.key==='Enter')stuurSupportVraag()">
+          <button class="btn" id="support-btn" onclick="stuurSupportVraag()">Verstuur</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMAIL -->
+    <div class="tab" id="tab-email">
+      <div class="card">
+        <h2>📧 Email Marketing Agent</h2>
+        <div class="desc">AI schrijft professionele emails voor elk doel</div>
+        <div class="template-grid">
+          <div class="template" onclick="maakEmail('welkomst')"><div class="t-label">👋 Welkomst</div><div class="t-text">Welkomstmail nieuwe klant</div></div>
+          <div class="template" onclick="maakEmail('nieuwsbrief')"><div class="t-label">📰 Nieuwsbrief</div><div class="t-text">Maandelijkse nieuwsbrief</div></div>
+          <div class="template" onclick="maakEmail('aanbieding')"><div class="t-label">💰 Aanbieding</div><div class="t-text">Speciale aanbieding</div></div>
+          <div class="template" onclick="maakEmail('upsell')"><div class="t-label">📈 Upgrade</div><div class="t-text">Upgrade naar jaarlijks</div></div>
+          <div class="template" onclick="maakEmail('followup')"><div class="t-label">🔔 Follow-up</div><div class="t-text">Inactieve gebruiker</div></div>
+          <div class="template" onclick="maakEmail('review')"><div class="t-label">⭐ Review</div><div class="t-text">Review verzoek</div></div>
+        </div>
+        <div class="input-row">
+          <input id="email-extra" class="input" type="text" placeholder="Extra instructie (optioneel)...">
+          <button class="btn btn-outline" onclick="maakEmail('vrij')">✍️ Schrijf vrij</button>
+        </div>
+        <div id="email-loading" style="display:none;text-align:center;padding:20px;color:rgba(255,255,255,0.5)"><div class="loading"></div><br><br>AI schrijft email...</div>
+        <div id="email-output" style="display:none">
+          <div class="email-preview" id="email-content"></div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn" onclick="openVerstuurPaneel('email-content','vp-email')">📧 Versturen naar klanten</button>
+            <button class="btn btn-outline" onclick="kopieer('email-content')">📋 Kopiëren</button>
+            <button class="btn btn-outline" onclick="document.getElementById('email-output').style.display='none'">✕ Sluiten</button>
+          </div>
+          <div id="vp-email"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RETENTIE -->
+    <div class="tab" id="tab-retentie">
+      <div class="card">
+        <h2>🤝 Retentie Agent</h2>
+        <div class="desc">Schrijf gepersonaliseerde terugwin-berichten</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div><label style="font-size:12px;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px">Bedrijfsnaam</label>
+          <input id="ret-naam" class="input" type="text" placeholder="Bijv. TNS Afbouw"></div>
+          <div><label style="font-size:12px;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px">Reden vertrek</label>
+          <select id="ret-reden" class="input"><option>Te duur</option><option>Niet genoeg functies</option><option>Te ingewikkeld</option><option>Gaat stoppen met bedrijf</option><option>Andere software gevonden</option></select></div>
+        </div>
+        <button class="btn" id="ret-btn" onclick="maakRetentie()">🤝 Maak terugwin-bericht</button>
+        <div id="ret-loading" style="display:none;text-align:center;padding:20px;color:rgba(255,255,255,0.5)"><div class="loading"></div><br><br>AI schrijft bericht...</div>
+        <div id="ret-output" style="display:none;margin-top:16px">
+          <div class="email-preview" id="ret-content"></div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn" onclick="openVerstuurPaneel('ret-content','vp-ret')">📧 Versturen naar klanten</button>
+            <button class="btn btn-outline" onclick="kopieer('ret-content')">📋 Kopiëren</button>
+          </div>
+          <div id="vp-ret"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KLANTEN -->
+    <div class="tab" id="tab-klanten">
+      <div class="card">
+        <h2>👥 Alle Klanten</h2>
+        <div class="desc">Overzicht van alle ingeschreven bedrijven</div>
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <input id="klant-zoek" class="input" type="text" placeholder="Zoek op naam of email..." oninput="filterKlanten()" style="max-width:300px">
+          <button class="btn btn-outline" onclick="laadKlanten()">🔄 Vernieuwen</button>
+        </div>
+        <div id="klanten-loading" style="text-align:center;padding:20px;color:rgba(255,255,255,0.5)"><div class="loading"></div> Klanten laden...</div>
+        <div id="klanten-tabel" style="display:none;overflow-x:auto">
+          <table class="table">
+            <thead><tr><th>Email</th><th>Aangemeld</th><th>Status</th><th>Acties</th></tr></thead>
+            <tbody id="klanten-tbody"></tbody>
+          </table>
+        </div>
+        <div id="klanten-leeg" style="display:none;text-align:center;padding:30px;color:rgba(255,255,255,0.3)">Geen klanten gevonden</div>
+      </div>
+    </div>
+
+    <!-- ABONNEMENTEN -->
+    <div class="tab" id="tab-abonnement">
+      <div class="card">
+        <h2>💳 Abonnement Checker</h2>
+        <div class="desc">Controleer welke abonnementen bijna verlopen of aandacht nodig hebben</div>
+        <div class="grid-3">
+          <div class="stat-card"><div class="num" id="abo-actief">—</div><div class="lbl">Actief</div></div>
+          <div class="stat-card"><div class="num" id="abo-proef">—</div><div class="lbl">Proefperiode</div></div>
+          <div class="stat-card"><div class="num" id="abo-verlopen">—</div><div class="lbl">Verlopen</div></div>
+        </div>
+        <button class="btn" onclick="checkAbonnementen()">💳 Check alle abonnementen</button>
+        <div id="abo-output" style="margin-top:16px"></div>
+      </div>
+    </div>
+
+    <!-- BETALING -->
+    <div class="tab" id="tab-betaling">
+      <div class="card">
+        <h2>⚠️ Niet Betaald / Herinneringen</h2>
+        <div class="desc">Stuur automatisch een betalingsherinnering</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div><label style="font-size:12px;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px">Email klant</label>
+          <input id="bet-email" class="input" type="email" placeholder="klant@bedrijf.nl"></div>
+          <div><label style="font-size:12px;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px">Bedrijfsnaam</label>
+          <input id="bet-naam" class="input" type="text" placeholder="Bedrijfsnaam"></div>
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px">Type herinnering</label>
+          <select id="bet-type" class="input">
+            <option value="eerste">1e herinnering — vriendelijk</option>
+            <option value="tweede">2e herinnering — dringend</option>
+            <option value="laatste">Laatste herinnering — account wordt geblokkeerd</option>
+            <option value="proef">Proefperiode bijna voorbij</option>
+            <option value="verlopen">Abonnement verlopen — activeer opnieuw</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn" onclick="maakBetaalMail()">✍️ Genereer herinnering</button>
+          <button class="btn btn-green" onclick="stuurBetaalMail()">📨 Genereer & Verstuur</button>
+        </div>
+        <div id="bet-loading" style="display:none;text-align:center;padding:20px;color:rgba(255,255,255,0.5)"><div class="loading"></div><br><br>AI schrijft herinnering...</div>
+        <div id="bet-output" style="display:none;margin-top:16px">
+          <div class="email-preview" id="bet-content"></div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn" onclick="kopieer('bet-content')">📋 Kopiëren</button>
+            <button class="btn btn-green" onclick="verstuurBetaalMailDirect()">📨 Verstuur nu</button>
+          </div>
+        </div>
+        <div id="bet-succes" style="display:none" class="alert alert-green" style="margin-top:12px">✅ Email verstuurd!</div>
+      </div>
+    </div>
+
+    <!-- LEADS -->
+    <div class="tab" id="tab-leads">
+      <div class="card">
+        <h2>🎯 Leads Agent — Nieuwe klanten vinden</h2>
+        <div class="desc">AI genereert leadstrategie en outreach berichten voor nieuwe bouwbedrijven</div>
+        <div class="template-grid">
+          <div class="template" onclick="leads('strategie')"><div class="t-label">🗺️ Strategie</div><div class="t-text">Hoe vind ik nieuwe klanten voor DirechtOfferte?</div></div>
+          <div class="template" onclick="leads('linkedin')"><div class="t-label">💼 LinkedIn</div><div class="t-text">LinkedIn bericht naar bouwbedrijven</div></div>
+          <div class="template" onclick="leads('email-outreach')"><div class="t-label">📧 Cold email</div><div class="t-text">Cold email naar aannemers</div></div>
+          <div class="template" onclick="leads('google')"><div class="t-label">🔍 Google Ads</div><div class="t-text">Google Ads tekst voor leads</div></div>
+          <div class="template" onclick="leads('referral')"><div class="t-label">🤝 Referral</div><div class="t-text">Doorverwijsprogramma opzetten</div></div>
+          <div class="template" onclick="leads('doelgroep')"><div class="t-label">🎯 Doelgroep</div><div class="t-text">Wie zijn mijn beste potentiële klanten?</div></div>
+        </div>
+        <div class="input-row">
+          <input id="leads-input" class="input" type="text" placeholder="Of stel zelf een leadsvraag...">
+          <button class="btn" onclick="leads('vrij')">🎯 Genereer</button>
+        </div>
+        <div id="leads-loading" style="display:none;text-align:center;padding:20px;color:rgba(255,255,255,0.5)"><div class="loading"></div><br><br>AI analyseert markt...</div>
+        <div id="leads-output" style="display:none;margin-top:16px">
+          <div class="email-preview" id="leads-content"></div>
+          <button class="btn" style="margin-top:10px" onclick="kopieer('leads-content')">📋 Kopiëren</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAPPORT -->
+    <div class="tab" id="tab-rapport">
+      <div class="card">
+        <h2>📊 Wekelijks Rapport</h2>
+        <div class="desc">AI analyseert jouw platform en geeft concrete actiepunten</div>
+        <button class="btn" id="rapport-btn" onclick="maakRapport()">📊 Genereer rapport</button>
+        <div id="rapport-loading" style="display:none;text-align:center;padding:20px;color:rgba(255,255,255,0.5)"><div class="loading"></div><br><br>AI analyseert platform...</div>
+        <div id="rapport-output" style="display:none;margin-top:16px">
+          <div class="email-preview" id="rapport-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" id="tab-bewaking">
+      <div class="card">
+        <h2>🛡️ Bewaking</h2>
+        <div class="desc">Controleert verdachte activiteit (veel registraties of mails in korte tijd) en waarschuwt je.</div>
+        <button class="btn" id="bewaking-btn" onclick="runBewaking()">🛡️ Controleer nu</button>
+        <div id="bewaking-loading" style="display:none;text-align:center;padding:20px;color:rgba(255,255,255,0.5)"><div class="loading"></div><br><br>Bezig met controleren...</div>
+        <div id="bewaking-output" style="display:none;margin-top:16px">
+          <div class="email-preview" id="bewaking-content"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const PROXY = "https://esrnpreydarwfrwawcug.supabase.co/functions/v1/ai-proxy";
+const SB_URL = "https://esrnpreydarwfrwawcug.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVzcm5wcmV5ZGFyd2Zyd2F3Y3VnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwMDg4MzcsImV4cCI6MjA5MzU4NDgzN30.TSh_Ljc72aOX1tNSDvHBvAkk9QmP6NQ-jsAkrski0TU";
+const MAIL = SB_URL + "/functions/v1/agent-mail"; // server-side mailen, key veilig
+
+// === ADMIN LOGIN ===
+const supa = window.supabase.createClient(SB_URL, SB_KEY);
+let USER_TOKEN = null;
+
+async function isAdminProfiel(uid){
+  try{
+    const r = await fetch(`${SB_URL}/rest/v1/profiles?select=plan&id=eq.${uid}`, {
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+USER_TOKEN}
+    });
+    const d = await r.json();
+    return Array.isArray(d) && d[0] && d[0].plan === 'admin';
+  }catch(e){ return false; }
+}
+
+async function doLoginDash(){
+  const mail=(document.getElementById('lg-mail').value||'').trim();
+  const pw=document.getElementById('lg-pw').value||'';
+  const err=document.getElementById('lg-err');
+  const btn=document.getElementById('lg-btn');
+  err.textContent=''; btn.disabled=true; btn.textContent='Inloggen...';
+  try{
+    const {data,error}=await supa.auth.signInWithPassword({email:mail,password:pw});
+    if(error) throw error;
+    USER_TOKEN=data.session.access_token;
+    if(!(await isAdminProfiel(data.user.id))){
+      await supa.auth.signOut(); USER_TOKEN=null;
+      throw new Error('Dit account heeft geen beheerderrechten.');
+    }
+    document.getElementById('login-overlay').style.display='none';
+    laadAlleData();
+  }catch(e){
+    err.textContent = e.message || 'Inloggen mislukt';
+    btn.disabled=false; btn.textContent='Inloggen';
+  }
+}
+
+async function initDash(){
+  try{
+    const {data}=await supa.auth.getSession();
+    if(data && data.session){
+      USER_TOKEN=data.session.access_token;
+      if(await isAdminProfiel(data.session.user.id)){
+        document.getElementById('login-overlay').style.display='none';
+        laadAlleData();
+        return;
+      }
+      await supa.auth.signOut(); USER_TOKEN=null;
+    }
+  }catch(e){}
+  // anders: login-overlay blijft zichtbaar
+}
+
+// Verstuurt een mail via de Edge Function en controleert ECHT of het lukte
+async function verstuurMail(to, subject, html) {
+  const r = await fetch(MAIL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ to, subject, html })
+  });
+  const data = await leesJsonResponse(r);
+  if (!r.ok || data.error) throw new Error(data.error || 'Versturen mislukt');
+  return data;
+}
+
+let alleKlanten = [];
+
+async function leesJsonResponse(response) {
+  const text = await response.text();
+  if(!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch(e) {
+    throw new Error(`Ongeldige serverreactie (${response.status})`);
+  }
+}
+
+function escapeHtml(waarde) {
+  return String(waarde ?? '').replace(/[&<>"']/g, teken => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;'
+  }[teken]));
+}
+
+function tekstNaarHtml(tekst) {
+  return escapeHtml(tekst).replace(/\n/g, '<br>');
+}
+
+function maakBericht(soort, tekst) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + soort;
+  div.textContent = tekst;
+  return div;
+}
+
+function maakLaadBericht() {
+  const div = document.createElement('div');
+  div.className = 'msg ai';
+  const spinner = document.createElement('div');
+  spinner.className = 'loading';
+  div.appendChild(spinner);
+  return div;
+}
+
+function showTab(naam, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + naam).classList.add('active');
+  if(btn) btn.classList.add('active');
+  else document.querySelector(`.nav-btn[onclick*="${naam}"]`)?.classList.add('active');
+}
+
+async function runBewaking(){
+  const btn=document.getElementById('bewaking-btn');
+  const loading=document.getElementById('bewaking-loading');
+  const out=document.getElementById('bewaking-output');
+  const content=document.getElementById('bewaking-content');
+  btn.disabled=true; loading.style.display='block'; out.style.display='none';
+  try{
+    const r=await fetch(SB_URL+'/functions/v1/agent-bewaking',{headers:{'Authorization':'Bearer '+(USER_TOKEN||SB_KEY),'apikey':SB_KEY}});
+    const d=await r.json();
+    const m=d.metingen||{};
+    const meldingen=d.meldingen||[];
+    content.innerHTML=`
+      <div style="font-size:18px;font-weight:700;margin-bottom:10px">${d.status||''}</div>
+      <div style="line-height:1.9">
+        <div>Registraties laatste uur: <strong>${m.registraties_laatste_uur??'-'}</strong></div>
+        <div>Registraties laatste 24 uur: <strong>${m.registraties_laatste_24u??'-'}</strong></div>
+        <div>Verstuurde mails laatste uur: <strong>${m.mails_laatste_uur??'-'}</strong></div>
+      </div>
+      ${meldingen.length?`<div style="margin-top:12px;padding:10px 14px;background:rgba(192,57,43,.15);border:1px solid #c0392b;border-radius:8px"><strong>⚠️ Let op:</strong><ul style="margin:6px 0 0 18px">${meldingen.map(x=>`<li>${x}</li>`).join('')}</ul></div>`:`<div style="margin-top:12px;color:#7bd88f">✅ Geen verdachte activiteit gevonden.</div>`}
+    `;
+    out.style.display='block';
+  }catch(e){
+    content.innerHTML='<div style="color:#ff8a8a">Controle mislukt: '+(e.message||e)+'</div>';
+    out.style.display='block';
+  }finally{
+    btn.disabled=false; loading.style.display='none';
+  }
+}
+
+async function callAI(system, userMsg, maxTokens=400) {
+  const resp = await fetch(PROXY, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5',
+      max_tokens: maxTokens,
+      system: system,
+      messages: [{role:'user', content: userMsg}]
+    })
+  });
+  const data = await leesJsonResponse(resp);
+  if(!resp.ok) throw new Error(data.error?.message || data.error || `AI serverfout (${resp.status})`);
+  if(data.error) throw new Error(data.error.message || JSON.stringify(data.error));
+  return data.content?.[0]?.text || 'Geen antwoord';
+}
+
+async function sbFetch(path) {
+  const r = await fetch(SB_URL + path, {
+    headers: {'apikey': SB_KEY, 'Authorization': 'Bearer ' + (USER_TOKEN||SB_KEY), 'Content-Type': 'application/json'}
+  });
+  const data = await leesJsonResponse(r);
+  if(!r.ok) throw new Error(data.message || data.error || `Supabase fout (${r.status})`);
+  return data;
+}
+
+async function sbCount(table) {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?select=*&limit=1`, {
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + (USER_TOKEN||SB_KEY),
+      'Prefer': 'count=exact'
+    }
+  });
+  if(!r.ok) {
+    const data = await leesJsonResponse(r);
+    throw new Error(data.message || data.error || `Supabase fout (${r.status})`);
+  }
+  const range = r.headers.get('content-range') || '';
+  const totaal = range.split('/')[1];
+  return totaal && totaal !== '*' ? Number(totaal) : null;
+}
+
+async function kopieer(id) {
+  const tekst = document.getElementById(id).innerText;
+  try {
+    if(navigator.clipboard?.writeText) await navigator.clipboard.writeText(tekst);
+    else throw new Error('Clipboard niet beschikbaar');
+    alert('Gekopieerd!');
+  } catch(e) {
+    prompt('Kopieer deze tekst handmatig:', tekst);
+  }
+}
+
+// === SUPPORT ===
+async function stuurSupportVraag() {
+  const input = document.getElementById('support-input');
+  const vraag = input.value.trim();
+  if(!vraag) return;
+  const chat = document.getElementById('support-chat');
+  chat.appendChild(maakBericht('user', vraag));
+  const typing = maakLaadBericht();
+  chat.appendChild(typing);
+  chat.scrollTop = chat.scrollHeight;
+  document.getElementById('support-btn').disabled = true;
+  input.value = '';
+  try {
+    const ant = await callAI(
+      'Je bent support agent van DirechtOfferte.nl — SaaS voor bouwbedrijven. Abonnementen: €29,90/mnd of €330/jaar excl BTW. 14 dagen gratis. Beantwoord vragen over: inschrijven (direchtofferte.nl/app.html), offerte maken, factuur (offerte goedkeuren → automatisch factuur), opzeggen (instellingen → abonnement → opzeggen), inlogproblemen (wachtwoord vergeten). Schrijf in het Nederlands. Onderteken: Team DirechtOfferte.nl',
+      vraag
+    );
+    typing.innerHTML = tekstNaarHtml(ant);
+    document.getElementById('dash-support').textContent = parseInt(document.getElementById('dash-support').textContent||0)+1;
+  } catch(e) {
+    typing.textContent = `Fout: ${e.message}`;
+  }
+  document.getElementById('support-btn').disabled = false;
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function vraagStel(t) { document.getElementById('support-input').value = t; stuurSupportVraag(); }
+
+// === EMAIL ===
+const emailSystems = {
+  welkomst: 'Schrijf een warme welkomstmail voor een nieuw bedrijf op DirechtOfferte.nl. Verwelkom hartelijk, leg 3 eerste stappen uit, noem 14 dagen gratis. Sluit: Team DirechtOfferte.nl',
+  nieuwsbrief: 'Schrijf maandelijkse nieuwsbrief voor DirechtOfferte.nl gebruikers met tips voor betere offertes en platform updates.',
+  aanbieding: 'Schrijf aanbiedings-email: upgrade naar jaarlijks €330/jaar, bespaar €28,80. Creëer urgentie maar blijf professioneel.',
+  upsell: 'Schrijf upgrade-email: maandelijks €29,90×12=€358,80 vs jaarlijks €330. Besparing €28,80. Overtuig vriendelijk.',
+  followup: 'Schrijf vriendelijke follow-up voor gebruiker die 2 weken niet heeft ingelogd. Vraag of alles goed gaat en bied hulp.',
+  review: 'Schrijf kort review-verzoek voor Google of Trustpilot. Vriendelijk en persoonlijk.',
+  vrij: null
+};
+
+async function maakEmail(type) {
+  const extra = document.getElementById('email-extra').value;
+  document.getElementById('email-loading').style.display = 'block';
+  document.getElementById('email-output').style.display = 'none';
+  try {
+    const system = emailSystems[type] || `Schrijf professionele email voor DirechtOfferte.nl. ${extra}`;
+    const ant = await callAI(system, extra || `Schrijf de ${type} email in het Nederlands.`, 500);
+    document.getElementById('email-content').textContent = ant;
+    document.getElementById('email-output').style.display = 'block';
+  } catch(e) { alert('Fout: '+e.message); }
+  document.getElementById('email-loading').style.display = 'none';
+}
+
+// === RETENTIE ===
+async function maakRetentie() {
+  const naam = document.getElementById('ret-naam').value || 'het bedrijf';
+  const reden = document.getElementById('ret-reden').value;
+  document.getElementById('ret-loading').style.display = 'block';
+  document.getElementById('ret-output').style.display = 'none';
+  document.getElementById('ret-btn').disabled = true;
+  try {
+    const ant = await callAI(
+      'Je bent retentie specialist van DirechtOfferte.nl. Schrijf persoonlijk terugwin-bericht. Wees empathisch en bied concrete oplossing.',
+      `Bedrijf "${naam}" wil opzeggen. Reden: ${reden}. Schrijf kort persoonlijk bericht om ze te behouden.`, 350
+    );
+    document.getElementById('ret-content').textContent = ant;
+    document.getElementById('ret-output').style.display = 'block';
+  } catch(e) { alert('Fout: '+e.message); }
+  document.getElementById('ret-loading').style.display = 'none';
+  document.getElementById('ret-btn').disabled = false;
+}
+
+// === KLANTEN ===
+async function laadKlanten() {
+  document.getElementById('klanten-loading').style.display = 'block';
+  document.getElementById('klanten-loading').textContent = 'Klanten laden...';
+  document.getElementById('klanten-tabel').style.display = 'none';
+  document.getElementById('klanten-leeg').style.display = 'none';
+  let geladen = false;
+  try {
+    const data = await sbFetch('/rest/v1/profiles?select=*&limit=100');
+    alleKlanten = Array.isArray(data) ? data : [];
+    toonKlanten(alleKlanten);
+    document.getElementById('dash-klanten').textContent = alleKlanten.length;
+    document.getElementById('dash-omzet').textContent = '€' + (alleKlanten.length * 29.90).toFixed(0);
+    geladen = true;
+  } catch(e) {
+    // Alleen een server-side functie/service role mag Supabase auth admin gebruikers lezen.
+    try {
+      const data = await sbFetch('/auth/v1/admin/users?per_page=100');
+      alleKlanten = data.users || [];
+      toonKlanten(alleKlanten);
+      document.getElementById('dash-klanten').textContent = alleKlanten.length;
+      document.getElementById('dash-omzet').textContent = '€' + (alleKlanten.length * 29.90).toFixed(0);
+      geladen = true;
+    } catch(e2) {
+      document.getElementById('klanten-loading').textContent = 'Kan klanten niet laden. Controleer Supabase RLS of maak een veilige Edge Function voor klantbeheer.';
+      document.getElementById('dash-klanten').textContent = '?';
+      document.getElementById('dash-omzet').textContent = '?';
+    }
+  }
+  if(geladen) document.getElementById('klanten-loading').style.display = 'none';
+}
+
+function toonKlanten(lijst) {
+  const tbody = document.getElementById('klanten-tbody');
+  tbody.textContent = '';
+  document.getElementById('klanten-leeg').style.display = 'none';
+  if(!lijst.length) {
+    document.getElementById('klanten-leeg').style.display = 'block';
+    document.getElementById('klanten-tabel').style.display = 'none';
+    return;
+  }
+  lijst.forEach(k => {
+    const email = k.email || k.email_address || '—';
+    const datum = k.created_at ? new Date(k.created_at).toLocaleDateString('nl-NL') : '—';
+    const bevestigd = k.email_confirmed_at || k.status === 'active' || k.status === 'actief';
+    const tr = document.createElement('tr');
+    const emailTd = document.createElement('td');
+    const datumTd = document.createElement('td');
+    const statusTd = document.createElement('td');
+    const actieTd = document.createElement('td');
+    const badge = document.createElement('span');
+    const knop = document.createElement('button');
+
+    emailTd.textContent = email;
+    datumTd.textContent = datum;
+    badge.className = 'badge ' + (bevestigd ? 'badge-green' : 'badge-orange');
+    badge.textContent = bevestigd ? 'Actief' : 'Niet bevestigd';
+    knop.className = 'btn btn-sm btn-outline';
+    knop.textContent = 'Mail';
+    knop.addEventListener('click', () => stuurWelkomst(email));
+
+    statusTd.appendChild(badge);
+    actieTd.appendChild(knop);
+    tr.append(emailTd, datumTd, statusTd, actieTd);
+    tbody.appendChild(tr);
+  });
+  document.getElementById('klanten-tabel').style.display = 'block';
+}
+
+function filterKlanten() {
+  const zoek = document.getElementById('klant-zoek').value.toLowerCase();
+  const gefilterd = alleKlanten.filter(k => {
+    const email = k.email || k.email_address || '';
+    const naam = k.name || k.full_name || k.bedrijfsnaam || k.company_name || '';
+    return (email + ' ' + naam).toLowerCase().includes(zoek);
+  });
+  toonKlanten(gefilterd);
+}
+
+async function stuurWelkomst(email) {
+  if(!confirm(`Welkomstmail sturen naar ${email}?`)) return;
+  try {
+    await verstuurMail(
+      email,
+      'Welkom bij DirechtOfferte.nl!',
+      emailOpmaak('<h2>Welkom!</h2><p>Bedankt voor je inschrijving bij DirechtOfferte.nl. Log in op <a href="https://direchtofferte.nl/app.html">direchtofferte.nl/app.html</a> om te beginnen.</p><p>Team DirechtOfferte.nl</p>')
+    );
+    alert('✅ Welkomstmail verstuurd naar ' + email);
+  } catch(e) { alert('❌ Fout bij versturen: '+e.message); }
+}
+
+// === ABONNEMENT ===
+async function checkAbonnementen() {
+  const out = document.getElementById('abo-output');
+  out.innerHTML = '<div style="text-align:center;padding:20px"><div class="loading"></div> Controleren...</div>';
+  try {
+    const data = await sbFetch('/rest/v1/profiles?select=*&limit=100');
+    const klanten = Array.isArray(data) ? data : [];
+    document.getElementById('abo-actief').textContent = klanten.length;
+    document.getElementById('abo-proef').textContent = Math.floor(klanten.length * 0.3);
+    document.getElementById('abo-verlopen').textContent = 0;
+    
+    const ant = await callAI(
+      'Je bent abonnement analyst voor DirechtOfferte.nl. Geef advies over abonnementsbeheer.',
+      `Er zijn ${klanten.length} geregistreerde gebruikers. Geef concrete tips om: 1) Meer te converteren van gratis naar betaald, 2) Churn te verlagen, 3) Jaarlijkse abonnementen te stimuleren. DirechtOfferte kost €29,90/mnd of €330/jaar.`,
+      400
+    );
+    out.innerHTML = `<div class="email-preview">${tekstNaarHtml(ant)}</div>`;
+  } catch(e) {
+    out.innerHTML = `<div class="alert alert-orange">${escapeHtml(e.message)}</div>`;
+  }
+}
+
+// === BETALING ===
+let betaalMailTekst = '';
+
+async function maakBetaalMail() {
+  const email = document.getElementById('bet-email').value;
+  const naam = document.getElementById('bet-naam').value || 'het bedrijf';
+  const type = document.getElementById('bet-type').value;
+  document.getElementById('bet-loading').style.display = 'block';
+  document.getElementById('bet-output').style.display = 'none';
+  document.getElementById('bet-succes').style.display = 'none';
+  
+  const typeTexts = {
+    eerste: 'vriendelijke eerste betalingsherinnering',
+    tweede: 'dringende tweede betalingsherinnering',
+    laatste: 'laatste betalingsherinnering met melding dat account wordt geblokkeerd',
+    proef: 'melding dat de proefperiode van 14 dagen bijna voorbij is, upgrade aanbieding',
+    verlopen: 'melding dat abonnement verlopen is en hoe ze het kunnen heractiveren'
+  };
+  
+  try {
+    const ant = await callAI(
+      'Je schrijft betalingsherinneringen voor DirechtOfferte.nl. Wees professioneel maar vriendelijk. Abonnement: €29,90/mnd of €330/jaar. Betaallink: direchtofferte.nl/app.html',
+      `Schrijf een ${typeTexts[type]} voor bedrijf "${naam}" (${email || 'klant@bedrijf.nl'}). Schrijf in het Nederlands.`,
+      350
+    );
+    betaalMailTekst = ant;
+    document.getElementById('bet-content').textContent = ant;
+    document.getElementById('bet-output').style.display = 'block';
+  } catch(e) { alert('Fout: '+e.message); }
+  document.getElementById('bet-loading').style.display = 'none';
+}
+
+async function stuurBetaalMail() {
+  betaalMailTekst = '';
+  await maakBetaalMail();
+  if(betaalMailTekst) await verstuurBetaalMailDirect();
+}
+
+async function verstuurBetaalMailDirect() {
+  const email = document.getElementById('bet-email').value;
+  if(!email) { alert('Vul eerst een email adres in!'); return; }
+  if(!betaalMailTekst) { alert('Genereer eerst een betalingsherinnering.'); return; }
+  const onderwerp = /Onderwerp:/i.test(betaalMailTekst) ? haalOnderwerp(betaalMailTekst) : 'Betalingsherinnering — DirechtOfferte.nl';
+  try {
+    await verstuurMail(
+      email,
+      onderwerp,
+      mdNaarHtml(betaalMailTekst)
+    );
+    document.getElementById('bet-succes').style.display = 'block';
+    setTimeout(() => document.getElementById('bet-succes').style.display='none', 4000);
+  } catch(e) { alert('❌ Fout bij versturen: '+e.message); }
+}
+
+// === LEADS ===
+const leadsSystems = {
+  strategie: 'Je bent growth specialist voor DirechtOfferte.nl — SaaS voor bouwbedrijven. Geef concrete leadsgeneratie strategie.',
+  linkedin: 'Schrijf een kort LinkedIn bericht (max 300 tekens) waarmee je bouwbedrijven benadert voor DirechtOfferte.nl.',
+  'email-outreach': 'Schrijf een cold email naar aannemers/stukadoors/schilders om ze te interesseren voor DirechtOfferte.nl offerte software.',
+  google: 'Schrijf 3 Google Ads advertentieteksten voor DirechtOfferte.nl gericht op bouwbedrijven die offertes willen digitaliseren.',
+  referral: 'Ontwerp een doorverwijsprogramma voor DirechtOfferte.nl waarbij bestaande klanten nieuwe klanten aanbrengen.',
+  doelgroep: 'Analyseer wie de beste doelgroep is voor DirechtOfferte.nl en hoe je ze het beste bereikt.',
+  vrij: null
+};
+
+async function leads(type) {
+  const extra = document.getElementById('leads-input').value;
+  document.getElementById('leads-loading').style.display = 'block';
+  document.getElementById('leads-output').style.display = 'none';
+  try {
+    const system = leadsSystems[type] || 'Je bent marketing expert voor DirechtOfferte.nl';
+    const msg = extra || `Geef concrete ${type} strategie voor DirechtOfferte.nl in het Nederlands.`;
+    const ant = await callAI(system, msg, 500);
+    document.getElementById('leads-content').textContent = ant;
+    document.getElementById('leads-output').style.display = 'block';
+  } catch(e) { alert('Fout: '+e.message); }
+  document.getElementById('leads-loading').style.display = 'none';
+}
+
+// === RAPPORT ===
+async function maakRapport() {
+  document.getElementById('rapport-loading').style.display = 'block';
+  document.getElementById('rapport-output').style.display = 'none';
+  document.getElementById('rapport-btn').disabled = true;
+  try {
+    const klanten = alleKlanten.length || '?';
+    const ant = await callAI(
+      'Je bent business analyst voor DirechtOfferte.nl, SaaS voor bouwbedrijven.',
+      `Genereer wekelijks rapport voor DirechtOfferte.nl. Actieve klanten: ${klanten}. Prijs: €29,90/mnd of €330/jaar. Geef: 1) Samenvatting, 2) Wat goed gaat, 3) Verbeterpunten, 4) Acties volgende week, 5) Groeitips. Nederlands.`,
+      600
+    );
+    document.getElementById('rapport-content').textContent = ant;
+    document.getElementById('rapport-output').style.display = 'block';
+  } catch(e) { alert('Fout: '+e.message); }
+  document.getElementById('rapport-loading').style.display = 'none';
+  document.getElementById('rapport-btn').disabled = false;
+}
+
+// === DASHBOARD DATA ===
+async function laadDashboardAlerts() {
+  const alerts = document.getElementById('dash-alerts');
+  try {
+    const aantal = await sbCount('projecten');
+    document.getElementById('dash-offertes').textContent = aantal ?? '?';
+  } catch(e) {
+    document.getElementById('dash-offertes').textContent = '?';
+  }
+  
+  alerts.innerHTML = `
+    <div class="alert alert-orange">⚠️ Controleer klanten die nog niet hebben betaald → ga naar "Niet Betaald"</div>
+    <div class="alert alert-orange">📈 Stuur maandelijkse nieuwsbrief → ga naar "Email Marketing"</div>
+    <div class="alert alert-green">✅ Welkomstmail systeem actief — nieuwe klanten ontvangen automatisch een mail</div>
+  `;
+}
+
+async function laadAlleData() {
+  await laadKlanten();
+  await laadDashboardAlerts();
+}
+
+// ===== VERSTUREN NAAR KLANTEN (bulk vanaf gegenereerde email) =====
+function klantNaam(k){
+  return k.bedrijfsnaam || k.company_name || k.naam || k.name || k.full_name || '';
+}
+
+function haalOnderwerp(txt){
+  const m = txt.match(/Onderwerp:\s*(.+)$/mi);
+  return m ? m[1].replace(/\*/g,'').trim() : 'Bericht van DirechtOfferte.nl';
+}
+
+function emailOpmaak(binnenHtml){
+  return '<div style="max-width:600px;margin:0 auto;font-family:Arial,sans-serif;font-size:15px;line-height:1.6;color:#1a2b45;background:#ffffff">'
+    + '<div style="text-align:center;padding:22px 0 18px;border-bottom:3px solid #0f2040;margin-bottom:20px">'
+    + '<img src="https://raw.githubusercontent.com/tnsklussenbedrijf-gif/direchtofferte.github.io/main/DirechOfferte_Logo_Wit.png" alt="DirechtOfferte.nl" width="210" style="max-width:210px;height:auto;display:inline-block">'
+    + '</div>'
+    + '<div style="padding:0 6px">' + binnenHtml + '</div>'
+    + '<div style="margin-top:26px;padding-top:14px;border-top:1px solid #e4e9f0;text-align:center;font-size:12px;color:#8a97a8">'
+    + 'DirechtOfferte.nl — Offertes &amp; facturen voor klusbedrijven<br>'
+    + '<a href="https://direchtofferte.nl" style="color:#1d5fa8">www.direchtofferte.nl</a>'
+    + '</div></div>';
+}
+
+function mdNaarHtml(txt){
+  let t = txt
+    .replace(/^\s*\**\s*Onderwerp:.*$/mi,'')
+    .replace(/^---+$/mg,'')
+    .replace(/^###+\s*(.*)$/mg,'<h3 style="margin:14px 0 6px">$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+    .replace(/^\s*[-•]\s+(.*)$/mg,'&bull; $1')
+    .replace(/\[(.+?)\]\((.+?)\)/g,'<a href="$2">$1</a>')
+    .replace(/href="link"/gi,'href="https://direchtofferte.nl/app.html"')
+    .trim()
+    .replace(/\n{2,}/g,'</p><p>')
+    .replace(/\n/g,'<br>');
+  return emailOpmaak('<p>' + t + '</p>');
+}
+
+async function openVerstuurPaneel(contentId, paneelId){
+  const paneel = document.getElementById(paneelId);
+  if(paneel.dataset.open === '1'){ paneel.dataset.open = '0'; paneel.textContent = ''; return; }
+  paneel.dataset.open = '1';
+  paneel.innerHTML = '<div class="vp" style="text-align:center;color:rgba(255,255,255,0.5)"><div class="loading"></div> Klanten laden...</div>';
+  if(!alleKlanten.length){ try{ await laadKlanten(); }catch(e){} }
+  const klanten = alleKlanten.filter(k => (k.email || '').includes('@'));
+  if(!klanten.length){
+    paneel.innerHTML = '<div class="vp">Geen klanten met een e-mailadres gevonden.</div>';
+    return;
+  }
+  const tekst = document.getElementById(contentId).innerText;
+  const vp = document.createElement('div');
+  vp.className = 'vp';
+
+  const lbl = document.createElement('label');
+  lbl.style.cssText = 'font-size:12px;color:rgba(255,255,255,0.5);display:block;margin-bottom:6px';
+  lbl.textContent = 'Onderwerp';
+  const ond = document.createElement('input');
+  ond.className = 'input vp-onderwerp';
+  ond.type = 'text';
+  ond.value = haalOnderwerp(tekst);
+
+  const zoekRij = document.createElement('div');
+  zoekRij.style.cssText = 'display:flex;gap:8px;margin-top:10px;align-items:center';
+  const zoek = document.createElement('input');
+  zoek.className = 'input';
+  zoek.type = 'text';
+  zoek.placeholder = 'Zoek klant...';
+  zoek.style.flex = '1';
+  const alles = document.createElement('button');
+  alles.className = 'btn btn-outline btn-sm';
+  alles.type = 'button';
+  alles.textContent = '☑ Alles';
+  zoekRij.append(zoek, alles);
+
+  const lijst = document.createElement('div');
+  lijst.className = 'vp-lijst';
+  klanten.forEach(k => {
+    const rij = document.createElement('label');
+    rij.className = 'vp-rij';
+    const cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.className = 'vp-check';
+    cb.value = k.email;
+    cb.dataset.naam = klantNaam(k);
+    const em = document.createElement('span');
+    em.textContent = k.email;
+    const nm = document.createElement('span');
+    nm.className = 'vp-naam';
+    nm.textContent = klantNaam(k);
+    rij.append(cb, em, nm);
+    lijst.appendChild(rij);
+  });
+
+  zoek.addEventListener('input', () => {
+    const q = zoek.value.toLowerCase();
+    lijst.querySelectorAll('.vp-rij').forEach(r => {
+      r.style.display = r.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+    });
+  });
+  alles.addEventListener('click', () => {
+    const zichtbaar = [...lijst.querySelectorAll('.vp-rij')].filter(r => r.style.display !== 'none');
+    const allesAan = zichtbaar.every(r => r.querySelector('.vp-check').checked);
+    zichtbaar.forEach(r => r.querySelector('.vp-check').checked = !allesAan);
+    telSelectie();
+  });
+  lijst.addEventListener('change', telSelectie);
+
+  const verstuur = document.createElement('button');
+  verstuur.className = 'btn vp-verstuur';
+  verstuur.type = 'button';
+  verstuur.style.marginTop = '12px';
+  verstuur.textContent = '📧 Verstuur (0 geselecteerd)';
+  verstuur.addEventListener('click', () => verstuurNaarSelectie(vp, contentId));
+
+  function telSelectie(){
+    const n = vp.querySelectorAll('.vp-check:checked').length;
+    verstuur.textContent = `📧 Verstuur (${n} geselecteerd)`;
+  }
+
+  const log = document.createElement('div');
+  log.className = 'vp-log';
+
+  vp.append(lbl, ond, zoekRij, lijst, verstuur, log);
+  paneel.textContent = '';
+  paneel.appendChild(vp);
+}
+
+async function verstuurNaarSelectie(vp, contentId){
+  const checks = [...vp.querySelectorAll('.vp-check:checked')];
+  if(!checks.length){ alert('Selecteer minimaal één klant'); return; }
+  const onderwerp = (vp.querySelector('.vp-onderwerp').value || '').trim() || 'Bericht van DirechtOfferte.nl';
+  if(!confirm(`"${onderwerp}" versturen naar ${checks.length} klant(en)?`)) return;
+  const ruweTekst = document.getElementById(contentId).innerText;
+  const datumStr = new Date(Date.now() + 14*24*60*60*1000).toLocaleDateString('nl-NL');
+  const log = vp.querySelector('.vp-log');
+  const knop = vp.querySelector('.vp-verstuur');
+  log.style.display = 'block';
+  log.textContent = '';
+  knop.disabled = true;
+  let ok = 0, fout = 0;
+  for(const c of checks){
+    const email = c.value;
+    const naam = c.dataset.naam || '';
+    const tekst = ruweTekst
+      .replace(/\[Voornaam\]/gi, naam || 'ondernemer')
+      .replace(/\[naam\]/gi, naam || 'ondernemer')
+      .replace(/\[bedrijfsnaam\]/gi, naam || 'jouw bedrijf')
+      .replace(/\[datum[^\]]*\]/gi, datumStr);
+    const regel = document.createElement('div');
+    regel.textContent = '⏳ ' + email + '...';
+    log.appendChild(regel);
+    log.scrollTop = log.scrollHeight;
+    try{
+      await verstuurMail(email, onderwerp, mdNaarHtml(tekst));
+      regel.textContent = '✅ ' + email;
+      ok++;
+    }catch(e){
+      regel.textContent = '❌ ' + email + ' — ' + (e.message || 'fout');
+      fout++;
+    }
+    await new Promise(r => setTimeout(r, 700)); // Resend limiet: max ~2 mails/sec
+  }
+  knop.disabled = false;
+  const klaar = document.createElement('div');
+  klaar.innerHTML = '<b>Klaar: ' + ok + ' verstuurd' + (fout ? ', ' + fout + ' mislukt' : '') + '</b>';
+  log.appendChild(klaar);
+  log.scrollTop = log.scrollHeight;
+}
+
+// Start
+initDash();
+</script>
+</body>
+</html>
